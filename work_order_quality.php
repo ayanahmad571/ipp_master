@@ -37,6 +37,7 @@ getHead("WO Quality");
     	<tr>
             <th>WO#</th>
             <th>Client</th>
+            <th>Design ID</th>
             <th>TimeStamp</th>
             <th>Status</th>
             <th>Action</th>
@@ -57,6 +58,7 @@ getHead("WO Quality");
                 <tr>
                 	<td><?php echo $Recieved['master_wo_ref'] ?></td>
                 	<td><?php echo $Recieved['client_code']." - ".$Recieved['client_name']; ?></td>
+                	<td><?php echo $Recieved['master_wo_design_id'] ?></td>
                 	<td><?php echo date('d-m-Y @ h:i:s a',$Recieved['master_wo_gen_dnt']); ?></td>
                 	<td><?php echo $Recieved['mwoid_desc2'] ?></td>
                 	<td>
@@ -95,6 +97,7 @@ getHead("WO Quality");
     	<tr>
             <th>WO#</th>
             <th>Client</th>
+            <th>Design ID</th>
             <th>TimeStamp</th>
             <th>Status</th>
             <th>Action</th>
@@ -115,6 +118,7 @@ getHead("WO Quality");
                 <tr>
                 	<td><?php echo $Published['master_wo_ref'] ?></td>
                 	<td><?php echo $Published['client_code']." - ".$Published['client_name']; ?></td>
+                	<td><?php echo $Published['master_wo_design_id'] ?></td>
                 	<td><?php echo date('d-m-Y @ h:i:s a',$Published['master_wo_gen_dnt']); ?></td>
                 	<td><?php echo $Published['mwoid_desc2'] ?></td>
                 	<td>
@@ -152,6 +156,7 @@ getHead("WO Quality");
     	<tr>
             <th>WO#</th>
             <th>Client</th>
+            <th>Design ID</th>
             <th>TimeStamp</th>
             <th>Status</th>
             <th>Action</th>
@@ -172,6 +177,7 @@ getHead("WO Quality");
                 <tr>
                 	<td><?php echo $Published['master_wo_ref'] ?></td>
                 	<td><?php echo $Published['client_code']." - ".$Published['client_name']; ?></td>
+                	<td><?php echo $Published['master_wo_design_id'] ?></td>
                 	<td><?php echo date('d-m-Y @ h:i:s a',$Published['master_wo_gen_dnt']); ?></td>
                 	<td><?php echo $Published['mwoid_desc2'] ?></td>
                 	<td>
@@ -209,6 +215,7 @@ getHead("WO Quality");
     	<tr>
             <th>WO#</th>
             <th>Client</th>
+            <th>Design ID</th>
             <th>TimeStamp</th>
             <th>Status</th>
             <th>Action</th>
@@ -229,6 +236,7 @@ getHead("WO Quality");
                 <tr>
                 	<td><?php echo $SentBack['master_wo_ref'] ?></td>
                 	<td><?php echo $SentBack['client_code']." - ".$SentBack['client_name']; ?></td>
+                	<td><?php echo $SentBack['master_wo_design_id'] ?></td>
                 	<td><?php echo date('d-m-Y @ h:i:s a',$SentBack['master_wo_gen_dnt']); ?></td>
                 	<td><?php echo $SentBack['mwoid_desc2'] ?></td>
                 	<td>
@@ -264,6 +272,7 @@ getHead("WO Quality");
     	<tr>
             <th>WO#</th>
             <th>Client</th>
+            <th>Design ID</th>
             <th>TimeStamp</th>
             <th>Status</th>
             <th>Action</th>
@@ -284,6 +293,7 @@ getHead("WO Quality");
                 <tr>
                 	<td><?php echo $Published['master_wo_ref'] ?></td>
                 	<td><?php echo $Published['client_code']." - ".$Published['client_name']; ?></td>
+                	<td><?php echo $Published['master_wo_design_id'] ?></td>
                 	<td><?php echo date('d-m-Y @ h:i:s a',$Published['master_wo_gen_dnt']); ?></td>
                 	<td><?php echo $Published['mwoid_desc2'] ?></td>
                 	<td>

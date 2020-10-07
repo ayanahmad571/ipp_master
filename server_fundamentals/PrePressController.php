@@ -490,22 +490,26 @@ function setUpTubeCircum(){
 			$(document).ready(function (e) {
 				<?php
 				foreach($master_wo_straightArrays as $k=>$v){
-						echo '$(\'input[name="'.$k.'"]\').val("'.$getRecieved[0][$v].'");';
+						echo '$(\'input[name="'.$k.'"]\').val("'.$getRecieved[0][$v].'");
+						';
 				}
 
 				foreach($master_wo_radioArrays as $k=>$v){
-					echo '$(\'input:radio[name="'.$k.'"]\').filter(\'[value="'.$getRecieved[0][$v].'"]\').attr(\'checked\', true);';
+					echo '$(\'input:radio[name="'.$k.'"]\').filter(\'[value="'.$getRecieved[0][$v].'"]\').attr(\'checked\', true);
+					';
 				}
 
 				foreach($master_wo_checkboxArrays as $k=>$v){
 			
 					echo '$(\'input[name="'.$k.'[]"]\').each(function() {
 						this.checked = false;
-					});';
+					});
+					';
 					if($getRecieved[0][$v] != ''){
 						$s = explode(',',$getRecieved[0][$v]);
 						foreach($s as $val){
-							echo '$(\'input:checkbox[name="'.$k.'[]"]\').filter("[value=\''.$val.'\']").prop(\'checked\', true);';
+							echo '$(\'input:checkbox[name="'.$k.'[]"]\').filter("[value=\''.$val.'\']").prop(\'checked\', true);
+							';
 						}
 					}
 				} 

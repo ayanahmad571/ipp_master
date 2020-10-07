@@ -12,6 +12,7 @@ if(count($_GET) != 1){
 
 //If workorder TABLE ID is given for Master
 if(isset($_GET['pid'])){
+	$REF_NUMBER = 0;
 	if(!is_numeric($_GET['pid'])){
 		die("Invalid ID Parameter for WO");
 	}
@@ -33,6 +34,7 @@ if(isset($_GET['pid'])){
 	
 	$WorkOrderRepPub =  $getWo[0];
 	$exit_out = false;
+	$REF_NUMBER = $WorkOrderRepPub['master_wo_ref'];
 }
 
 //If draft is being pulled
@@ -58,6 +60,7 @@ SELECT * FROM `sales_work_order_main`
 
 //get all the work order trails and then track department wise who did what
 if(isset($_GET['id'])){
+	$REF_NUMBER = 0;
 		$getMasterDrafts = mysqlSelect($UpdatedStatusQuery."
 left join clients_main on master_wo_client_id = client_id
 left join master_work_order_main_identitiy on master_wo_status = mwoid_id
@@ -65,6 +68,7 @@ left join master_work_order_main_identitiy on master_wo_status = mwoid_id
 		order by master_wo_id asc
 				");
 	$exit_out = false;
+	$REF_NUMBER = $getMasterDrafts[0]['master_wo_ref'];
 
 }
 
@@ -338,7 +342,7 @@ if($exit_out){
 					left join user_main m on remark_lum_id = m.lum_id
 					where remark_status = 1
 					and remark_type = 1
-					and remark_master_wo_id = ".$_GET['id']);
+					and remark_master_wo_id = ".$REF_NUMBER);
 					
 					if(is_array($getOverallRem)){
 						foreach($getOverallRem as $OverallRem){
@@ -682,7 +686,7 @@ if($exit_out){
                 left join user_main m on remark_lum_id = m.lum_id
                 where remark_status = 1
                 and remark_type = 2
-                and remark_master_wo_id = ".$_GET['id']);
+                and remark_master_wo_id = ".$REF_NUMBER);
                 
                 if(is_array($getOverallRem)){
                     foreach($getOverallRem as $OverallRem){
@@ -1111,7 +1115,7 @@ if($exit_out){
                 left join user_main m on remark_lum_id = m.lum_id
                 where remark_status = 1
                 and remark_type = 3
-                and remark_master_wo_id = ".$_GET['id']);
+                and remark_master_wo_id = ".$REF_NUMBER);
                 
                 if(is_array($getOverallRem)){
                     foreach($getOverallRem as $OverallRem){
@@ -1202,7 +1206,7 @@ if($exit_out){
                 left join user_main m on remark_lum_id = m.lum_id
                 where remark_status = 1
                 and remark_type = 4
-                and remark_master_wo_id = ".$_GET['id']);
+                and remark_master_wo_id = ".$REF_NUMBER);
                 
                 if(is_array($getOverallRem)){
                     foreach($getOverallRem as $OverallRem){
@@ -1579,7 +1583,7 @@ if($exit_out){
                 left join user_main m on remark_lum_id = m.lum_id
                 where remark_status = 1
                 and remark_type = 5
-                and remark_master_wo_id = ".$_GET['id']);
+                and remark_master_wo_id = ".$REF_NUMBER);
                 
                 if(is_array($getOverallRem)){
                     foreach($getOverallRem as $OverallRem){
@@ -1879,7 +1883,7 @@ if($exit_out){
                 left join user_main m on remark_lum_id = m.lum_id
                 where remark_status = 1
                 and remark_type = 6
-                and remark_master_wo_id = ".$_GET['id']);
+                and remark_master_wo_id = ".$REF_NUMBER);
                 
                 if(is_array($getOverallRem)){
                     foreach($getOverallRem as $OverallRem){
@@ -2187,7 +2191,7 @@ if($exit_out){
                 left join user_main m on remark_lum_id = m.lum_id
                 where remark_status = 1
                 and remark_type = 7
-                and remark_master_wo_id = ".$_GET['id']);
+                and remark_master_wo_id = ".$REF_NUMBER);
                 
                 if(is_array($getOverallRem)){
                     foreach($getOverallRem as $OverallRem){

@@ -1,4 +1,5 @@
 <?php
+die();
 include("server_fundamentals/DatabaseConnection.php");
 $sql = "show tables from ipp where Tables_in_ipp like 'work_order_ui_%'";
 $result = $conn->query($sql);
@@ -14,7 +15,7 @@ if ($result->num_rows > 0) {
 			$i = 0;
 			while($row2 = $sql2->fetch_assoc()) {
 				if($i <1 ){
-				echo('left join '.$row['Tables_in_ipp'].' on master_wo_aaaaaaaaa = '.$row2['Field'])." <br>";	
+				echo('array("'.$row['Tables_in_ipp'].'","'.$row['Tables_in_ipp'].'","'.str_replace('_id',"",$row2['Field']).'"), <br>');	
 				$i++;
 					
 				}

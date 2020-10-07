@@ -133,6 +133,7 @@ getHead("WO Sales");
     	<tr>
             <th>Draft ID</th>
             <th>Client</th>
+            <th>Design ID</th>
             <th>User</th>
             <th>TimeStamp</th>
             <th>Action</th>
@@ -141,7 +142,7 @@ getHead("WO Sales");
 
         <tbody>
         <?php
-		$getDrafts = mysqlSelect("SELECT s_wo_gen_lum_id, s_wo_lum_id,s_wo_id,s_wo_client_id, s_wo_gen_dnt, client_code, client_name FROM `sales_work_order_main` 
+		$getDrafts = mysqlSelect("SELECT s_wo_gen_lum_id, s_wo_lum_id,s_wo_id,s_wo_client_id, s_wo_gen_dnt, client_code, client_name,s_wo_design_id FROM `sales_work_order_main` 
 		left join clients_main on s_wo_client_id = client_id
 		where s_wo_status = 1 
 		".$inColsDRAFT."
@@ -153,6 +154,7 @@ getHead("WO Sales");
                 <tr>
                 	<td><?php echo $Draft['s_wo_id'] ?></td>
                 	<td><?php echo $Draft['client_code']." - ".$Draft['client_name']; ?></td>
+                	<td><?php echo $Draft['s_wo_design_id']; ?></td>
                     <td>
                     <?php
 					$getBy = mysqlSelect("select * from user_main where lum_id = ".$Draft['s_wo_gen_lum_id']." and lum_valid =1");
@@ -198,6 +200,7 @@ getHead("WO Sales");
     	<tr>
             <th>WO#</th>
             <th>Client</th>
+            <th>Design ID</th>
             <th>User</th>
             <th>TimeStamp</th>
             <th>Status</th>
@@ -224,6 +227,7 @@ getHead("WO Sales");
                 <tr>
                 	<td><?php echo $Discard['master_wo_ref'] ?></td>
                 	<td><?php echo $Discard['client_code']." - ".$Discard['client_name']; ?></td>
+                	<td><?php echo $Discard['master_wo_design_id'] ?></td>
                     <td>
                     <?php
 					$getBy = mysqlSelect("select * from user_main where lum_id = ".$Discard['mwo_gen_lum_id']." and lum_valid =1");
@@ -266,6 +270,7 @@ getHead("WO Sales");
     	<tr>
             <th>WO#</th>
             <th>Client</th>
+            <th>Design ID</th>
             <th>User</th>
             <th>TimeStamp</th>
             <th>Status</th>
@@ -292,6 +297,7 @@ getHead("WO Sales");
                 <tr>
                 	<td><?php echo $Discard['master_wo_ref'] ?></td>
                 	<td><?php echo $Discard['client_code']." - ".$Discard['client_name']; ?></td>
+                	<td><?php echo $Discard['master_wo_design_id'] ?></td>
                     <td>
                     <?php
 					$getBy = mysqlSelect("select * from user_main where lum_id = ".$Discard['mwo_gen_lum_id']." and lum_valid =1");
@@ -341,6 +347,7 @@ getHead("WO Sales");
     	<tr>
             <th>Draft ID</th>
             <th>Client</th>
+            <th>Design ID</th>
             <th>User</th>
             <th>TimeStamp</th>
             <th style="display:none">Action</th>
@@ -349,7 +356,7 @@ getHead("WO Sales");
 
         <tbody>
         <?php
-		$getDiscards= mysqlSelect("SELECT s_wo_gen_lum_id, s_wo_lum_id, s_wo_id,s_wo_client_id, s_wo_gen_dnt, client_code, client_name FROM `sales_work_order_main` 
+		$getDiscards= mysqlSelect("SELECT s_wo_gen_lum_id, s_wo_design_id, s_wo_lum_id, s_wo_id,s_wo_client_id, s_wo_gen_dnt, client_code, client_name FROM `sales_work_order_main` 
 		left join clients_main on s_wo_client_id = client_id
 		where s_wo_status = 2 
 		".$inColsDRAFT."
@@ -361,6 +368,7 @@ getHead("WO Sales");
                 <tr>
                 	<td><?php echo $Discard['s_wo_id'] ?></td>
                 	<td><?php echo $Discard['client_code']." - ".$Discard['client_name']; ?></td>
+                	<td><?php echo $Discard['s_wo_design_id']; ?></td>
                 	<td><?php echo date('d-m-Y @ h:i:s a',$Discard['s_wo_gen_dnt']); ?></td>
                     <td>
                     <?php
@@ -414,7 +422,7 @@ getScripts();
 
  <script src="assets/js/bootbox.min.js"></script>
 
-<script type="text/javascript" src="assets/DataTables/datatables.min.js"></script>
+<script type="text/javascript" src="assets/Datatables/datatables.min.js"></script>
 
 <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
 <script>
