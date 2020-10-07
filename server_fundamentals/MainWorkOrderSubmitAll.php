@@ -262,7 +262,7 @@ require_once("SessionHandler.php");
 "master_wo_pouch_seal_width"=>$WorkOrder["master_wo_pouch_seal_width"],
 "master_wo_pouch_side_gus_w"=>$WorkOrder["master_wo_pouch_side_gus_w"],
 "master_wo_pouch_side_gus_l"=>$WorkOrder["master_wo_pouch_side_gus_l"],
-"master_wo_pouch_bot_gus_w "=>$WorkOrder[" master_wo_pouch_bot_gus_w "],
+"master_wo_pouch_bot_gus_w"=>$WorkOrder["master_wo_pouch_bot_gus_w"],
 "master_wo_pouch_bot_gus_l"=>$WorkOrder["master_wo_pouch_bot_gus_l"],
 "master_wo_pouch_euro_punch"=>$WorkOrder["master_wo_pouch_euro_punch"],
 "master_wo_pouch_open"=>$WorkOrder["master_wo_pouch_open"],

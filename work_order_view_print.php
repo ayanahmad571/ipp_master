@@ -16,15 +16,15 @@ if(isset($_GET['pid'])){
 		die("Invalid ID Parameter for WO");
 	}
 	
-	$getWo = mysqlSelect($UpdatedStatusQuery."
-       
+	$getWo = mysqlSelect("
+       select * from master_work_order_main 
         
 		left join clients_main on master_wo_client_id = client_id
 		left join master_work_order_main_identitiy on master_wo_status = mwoid_id
+		left join master_work_order_reference_number on master_wo_ref = mwo_ref_id
 
-        where  and master_wo_ref= ".$_GET['pid']." 
+        where master_wo_id= ".$_GET['pid']." 
 		".$inColsWO."
-		order by master_wo_id desc
 		");
 		
 	if(!is_array($getWo)){
