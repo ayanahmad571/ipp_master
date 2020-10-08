@@ -1,6 +1,48 @@
 <?php
 die();
 include("server_fundamentals/DatabaseConnection.php");
+include("server_fundamentals/FunctionsController.php");
+
+
+
+$string = "Ahmed Shafiullah|intgpack@eim.ae|MD 1|ipp@dubai1|2
+Shahid Shafiullah|shahid@ipp.ae|MD 2|ipp@dubai2|2
+Mohammed Nasrullah|mohammed.nasrullah@ipp.ae|S 03|ipp@dubai222|10
+Ankit Kumar|ankit.kumar@ipp.ae|S 22|ipp@dubai434|10
+Ritesh Tak|ritesh.tak@ipp.ae|S 21|ipp@dubai511|10
+Upashna Sherpa|upashna.s@ipp.ae|S 25|ipp@dubai736|10
+Arjun Chitra|arjun.chitra@ipp.ae|S 11|ipp@dubai370|10
+Abrey Page|abrey.page@ipp.ae|S 11 (Abrey)|ipp@dubai679|10
+Shivang Sharma|shivang.sharma@ipp.ae|S 13|ipp@dubai433|10
+Ali Hasan|alihasan@ipp.ae|S 17|ipp@dubai516|10
+Basel Meaari|basel.meaari@ipp.ae|S 18|ipp@dubai388|10
+Navneet Behl|navneet.behl@ipp.ae|S 19M|ipp@dubai377|10
+Ian Crofts|ian.crofts@ipp.ae|S 19E|ipp@dubai659|10
+Abid R|abid.r@ipp.ae|S 24|ipp@dubai4|10
+Pulkit Jain|pulkit.jain@ipp.ae|S 28|ipp@dubai746|10
+Madina Ayazbayeva|Madina.ayazbayeva@ipp.ae|S 26|ipp@dubai781|10
+Rahil Asif|rahil.asif@ipp.ae|S 27|ipp@dubai782|10
+jayachandran|jayachandran@ipp.ae|Q2|ipp@dubai723|12
+Bipin Rai|qc.manager@ipp.ae|Q1|ipp@dubai727|18
+Shift Quality Officer|supervisor@ipp.ae|Q3|ipp@dubaiemp1|18
+Manoj Pandey|manoj.pandey@ipp.ae|M1|ipp@dubai697|7
+Sameer Mustafa|costing@ipp.ae|C 1|ipp@dubai322|8
+Fayyas Mansoor|precosting@ipp.ae|PC 1|ipp@dubai474|18
+Accounts Receivable|accounts.receivable@ipp.ae|A1|ipp@dubai393|15
+Nitin Mestry|cylinders@ipp.ae|PP|ipp@dubai653|11
+Shakil Ahamed|ppc@ipp.ae|PL 1|ipp@dubai695|17
+Shadab Khan|mrp@ipp.ae|PL 2|ipp@dubai684|17";
+
+$ex = explode("
+",$string);
+echo 'INSERT INTO `user_main`(`lum_user_type`, `lum_code`, `lum_email`, `lum_hash`, `lum_name`, `lum_dnt`) VALUES <br>';
+foreach($ex as $str){
+	$us = explode('|', $str);
+	
+	echo '("'.$us[4].'","'.$us[2].'","'.$us[1].'","'.genHash($us[1],$us[3]).'","'.$us[0].'","'.time().'"),<br>';
+}
+
+die();
 $sql = "show tables from ipp where Tables_in_ipp like 'work_order_ui_%'";
 $result = $conn->query($sql);
 
