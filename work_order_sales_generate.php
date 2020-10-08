@@ -927,7 +927,7 @@ if(isset($_GET['repeatFromPublished'])){  ?>
     <div class="row">
     
         <div class="form-group col-sm-12 col-lg-6 ">
-          <label>Baseshel</label>
+          <label>Baseshell</label>
           <div class="selectgroup w-100">
                 <?php
                  $big= mysqlSelect("SELECT * FROM `work_order_ui_print_baseshel` where print_baseshel_show = 1 ");
@@ -958,43 +958,43 @@ if(isset($_GET['repeatFromPublished'])){  ?>
     <div class="row">
     
         <div class="form-group col-12 col-sm-6 col-lg-4 col-xl-3">
-          <label>1</label>
-          <input type="text" class="form-control" name="work_order_printing_pantone_1" placeholder="Pantone 1">
+          <label>Process Color 1</label>
+          <input type="text" class="form-control" name="work_order_printing_pantone_1" placeholder="Process Color 1">
         </div>
     
         <div class="form-group col-12 col-sm-6 col-lg-4 col-xl-3">
-          <label>2</label>
-          <input type="text" class="form-control" name="work_order_printing_pantone_2" placeholder="Pantone 2">
+          <label>Process Color 2</label>
+          <input type="text" class="form-control" name="work_order_printing_pantone_2" placeholder="Process Color 2">
         </div>
     
         <div class="form-group col-12 col-sm-6 col-lg-4 col-xl-3">
-          <label>3</label>
-          <input type="text" class="form-control" name="work_order_printing_pantone_3" placeholder="Pantone 3">
+          <label>Process Color 3</label>
+          <input type="text" class="form-control" name="work_order_printing_pantone_3" placeholder="Process Color 3">
         </div>
         
         <div class="form-group col-12 col-sm-6 col-lg-4 col-xl-3">
-          <label>4</label>
-          <input type="text" class="form-control" name="work_order_printing_pantone_4" placeholder="Pantone 4">
+          <label>Process Color 4</label>
+          <input type="text" class="form-control" name="work_order_printing_pantone_4" placeholder="Process Color 4">
         </div>
     
         <div class="form-group col-12 col-sm-6 col-lg-4 col-xl-3">
-          <label>5</label>
-          <input type="text" class="form-control" name="work_order_printing_pantone_5" placeholder="Pantone 5">
+          <label>Pantone 1</label>
+          <input type="text" class="form-control" name="work_order_printing_pantone_5" placeholder="Pantone 1">
         </div>
     
         <div class="form-group col-12 col-sm-6 col-lg-4 col-xl-3">
-          <label>6</label>
-          <input type="text" class="form-control" name="work_order_printing_pantone_6" placeholder="Pantone 6">
+          <label>Pantone 2</label>
+          <input type="text" class="form-control" name="work_order_printing_pantone_6" placeholder="Pantone 2">
         </div>
     
         <div class="form-group col-12 col-sm-6 col-lg-4 col-xl-3">
-          <label>7</label>
-          <input type="text" class="form-control" name="work_order_printing_pantone_7" placeholder="Pantone 7">
+          <label>Pantone 3</label>
+          <input type="text" class="form-control" name="work_order_printing_pantone_7" placeholder="Pantone 3">
         </div>
         
         <div class="form-group col-12 col-sm-6 col-lg-4 col-xl-3">
-          <label>8</label>
-          <input type="text" class="form-control" name="work_order_printing_pantone_8" placeholder="Pantone 8">
+          <label>Pantone 4</label>
+          <input type="text" class="form-control" name="work_order_printing_pantone_8" placeholder="Pantone 4">
         </div>
     
     
