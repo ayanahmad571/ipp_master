@@ -452,5 +452,23 @@ function logInsert($page, $session, $user, $ip, $text, $func){
 
 }
 
+function getSelectBox($masterclass, $nameIn, $postIn, $sql, $id, $val){
+?>
+                        <div class="<?php echo $masterclass; ?>">
+                          <label><?php echo $nameIn; ?></label>
+                          <select class="form-control select_a" required name="<?php echo $postIn; ?>">
+                            <?php
+                            $getDrafts = mysqlSelect($sql);
+
+                            if (is_array($getDrafts)) {
+                              foreach ($getDrafts as $Draft) {
+                                echo '<option value="' . $Draft[$id] . '">'.$Draft[$val].'</option>';
+                              }
+                            }
+                            ?>
+                          </select>
+                        </div>
+<?php
+}
 
 ?>
