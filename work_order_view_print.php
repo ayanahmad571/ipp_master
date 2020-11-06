@@ -110,7 +110,7 @@ if ($exit_out) {
       <div class="main-content">
         <section class="section">
           <div class="section-header">
-            <h1>Work Order Print View</h1>
+            <h1>Work Order Production Floor</h1>
           </div>
           <!-- TOP CONTENT BLOCKS -->
 
@@ -2635,15 +2635,15 @@ if ($exit_out) {
           "           </div>" +
           "           <div class=\"form-group col-6\">" +
           "             <label>Film</label>" +
-          "             <select class=\"form-control select_material\" required name=\"work_order_5_layer_" + l + "_material\">                        <?php
-                                                                                                                                                        $getMaterials = mysqlSelect("SELECT * FROM `materials_main` order by material_value asc");
-                                                                                                                                                        if (is_array($getMaterials)) {
-                                                                                                                                                          foreach ($getMaterials as $Material) {
-                                                                                                                                                            echo '<option value=\"' . $Material['material_id'] . '\">' . $Material['material_value'] . '</option>';
-                                                                                                                                                          }
-                                                                                                                                                        }
-                                                                                                                                                        ?> <
-          /select>"+
+          "             <select class=\"form-control select_material\" required name=\"work_order_5_layer_" + l + "_material\">",
+          <?php
+          $getMaterials = mysqlSelect("SELECT * FROM `materials_main` order by material_value asc");
+          if (is_array($getMaterials)) {
+            foreach ($getMaterials as $Material) {
+              echo '"<option value=\"' . $Material['material_id'] . '\">' . $Material['material_value'] . '</option>",';
+            }
+          }
+          ?>"</select>"+
           "           </div>" +
           "        </div>" +
           "   </div>" +

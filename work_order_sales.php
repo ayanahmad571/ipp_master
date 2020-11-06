@@ -322,7 +322,7 @@ getHead("WO Sales");
                                 </a>
                               <?php } ?>
                               <?php if ($Discard['master_wo_status'] == 9) { ?>
-                                <a target="_blank" href="work_order_sales_repeat_change?repeatFromPublished=<?php echo $Discard['master_wo_ref'] ?>">
+                                <a target="_blank" href="work_order_sales_repeat_change?repeatChange=<?php echo $Discard['master_wo_ref'] ?>">
                                   <button class="btn btn-info mt-1">Repeat - Change</button>
                                 </a>
                               <?php } ?>
