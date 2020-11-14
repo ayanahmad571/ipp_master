@@ -78,9 +78,14 @@ getHead("Sales Order - Make New Draft");
                         </div>
 
                         <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
-                          <label>Customer Design Name</label>
-                          <input type="text" class="form-control" name="work_order_customer_design_name" placeholder="Customer Design Code">
+                          <label>Customer's Design Name</label>
+                          <input type="text" class="form-control" name="work_order_customer_design_name" placeholder="Customer Design Name">
                         </div>
+                        <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
+                          <label>Customer's Item Code</label>
+                          <input type="text" class="form-control" name="work_order_customer_design_name" placeholder="Customer Item Code">
+                        </div>
+
                         <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
                           <label>Customer P.O#</label>
                           <input type="text" class="form-control" name="work_order_customer_po" placeholder="Customer P.O#">
@@ -166,11 +171,25 @@ getHead("Sales Order - Make New Draft");
                           'structure_value'
                         );
                         ?>
-
-                        <div class="form-group col-12 col-md-6 col-lg-3 col-xl-2">
-                          <label>IPP Design ID</label>
-                          <input type="text" class="form-control" name="work_order_design_id" placeholder="IPP Design ID">
-                        </div>
+                        <DIV class="row">
+                          <div class="col-9">
+                            <div class="row">
+                              <div class="form-group col-12">
+                                <label>IPP Design ID</label>
+                                <input type="text" class="form-control" name="work_order_design_id" placeholder="IPP Design ID">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-3">
+                            <div class="row">
+                              <div class="form-group col-12">
+                                <label>Rev No</label>
+                                <input type="number" min="0" value="0" class="form-control" name="work_order_design_id" placeholder="Rev">
+                              </div>
+                            </div>
+                          </div>
+                        </DIV>
+                       
 
                         <div class="form-group col-12 col-md-6 col-lg-3 col-xl-2">
                           <label>Approved Sample WO No.</label>
@@ -221,6 +240,7 @@ getHead("Sales Order - Make New Draft");
                           <label>Tolerance +/-</label>
                           <input placeholder="Tolerance +/-" name="work_order_quantity_tolerance" type="number" step="0.01" class="form-control" />
                         </div>
+                        
 
                         <div class="classPouchRoll col-sm-12 col-xl-2">
 

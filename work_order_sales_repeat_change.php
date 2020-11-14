@@ -87,6 +87,28 @@ $WorkOrderRepPub =  $getWo[0];
                     <div id="workOrderHeaderDetails">
 
                       <div class="row">
+                        <div class="form-group col-sm-12 ">
+                          <label>Change Type</label>
+
+                          <div class="selectgroup selectgroup-pills">
+                            <?php
+                            $getSlitCustomrs = array("Text", "Color", "Structure", "B'Code","Other");
+                            if (is_array($getSlitCustomrs)) {
+                              foreach ($getSlitCustomrs as $SingularOP) {
+                                echo '
+                          <label class="selectgroup-item">
+                            <input type="checkbox" name="work_order_3_changes[]" value="' . $SingularOP . '" class="selectgroup-input" />
+                            <span class="selectgroup-button">' . $SingularOP . '</span>
+                          </label>';
+                                }
+                            }
+                            ?>
+
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row">
 
                         <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-1">
                           <label>Customer Code</label>
@@ -198,11 +220,25 @@ $WorkOrderRepPub =  $getWo[0];
                           'structure_value'
                         );
                         ?>
+                        <DIV class="row">
+                          <div class="col-9">
+                            <div class="row">
+                              <div class="form-group col-12">
+                                <label>IPP Design ID</label>
+                                <input type="text" class="form-control" disabled placeholder="IPP Design ID">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-3">
+                            <div class="row">
+                              <div class="form-group col-12">
+                                <label>Rev No</label>
+                                <input type="number" min="0" value="0" class="form-control" name="work_order_design_id" placeholder="Rev">
+                              </div>
+                            </div>
+                          </div>
+                        </DIV>
 
-                        <div class="form-group col-12 col-md-6 col-lg-3 col-xl-2">
-                          <label>IPP Design ID</label>
-                          <input type="text" class="form-control" disabled placeholder="IPP Design ID">
-                        </div>
 
                         <div class="form-group col-12 col-md-6 col-lg-3 col-xl-2">
                           <label>Approved Sample WO No.</label>
@@ -210,7 +246,7 @@ $WorkOrderRepPub =  $getWo[0];
                         </div>
                         <?php
                         getSelectBox(
-                          "form-group col-sm-12 col-xl-2",
+                          "form-group disabled col-sm-12 col-xl-2",
                           "Application",
                           "work_order_2_application",
                           "SELECT * FROM `work_order_applications` order by application_value asc ",
