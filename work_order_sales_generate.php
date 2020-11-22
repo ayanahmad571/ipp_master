@@ -60,7 +60,7 @@ getHead("Sales Order - Make New Draft");
                           <label>Customer Code</label>
                           <select class="form-control select_a" required name="work_order_2_client_id">
                             <?php
-                            $getClients = mysqlSelect("SELECT * FROM `clients_main` order by client_name asc ");
+                            $getClients = mysqlSelect("SELECT * FROM `clients_main` where `client_show` = 1 order by client_name asc ");
                             if (is_array($getClients)) {
                               foreach ($getClients as $Client) {
                                 echo '<option data-name="' . $Client['client_name'] . '" value="' . $Client['client_id'] . '">' . $Client['client_code'] . '</option>';
@@ -83,7 +83,7 @@ getHead("Sales Order - Make New Draft");
                         </div>
                         <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
                           <label>Customer's Item Code</label>
-                          <input type="text" class="form-control" name="work_order_customer_design_name" placeholder="Customer Item Code">
+                          <input type="text" class="form-control" name="work_order_customer_item_code" placeholder="Customer Item Code">
                         </div>
 
                         <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
@@ -138,6 +138,7 @@ getHead("Sales Order - Make New Draft");
                           <input type="text" class="form-control" name="work_order_contact_person_email" placeholder="Contact Person Email">
                         </div>
                       </div>
+                      
                       <div class="row">
                         <div class="form-group col-12 col-md-6 col-lg-3 col-xl-3">
                           <label>IPP Sales Person Code</label>
@@ -170,7 +171,7 @@ getHead("Sales Order - Make New Draft");
                           "form-group col-12 col-md-6 col-lg-3 col-xl-2",
                           "_ ",
                           "work_order_2_type_printed",
-                          "SELECT * FROM `work_order_product_type_printed` order by ptp_value asc ",
+                          "SELECT * FROM `work_order_product_type_printed` where ptp_show = 1 order by ptp_value asc ",
                           'ptp_id',
                           'ptp_value'
                         );
@@ -185,7 +186,7 @@ getHead("Sales Order - Make New Draft");
                           "form-group col-sm-12 col-xl-3",
                           "Application",
                           "work_order_2_application",
-                          "SELECT * FROM `work_order_applications` order by application_value asc ",
+                          "SELECT * FROM `work_order_applications` where application_show =1 order by application_value asc ",
                           'application_id',
                           'application_value'
                         );
@@ -193,12 +194,13 @@ getHead("Sales Order - Make New Draft");
 
 
                       </div>
+
                       <div class="row">
                         <?php
                         getSelectBox(
                           "form-group col-sm-12 col-xl-3 classOnlyRoll",
                           "Roll Filling Options",
-                          "work_order_2_application",
+                          "work_order_2_roll_fill_opts",
                           "SELECT * FROM `work_order_ui_roll_options` where rollopts_show =1 order by rollopts_value asc ",
                           'rollopts_id',
                           'rollopts_value'
@@ -208,7 +210,7 @@ getHead("Sales Order - Make New Draft");
                         getSelectBox(
                           "form-group col-sm-12 col-xl-3 classBagPouch",
                           "Bag/Pouch Filling Options Temperature",
-                          "work_order_2_application",
+                          "work_order_2_pouchbag_fillops",
                           "SELECT * FROM `work_order_ui_pouch_bag_fill_opts` where pbfo_show =1 order by pbfo_value asc ",
                           'pbfo_id',
                           'pbfo_value'
@@ -219,7 +221,7 @@ getHead("Sales Order - Make New Draft");
                         getSelectBox(
                           "form-group col-sm-12 col-xl-3",
                           "Filling Temperature",
-                          "work_order_2_application",
+                          "work_order_2_fill_temp",
                           "SELECT * FROM `work_order_ui_filling_temp` where filling_temp_show =1 order by filling_temp_value asc ",
                           'filling_temp_id',
                           'filling_temp_value'
@@ -227,24 +229,24 @@ getHead("Sales Order - Make New Draft");
                         ?>
                         <div class="form-group col-sm-12 col-md-6 col-lg-3">
                           <label>Filling Time Duration</label>
-                          <input type="text" class="form-control" name="work_order_ink_gsm_pre_c" placeholder="Time Duration">
+                          <input type="text" class="form-control" name="work_order_fill_duration" placeholder="Time Duration">
                         </div>
                         <div class="form-group col-sm-12 col-md-6 col-lg-3">
                           <label>Filling Temperature</label>
-                          <input type="text" class="form-control" name="work_order_ink_gsm_pre_c" placeholder="Temperature">
+                          <input type="text" class="form-control" name="work_order_fill_temp" placeholder="Temperature">
                         </div>
 
                         <div class="form-group col-sm-12 col-md-6 col-lg-3">
                           <label>Line Speed Time Duration</label>
-                          <input type="text" class="form-control" name="work_order_ink_gsm_pre_c" placeholder="Time Duration">
+                          <input type="text" class="form-control" name="work_order_line_speed" placeholder="Time Duration">
                         </div>
                         <div class="form-group col-sm-12 col-md-6 col-lg-3">
                           <label>Dwell Time</label>
-                          <input type="text" class="form-control" name="work_order_ink_gsm_pre_c" placeholder="Temperature">
+                          <input type="text" class="form-control" name="work_order_dwell_time" placeholder="Temperature">
                         </div>
                         <div class="form-group col-sm-12 col-md-6 col-lg-3">
                           <label>Seal Temperature</label>
-                          <input type="text" class="form-control" name="work_order_ink_gsm_pre_c" placeholder="Time Duration">
+                          <input type="text" class="form-control" name="work_order_seal_temp" placeholder="Time Duration">
                         </div>
 
 
@@ -260,7 +262,7 @@ getHead("Sales Order - Make New Draft");
                             </div>
                             <div class="form-group col-sm-12 col-md-3">
                               <label>Rev No</label>
-                              <input type="number" min="0" value="0" class="form-control" name="work_order_design_id" placeholder="Rev">
+                              <input type="number" min="0" value="0" class="form-control" name="work_order_rev_no" placeholder="Rev">
                             </div>
                           </div>
                         </div>
@@ -275,7 +277,7 @@ getHead("Sales Order - Make New Draft");
 
                         <div class="form-group col-sm-12 col-lg-6 col-xl-2">
                           <label>Pack Size </label>
-                          <input type="number" min="1" max="999999" step="0.01" class="form-control" name="work_order_pack_weight" placeholder="Pack Size ">
+                          <input type="number" min="1" max="999999" step="0.01" class="form-control" name="work_order_pack_size" placeholder="Pack Size ">
                         </div>
 
                         <div class="form-group col-sm-12 col-lg-6 col-xl-2">
@@ -289,8 +291,8 @@ getHead("Sales Order - Make New Draft");
                         getSelectBox(
                           "form-group col-4 col-xl-2",
                           "Pack Weight Unit",
-                          "work_order_2_units",
-                          "SELECT * FROM `work_order_pack_size_unit` ",
+                          "work_order_2_pack_weight_unit",
+                          "SELECT * FROM `work_order_pack_size_unit` where psu_show = 1",
                           'psu_id',
                           'psu_value'
                         );
@@ -310,7 +312,7 @@ getHead("Sales Order - Make New Draft");
                           "form-group col-4 col-xl-2",
                           "Qty Unit",
                           "work_order_2_units",
-                          "SELECT * FROM `work_order_qty_units` ",
+                          "SELECT * FROM `work_order_qty_units` where unit_show =1",
                           'unit_id',
                           'unit_value'
                         );
@@ -329,7 +331,7 @@ getHead("Sales Order - Make New Draft");
                             "form-group",
                             "Laser Configuration",
                             "work_order_2_laser_config",
-                            "SELECT * FROM `work_order_ui_slitting_laser_config`  order by laser_value asc ",
+                            "SELECT * FROM `work_order_ui_slitting_laser_config` where laser_show =1 order by laser_value asc ",
                             'laser_id',
                             'laser_value'
                           );
@@ -337,8 +339,6 @@ getHead("Sales Order - Make New Draft");
                         </div>
 
                       </div>
-
-
 
                     </div>
 
@@ -363,6 +363,7 @@ getHead("Sales Order - Make New Draft");
 
                     <div id="containerLaminateLayers">
                     </div>
+
                     <div class="row">
                       <div class="form-group  col-12 col-md-6 col-xl-4">
                         <label>Customer Specified Total Laminate GSM</label>
@@ -400,7 +401,7 @@ getHead("Sales Order - Make New Draft");
                               "form-group col-12 col-lg-3",
                               "Wind DIR",
                               "work_order_2_wind_dir",
-                              "SELECT * FROM `work_order_wind_dir` order by wind_value asc",
+                              "SELECT * FROM `work_order_wind_dir` where wind_dir =1 order by wind_value asc",
                               'wind_id',
                               'wind_value'
                             );
@@ -499,7 +500,7 @@ getHead("Sales Order - Make New Draft");
                       <div class="row">
                         <div class="form-group col-12">
                           <label>Roll Remarks</label>
-                          <textarea name="work_order_remarks_pouch" class="form-control" placeholder="Remarks" style="height:90px"></textarea>
+                          <textarea name="work_order_remarks_roll" class="form-control remarksEdit" placeholder="Remarks" style="height:200px"></textarea>
                         </div>
                       </div>
                     </div>
@@ -585,7 +586,7 @@ getHead("Sales Order - Make New Draft");
                       <div class="row">
                         <div class="form-group col-12">
                           <label>Pouch Remarks</label>
-                          <textarea name="work_order_remarks_pouch" class="form-control" placeholder="Remarks" style="height:90px"></textarea>
+                          <textarea name="work_order_remarks_pouch" class="form-control remarksEdit" placeholder="Remarks" style="height:200px"></textarea>
                         </div>
                       </div>
 
@@ -652,15 +653,13 @@ getHead("Sales Order - Make New Draft");
                       <div class="row">
                         <div class="form-group col-12">
                           <label>Bags Remarks</label>
-                          <textarea name="work_order_remarks_bags" class="form-control" placeholder="Remarks" style="height:90px"></textarea>
+                          <textarea name="work_order_remarks_bags" class="form-control remarksEdit" placeholder="Remarks" style="height:200px"></textarea>
                         </div>
                       </div>
 
                     </div>
 
                     <hr>
-
-
 
                     <div class="row">
                       <div class="form-group col-12 col-lg-6 col-xl-3" id="workOrderFoilPrint">
@@ -669,7 +668,7 @@ getHead("Sales Order - Make New Draft");
                           "form-group",
                           "Foil Finish Towards Printing Substrate",
                           "work_order_2_foil_print_side",
-                          "SELECT * FROM `work_order_ui_foil_print_side` order by foil_print_side_value asc ",
+                          "SELECT * FROM `work_order_ui_foil_print_side` where foil_print_side_show = 1 order by foil_print_side_value asc ",
                           'foil_print_side_id',
                           'foil_print_side_value'
                         );
@@ -723,7 +722,6 @@ getHead("Sales Order - Make New Draft");
                     </div>
 
                     <HR>
-
 
                     <div id="workOrderSlitProcess">
 
@@ -865,17 +863,11 @@ getHead("Sales Order - Make New Draft");
                       <div class="row">
                         <div class="form-group col-12">
                           <label>Overall Remarks</label>
-                          <textarea name="work_order_remarks_overall" class="remarksEdit form-control" placeholder="Remarks" style="height:90px"></textarea>
+                          <textarea name="work_order_remarks_overall" class="remarksEdit form-control" placeholder="Remarks" style="height:200px"></textarea>
                         </div>
                       </div>
 
                     </div>
-
-
-
-
-
-
 
                     <div class="form-group" align="center">
                       <button type="submit" class="btn btn-success">Save as Draft</button>
@@ -1028,12 +1020,12 @@ getHead("Sales Order - Make New Draft");
 
       var layers = $('#plyValueInput').val();
       var l;
-      var c =0;
+      var c = 0;
 
       for (l = 1; l <= (layers); l++) {
         var den = $('select[name=work_order_5_layer_' + l + '_material]').find(':selected').data('density');
         var gsm = $('input[name=work_order_layer_' + l + '_micron]').val();
-        c+= den * gsm;
+        c += den * gsm;
       }
       $("#calcLamGSM").val(c);
     }

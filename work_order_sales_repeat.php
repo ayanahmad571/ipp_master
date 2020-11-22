@@ -154,7 +154,7 @@ $WorkOrderRepPub =  $getWo[0];
                           "form-group col-12 col-md-6 col-xl-3 ",
                           "Qty Unit",
                           "work_order_repeat_2_units",
-                          "SELECT * FROM `work_order_qty_units` ",
+                          "SELECT * FROM `work_order_qty_units` where unit_show =1 ",
                           'unit_id',
                           'unit_value'
                         );
