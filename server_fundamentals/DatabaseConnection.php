@@ -23,7 +23,7 @@ foreach($_POST as $key=>$v){
 
 
 	if(!is_array($_POST[$key])){
-		if($key == 'edit_booth_desc'){
+		if($key == 'work_order_remarks_roll' || $key == 'work_order_remarks_pouch' || $key == 'work_order_remarks_bags' || $key == 'work_order_remarks_overall')  {
 			$_POST[$key] =str_replace('<script','', trim(($conn->escape_string($v))));
 		}else{
 		 $_POST[$key] = trim(strip_tags($conn->escape_string($v)));

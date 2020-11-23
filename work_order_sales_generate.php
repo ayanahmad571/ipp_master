@@ -50,8 +50,8 @@ getHead("Sales Order - Make New Draft");
                     This form has successfully been saved as a New draft, in order to send it for verification please click Request Verification.
                   </div>
 
-                  <!-- <form id="formContainer" action="server_fundamentals/SalesWorkOrderSubmit" method="post"> -->
-                  <form id="formContainer" action="PostDumper" method="post">
+                  <form id="formContainer" action="server_fundamentals/SalesWorkOrderSubmit" method="post">
+                  <!-- <form id="formContainer" action="PostDumper" method="post"> -->
                     <div id="workOrderHeaderDetails">
 
                       <div class="row">
@@ -401,7 +401,7 @@ getHead("Sales Order - Make New Draft");
                               "form-group col-12 col-lg-3",
                               "Wind DIR",
                               "work_order_2_wind_dir",
-                              "SELECT * FROM `work_order_wind_dir` where wind_dir =1 order by wind_value asc",
+                              "SELECT * FROM `work_order_wind_dir` where wind_show =1 order by wind_value asc",
                               'wind_id',
                               'wind_value'
                             );
@@ -566,7 +566,7 @@ getHead("Sales Order - Make New Draft");
                                   foreach ($getExtOp1 as $ExtOp1) {
                                     echo '
                               <label class="selectgroup-item">
-                                      <input type="checkbox" name="work_order_4_pouch_lap_fin[]" value="' . $ExtOp1['lap_fin_id'] . '" class="selectgroup-input" ' . ($ExtOp1['lap_fin_id'] == 1 ? 'checked' : '') . '>
+                                      <input type="checkbox" name="work_order_3_pouch_lap_fin[]" value="' . $ExtOp1['lap_fin_id'] . '" class="selectgroup-input" ' . ($ExtOp1['lap_fin_id'] == 1 ? 'checked' : '') . '>
                                       <span class="selectgroup-button">' . $ExtOp1['lap_fin_value'] . '</span>
                                     </label>';
                                   }

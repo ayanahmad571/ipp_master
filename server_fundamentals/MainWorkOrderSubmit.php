@@ -413,7 +413,7 @@ require_once("SessionHandler.php");
 		$_SESSION[SESSION_HASH_NAME], 
 		$USER_ARRAY['lum_id'], 
 		$_SERVER['REMOTE_ADDR'], 
-		$USER_ARRAY['lum_code']." has publised draft ID ".$_POST['draftToMain']."  to WO ID ".$insertReference, 
+		$USER_ARRAY['lum_code']." has published draft ID ".$_POST['draftToMain']."  to WO ID ".$insertReference, 
 		"mysqlInsertData");
 
 

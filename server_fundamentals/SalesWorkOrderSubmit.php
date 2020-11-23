@@ -1,990 +1,531 @@
 <?php
 require_once("SessionHandler.php");
 require_once("PostDataHeadChecker.php");
-
-if(isset($_POST['work_order_edit_draft_id'])){
-	if(is_numeric($_POST['work_order_edit_draft_id'])){
-		$getDraftWork = mysqlSelect("SELECT s_wo_id FROM `sales_work_order_main` 
-		where s_wo_status = 1 
-		".$inColsDRAFT."
-		and s_wo_id = ".$_POST['work_order_edit_draft_id']);
-		
-		if(!is_array($getDraftWork)){
-			die("Editing Draft not Found.");
-		}
-
-	} else{
-			die("Editing Draft Invalid ID.");
-		}
+//user type_check only sales and MD people can make this WO
+if (!in_array($USER_ARRAY['user_type_id'], array(1, 2, 4, 10, 16))) {
+	die('User Not Authorized');
 }
 
-#check Essentials
-$doEssentailsModule = true;
+// if(isset($_POST['work_order_edit_draft_id'])){
+// 	if(is_numeric($_POST['work_order_edit_draft_id'])){
+// 		$getDraftWork = mysqlSelect("SELECT s_wo_id FROM `sales_work_order_main` 
+// 		where s_wo_status = 1 
+// 		".$inColsDRAFT."
+// 		and s_wo_id = ".$_POST['work_order_edit_draft_id']);
 
-$WorkOrderBags =array();
-$WorkOrderExtrusion = array();
-$WorkOrderLamination = array();
-$WorkOrderMaster  = array();
-$WorkOrderPrinting = array();
-$WorkOrderSlitting = array();
-$WorkOrderPouch = array();
+// 		if(!is_array($getDraftWork)){
+// 			die("Editing Draft not Found.");
+// 		}
 
-$plyNumber = $_POST[$essentialNames[12]];
+// 	} else{
+// 			die("Editing Draft Invalid ID.");
+// 		}
+// }
+
+$toCheck = array(
+	"work_order_2_client_id", "work_order_customer_design_name", "work_order_customer_item_code", "work_order_customer_po", "work_order_po_date", "work_order_delivery_date",
+	"work_order_3_customer_loc", "work_order_contact_person_name", "work_order_contact_person_mob_no", "work_order_contact_person_email", "work_order_2_sales_id",
+	"work_order_2_structure", "work_order_2_type_printed", "work_order_ink_gsm_pre_c", "work_order_2_application", "work_order_2_roll_fill_opts",
+	"work_order_2_pouchbag_fillops", "work_order_2_fill_temp", "work_order_fill_duration", "work_order_fill_temp", "work_order_line_speed",
+	"work_order_dwell_time", "work_order_seal_temp", "work_order_design_id", "work_order_rev_no", "work_order_approved_sample_wo_no",
+	"work_order_pack_size", "work_order_pack_weight", "work_order_2_pack_weight_unit", "work_order_quantity", "work_order_2_units",
+	"work_order_quantity_tolerance", "work_order_2_laser_config", "work_order_ply", "work_order_2_extrusion_cof", "work_order_total_gsm", "work_order_total_gsm_tolerance",
+	"work_order_2_wind_dir", "work_order_roll_od", "work_order_roll_width", "work_order_roll_cutoff_len", "work_order_max_w_p_r",
+	"work_order_max_lmtr_p_r", "work_order_max_imps_p_r", "work_order_2_slitting_core_id", "work_order_2_slitting_core_material", "work_order_2_slitting_core_plugs",
+	"work_order_2_slitting_qc_ins", "work_order_max_joints", "work_order_remarks_roll", "_wysihtml5_mode", "work_order_pouch_type",
+	"work_order_pouch_val_a", "work_order_pouch_val_b", "work_order_pouch_val_c", "work_order_pouch_val_d", "work_order_pouch_val_e",
+	"work_order_pouch_val_f", "work_order_pouch_val_g", "work_order_pouch_val_h", "work_order_3_pouch_lap_fin", "work_order_remarks_pouch",
+	"work_order_bag_type", "work_order_bags_val_a", "work_order_bags_val_b", "work_order_bags_val_c", "work_order_bags_val_d",
+	"work_order_bags_val_e", "work_order_bags_val_f", "work_order_bags_val_g", "work_order_bags_val_h", "work_order_remarks_bags",
+	"work_order_2_foil_print_side", "work_order_2_printing_method", "work_order_2_printing_shade_card_needed", "work_order_2_printing_color_ref_type", "work_order_2_printing_approvalby",
+	"work_order_2_roll_pack_ins", "work_order_2_carton_pack_ins", "work_order_2_pallet_mark_ins", "work_order_pouch_per_bund", "work_order_bund_per_box",
+	"work_order_2_pallet_type", "work_order_2_cont_stuff", "work_order_max_gross_pallet_weight", "work_order_2_pallet_dim", "work_order_2_freight_type",
+	"work_order_cart_thick", "work_order_3_docs", "work_order_remarks_overall"
+);
+
+
+checkPost($toCheck);
+
+$plyNumber = $_POST["work_order_ply"];
+$foilPrint = false;
+$RemarksMain = array();
+$QueryCols = array();
+$QueryVals = array();
 //checkPly
-if($plyNumber >5 || $plyNumber < 1){
+if ($plyNumber > 5 || $plyNumber < 1) {
 	die("PLY Value not in range [1,5]");
 }
 
-$ext = false;
 
-if($doEssentailsModule){
+#check for the Layers in essentials since they are not included in the Essential Checkers
+for ($counter1 = 1; $counter1 <= $plyNumber; $counter1++) {
 
-
-		checkPost($essentialNames);
-		checkString($essentialNames);
-		
-		#check for the Layers in essentials since they are not included in the Essential Checkers
-		for($counter1 = 1; $counter1 <= $plyNumber; $counter1++){
-			
-			if(!isset($_POST['work_order_layer_'.$counter1.'_micron'])){
-				die('Missing Value of Layer '.$counter1.' Micron ');
-			}
-			if(!isset($_POST['work_order_5_layer_'.$counter1.'_material'])){
-				die('Missing Value of Layer '.$counter1.' Structure ');
-			}
-		}
-		
-		
-		//user type_check only sales and MD people can make this WO
-		if(!in_array($USER_ARRAY['user_type_id'], array(1,2,4,10,16))){
-			die('User Not Authorized');
-		}
-		
-		//checkNumeric
-		checkNumeric(array($essentialNames[8],$essentialNames[12], $essentialNames[10], $essentialNames[11]));
-		
-		for($counter1 = 1; $counter1 <= $plyNumber; $counter1++){
-			
-			if(!is_numeric($_POST['work_order_layer_'.$counter1.'_micron'])){
-				die('Invalid Numeric Value of Layer '.$counter1.' Micron ');
-			}
-		}
-		
-		//Check if the posted options are numeric
-		if(isset($_POST[$essentialOptions[0]])){
-			foreach($_POST[$essentialOptions[0]] as $exP){
-				if(!is_numeric($exP)){
-					die("Invalid Customer Location Options");
-				}
-			}
-		}
-		
-		//check Customer Code
-		selectChecker("SELECT * FROM `clients_main` where client_id = ".$_POST[$essentialNames[3]],'Client Not Found','mysqlSelect');
-		
-		//check if Sales ID is OK
-		selectChecker($getAttachedTreeSql." and lum_id = ".$_POST[$essentialNames[2]],"Invalid Sales ID",'mysqlSelect');
-		
-		//check delivery date
-		$date_created = date_create_from_format("d-m-Y @ H:i:s",$_POST[$essentialNames[4]].' @ 15:40:00');
-		if(!empty($date_created)){
-		$obj = get_object_vars($date_created);
-		}else{
-			die("Invalid Delivery Date Format");
-		}
-		
-		$checkDeliveryDate = strtotime($obj['date']);
-		if($checkDeliveryDate < time()){
-			die("Invalid Delivery Date, Date Must be in the Future");
-		}
-		
-		
-		
-		//checkStructureOptGroup
-		selectChecker("SELECT * FROM `work_order_ui_structure` where structure_id = ".$_POST[$essentialNames[7]],'Structure Not Found','mysqlSelect');
-		
-		//checkQtyUnit
-		selectChecker("SELECT * FROM `work_order_qty_units`  where unit_id = ".$_POST[$essentialNames[9]],'Unit Not Found','mysqlSelect');
-		
-		
-		//checkApplication
-		selectChecker("SELECT * FROM `work_order_applications`  where application_id = ".$_POST[$essentialNames[13]],'Application Not Found','mysqlSelect');
-		
-		
-		for($counter1 = 1; $counter1 <= $plyNumber; $counter1++){
-			//checkLayerStructure
-			selectChecker("SELECT * FROM `materials_main`  where material_id= ".$_POST['work_order_5_layer_'.$counter1.'_material'],'Structure Not Found for Layer-'.$counter1,'mysqlSelect');
-			$valFilmID = $_POST['work_order_5_layer_'.$counter1.'_material'];
-			
-			if($valFilmID ==4 || $valFilmID ==5 || $valFilmID ==36 ){
-				$ext = true;
-			}		
-			
-		}
-		
-		//Check if the posted options are valid
-		if(isset($_POST[$essentialOptions[0]])){
-			foreach($_POST[$essentialOptions[0]] as $exP){
-				//check Antistatic
-				selectChecker("SELECT * FROM `work_order_ui_customer_location` where customer_location_show = 1 and customer_location_id = ".$exP ,
-				'Customer Location Option Value at ID= '.$exP.' Not Found',
-				'mysqlSelect');
-			}
-		}
-	
-		//checkPrinted and CheckIn house PE
-		if(!inRange($_POST[$essentialNames[17]],0,1,true)){
-			die("Invalid Values for -> Is The order printed ");
-		}
-		
-		if(!inRange($_POST[$essentialNames[18]],0,1,true)){
-			die("Invalid Values for -> In house PE");
-		}
-		
-
-		$WorkOrderMaster = array(
-		"s_wo_lum_id"=>$_POST[$essentialNames[2]],
-		"s_wo_design_id"=>$_POST[$essentialNames[0]],
-		"s_wo_po"=>$_POST[$essentialNames[1]],
-		"s_wo_client_id"=>$_POST[$essentialNames[3]],
-		"s_wo_customer_item_code"=>$_POST[$essentialNames[5]],
-		"s_wo_delivery_date"=>$checkDeliveryDate,
-		"s_wo_lwo"=>$_POST[$essentialNames[6]],
-		"s_wo_structure"=>$_POST[$essentialNames[7]],
-		"s_wo_final_qty"=>$_POST[$essentialNames[8]],
-		"s_wo_qty_unit"=>$_POST[$essentialNames[9]],
-		"s_wo_tolerance_1"=>$_POST[$essentialNames[10]],
-		"s_wo_tolerance_2"=>$_POST[$essentialNames[11]],
-		"s_wo_ply"=>$plyNumber,
-		"s_wo_application_id"=>$_POST[$essentialNames[13]],
-		"s_wo_ncr_no"=>$_POST[$essentialNames[14]],
-		"s_wo_ccr_no"=>$_POST[$essentialNames[15]],
-		"s_wo_printed_question"=>$_POST[$essentialNames[17]],
-		"s_wo_inhouse_pe_question"=>$_POST[$essentialNames[18]],
-		"s_wo_remarks_overall"=>$_POST[$essentialNames[16]]);
-		
-		for($counter1 = 1; $counter1 <= $plyNumber; $counter1++){
-			//checkLayerStructure
-			$WorkOrderMaster['s_wo_layer_'.$counter1.'_micron'] = $_POST['work_order_layer_'.$counter1.'_micron'];
-			$WorkOrderMaster['s_wo_layer_'.$counter1.'_structure'] = $_POST['work_order_5_layer_'.$counter1.'_material'];
-		}
-		
-		//Check if the posted options are numeric
-		if(isset($_POST[$essentialOptions[0]])){
-			$WorkOrderMaster['s_wo_customer_location'] = implode(',',$_POST[$essentialOptions[0]]);	
-		}
-		
-		$doExtrusionModule = $ext;
-		$doPrintingModule = ($_POST[$essentialNames[17]] == 1);
-		$doLaminationModule = ($plyNumber > 1 );
-		$doBagsModule = ($_POST[$essentialNames[7]] == 1);
-		$doPouchModule = ($_POST[$essentialNames[7]] == 2);
-		$doSlittingModule = true;
-		
+	if (!isset($_POST['work_order_layer_' . $counter1 . '_micron'])) {
+		die('Missing Value of Layer ' . $counter1 . ' Micron ');
+	}
+	if (!isset($_POST['work_order_5_layer_' . $counter1 . '_material'])) {
+		die('Missing Value of Layer ' . $counter1 . ' Structure ');
+	}
 }
 
-#Check Extrusion
-if($doExtrusionModule){
-	checkPost($extrusionNames);
-	checkString($extrusionNames);
 
-	//Check if the posted options are numeric
-	if(isset($_POST[$extrusionOptions[0]])){
-		foreach($_POST[$extrusionOptions[0]] as $exP){
-			if(!is_numeric($exP)){
-				die("Invalid Extrusion Options");
-			}
-		}
+for ($counter1 = 1; $counter1 <= $plyNumber; $counter1++) {
+
+	if (!is_numeric($_POST['work_order_layer_' . $counter1 . '_micron'])) {
+		die('Invalid Numeric Value of Layer ' . $counter1 . ' Micron ');
 	}
 
-	//Check if the posted options are numeric
-	if(isset($_POST[$extrusionOptions[0]])){
-		foreach($_POST[$extrusionOptions[0]] as $exP){
+	if (!is_numeric($_POST['work_order_5_layer_' . $counter1 . '_material'])) {
+		die('Invalid Value of Layer ' . $counter1 . ' Material ');
+	}
+}
+
+for ($counter1 = 1; $counter1 <= $plyNumber; $counter1++) {
+	//checkLayerStructure
+	selectChecker("SELECT * FROM `materials_main`  where material_id= " . $_POST['work_order_5_layer_' . $counter1 . '_material'], 'Structure Not Found for Layer-' . $counter1, 'mysqlSelect');
+	$valFilmID = $_POST['work_order_5_layer_' . $counter1 . '_material'];
+
+	if ($counter1 == 1) {
+		if ($valFilmID == 3 || $valFilmID == 17 || $valFilmID == 52) {
+			$foilPrint = true;
+		}
+	}
+}
+
+
+
+
+//check dates x2
+$date_created = date_create_from_format("d-m-Y @ H:i:s", $_POST['work_order_po_date'] . ' @ 12:10:00');
+if (!empty($date_created)) {
+	$obj = get_object_vars($date_created);
+} else {
+	die("Invalid Customer PO Date Format");
+}
+
+$checkCustPoDate = strtotime($obj['date']);
+if ($checkCustPoDate < time()) {
+	die("Invalid Customer PO Date, Date Must be in the Future");
+}
+
+$date_created2 = date_create_from_format("d-m-Y @ H:i:s", $_POST['work_order_delivery_date'] . ' @ 12:10:00');
+if (!empty($date_created2)) {
+	$obj2 = get_object_vars($date_created2);
+} else {
+	die("Invalid Delivery Date Format");
+}
+
+$checkDeliveryDate = strtotime($obj2['date']);
+if ($checkDeliveryDate < time()) {
+	die("Invalid Delivery Date, Date Must be in the Future");
+}
+
+
+
+$structureMaster = $_POST['work_order_2_structure'];
+if (!is_numeric($structureMaster)) {
+	die('Invalid Structure');
+}
+
+$WorkOrderMaster = array();
+
+
+selectChecker("SELECT * FROM `work_order_ui_structure` where structure_id = " . $_POST['work_order_2_structure'], 'Struchhhture Not Found', 'mysqlSelect');
+$WorkOrderMaster["master_wo_2_units"] = $_POST["work_order_2_units"];
+
+selectChecker("SELECT * FROM `clients_main` where `client_show` = 1 and client_id = " . $_POST['work_order_2_client_id'], 'Invalid Client', 'mysqlSelect');
+$WorkOrderMaster["master_wo_2_client_id"] = $_POST["work_order_2_client_id"];
+
+selectChecker("SELECT * FROM `work_order_product_type_printed` where ptp_show = 1 and ptp_id = " . $_POST['work_order_2_type_printed'], 'Printing Yes or No Type Not Found', 'mysqlSelect');
+$WorkOrderMaster["master_wo_2_type_printed"] = $_POST["work_order_2_type_printed"];
+
+selectChecker($getAttachedTreeSql, 'Sales ID Not Found', 'mysqlSelect');
+$WorkOrderMaster["master_wo_2_sales_id"] = $_POST["work_order_2_sales_id"];
+
+selectChecker("SELECT * FROM `work_order_applications` where application_show =1 and application_id = " . $_POST['work_order_2_application'], 'Application Not Found', 'mysqlSelect');
+$WorkOrderMaster["master_wo_2_application"] = $_POST["work_order_2_application"];
+
+selectChecker("SELECT * FROM `work_order_ui_filling_temp` where filling_temp_show =1 and filling_temp_id = " . $_POST['work_order_2_fill_temp'], 'Fill Temperature Not Found', 'mysqlSelect');
+$WorkOrderMaster["master_wo_2_fill_temp"] = $_POST["work_order_2_fill_temp"];
+
+selectChecker("SELECT * FROM `work_order_pack_size_unit` where psu_show = 1 and psu_id = " . $_POST['work_order_2_pack_weight_unit'], 'Pack Weight Unit Not Found', 'mysqlSelect');
+$WorkOrderMaster["master_wo_2_pack_weight_unit"] = $_POST["work_order_2_pack_weight_unit"];
+
+selectChecker("SELECT * FROM `work_order_ui_ext_cof` where cof_show = 1 and cof_id = " . $_POST['work_order_2_extrusion_cof'], 'COF Type Not Found', 'mysqlSelect');
+$WorkOrderMaster["master_wo_2_extrusion_cof"] = $_POST["work_order_2_extrusion_cof"];
+
+selectChecker("SELECT * FROM `work_order_ui_print_surfrev` where surfrev_show = 1 and surfrev_id = " . $_POST['work_order_2_printing_method'], 'Printing Method Not Found', 'mysqlSelect');
+$WorkOrderMaster["master_wo_2_printing_method"] = $_POST["work_order_2_printing_method"];
+
+selectChecker("SELECT * FROM `work_order_ui_print_shadecardreq` where shadecardreq_show = 1 and shadecardreq_id = " . $_POST['work_order_2_printing_shade_card_needed'], 'Shade Card Type Not Found', 'mysqlSelect');
+$WorkOrderMaster["master_wo_2_printing_shade_card_needed"] = $_POST["work_order_2_printing_shade_card_needed"];
+
+selectChecker(
+	"SELECT * FROM `work_order_ui_print_shadecard_ref_type` where shadecard_ref_type_show = 1 and shadecard_ref_type_id = " . $_POST['work_order_2_printing_color_ref_type'],
+	'Color Reference Type Not Found',
+	'mysqlSelect'
+);
+$WorkOrderMaster["master_wo_2_printing_color_ref_type"] = $_POST["work_order_2_printing_color_ref_type"];
+
+selectChecker("SELECT * FROM `work_order_ui_print_options` where print_options_show = 1 and print_options_id = " . $_POST['work_order_2_printing_approvalby'], 'Approval By Not Found', 'mysqlSelect');
+$WorkOrderMaster["master_wo_2_printing_approvalby"] = $_POST["work_order_2_printing_approvalby"];
+
+selectChecker(
+	"SELECT * FROM `work_order_ui_slitting_pallet_instructions` where pallet_instructions_show = 1  and pallet_instructions_id = " . $_POST['work_order_2_pallet_mark_ins'],
+	'Pallet Marking Ins Not Found',
+	'mysqlSelect'
+);
+$WorkOrderMaster["master_wo_2_pallet_mark_ins"] = $_POST["work_order_2_pallet_mark_ins"];
+
+selectChecker("SELECT * FROM `work_order_ui_slitting_pallet` where slitting_pallet_show = 1 and slitting_pallet_id = " . $_POST['work_order_2_pallet_type'], 'Pallet Type Not Found', 'mysqlSelect');
+$WorkOrderMaster["master_wo_2_pallet_type"] = $_POST["work_order_2_pallet_type"];
+
+selectChecker("SELECT * FROM `work_order_ui_slitting_shipping_dets` where shipping_dets_show = 1 and shipping_dets_id = " . $_POST['work_order_2_cont_stuff'], 'Container Stuffing Type Not Found', 'mysqlSelect');
+$WorkOrderMaster["master_wo_2_cont_stuff"] = $_POST["work_order_2_cont_stuff"];
+
+selectChecker("SELECT * FROM `work_order_ui_pallet_size` where pallet_size_show = 1 and pallet_size_id = " . $_POST['work_order_2_pallet_dim'], 'Pallet Dimensions Not Found', 'mysqlSelect');
+$WorkOrderMaster["master_wo_2_pallet_dim"] = $_POST["work_order_2_pallet_dim"];
+
+selectChecker("SELECT * FROM `work_order_ui_slitting_freight_ins` where freight_show = 1 and freight_id = " . $_POST['work_order_2_freight_type'], 'Freight Type Not Found', 'mysqlSelect');
+$WorkOrderMaster["master_wo_2_freight_type"] = $_POST["work_order_2_freight_type"];
+
+if ($foilPrint) {
+	selectChecker("SELECT * FROM `work_order_ui_foil_print_side` where foil_print_side_show = 1 and foil_print_side_id = " . $_POST['work_order_2_foil_print_side'], 'Foil Printing Side Type Not Found', 'mysqlSelect');
+	$WorkOrderMaster["master_wo_2_foil_print_side"] = $_POST["work_order_2_foil_print_side"];
+}
+
+
+$WorkOrderMaster["master_wo_customer_design_name"] = $_POST["work_order_customer_design_name"];
+$WorkOrderMaster["master_wo_customer_item_code"] = $_POST["work_order_customer_item_code"];
+$WorkOrderMaster["master_wo_customer_po"] = $_POST["work_order_customer_po"];
+$WorkOrderMaster["master_wo_po_date"] = $_POST["work_order_po_date"];
+$WorkOrderMaster["master_wo_delivery_date"] = $_POST["work_order_delivery_date"];
+
+$WorkOrderMaster["master_wo_contact_person_name"] = $_POST["work_order_contact_person_name"];
+$WorkOrderMaster["master_wo_contact_person_mob_no"] = $_POST["work_order_contact_person_mob_no"];
+$WorkOrderMaster["master_wo_contact_person_email"] = $_POST["work_order_contact_person_email"];
+
+if ($_POST['work_order_2_type_printed'] == 1) {
+	$WorkOrderMaster["master_wo_ink_gsm_pre_c"] = $_POST["work_order_ink_gsm_pre_c"];
+}
+
+$WorkOrderMaster["master_wo_fill_duration"] = $_POST["work_order_fill_duration"];
+$WorkOrderMaster["master_wo_fill_temp"] = $_POST["work_order_fill_temp"];
+$WorkOrderMaster["master_wo_line_speed"] = $_POST["work_order_line_speed"];
+$WorkOrderMaster["master_wo_dwell_time"] = $_POST["work_order_dwell_time"];
+$WorkOrderMaster["master_wo_seal_temp"] = $_POST["work_order_seal_temp"];
+$WorkOrderMaster["master_wo_design_id"] = $_POST["work_order_design_id"];
+$WorkOrderMaster["master_wo_rev_no"] = $_POST["work_order_rev_no"];
+$WorkOrderMaster["master_wo_approved_sample_wo_no"] = $_POST["work_order_approved_sample_wo_no"];
+$WorkOrderMaster["master_wo_pack_size"] = $_POST["work_order_pack_size"];
+$WorkOrderMaster["master_wo_pack_weight"] = $_POST["work_order_pack_weight"];
+$WorkOrderMaster["master_wo_quantity"] = $_POST["work_order_quantity"];
+$WorkOrderMaster["master_wo_quantity_tolerance"] = $_POST["work_order_quantity_tolerance"];
+$WorkOrderMaster["master_wo_ply"] = $_POST["work_order_ply"];
+
+$WorkOrderMaster["master_wo_total_gsm"] = $_POST["work_order_total_gsm"];
+$WorkOrderMaster["master_wo_total_gsm_tolerance"] = $_POST["work_order_total_gsm_tolerance"];
+
+$WorkOrderMaster["master_wo_cart_thick"] = $_POST["work_order_cart_thick"];
+$WorkOrderMaster["master_wo_max_gross_pallet_weight"] = $_POST["work_order_max_gross_pallet_weight"];
+
+
+
+for ($counter1 = 1; $counter1 <= $plyNumber; $counter1++) {
+	//checkLayerStructure
+	$WorkOrderMaster['master_wo_layer_' . $counter1 . '_micron'] = $_POST['work_order_layer_' . $counter1 . '_micron'];
+	$WorkOrderMaster['master_wo_layer_' . $counter1 . '_structure'] = $_POST['work_order_5_layer_' . $counter1 . '_material'];
+}
+
+
+
+//Check if the posted options are valid work_order_3_customer_loc
+if (isset($_POST['work_order_3_customer_loc'])) {
+	foreach ($_POST['work_order_3_customer_loc'] as $exP) {
+		//check Antistatic
+		selectChecker(
+			"SELECT * FROM `work_order_ui_customer_location` where customer_location_show = 1  and customer_location_id = " . $exP,
+			'Customer Location Option Value at ID= ' . $exP . ' Not Found',
+			'mysqlSelect'
+		);
+	}
+	$WorkOrderMaster['master_wo_3_customer_loc'] = implode(',', $_POST['work_order_3_customer_loc']);
+}
+
+
+//Check if the posted options are valid work_order_3_docs
+if (isset($_POST['work_order_3_docs'])) {
+	foreach ($_POST['work_order_3_docs'] as $exP) {
+		//check Antistatic
+		selectChecker(
+			"SELECT * FROM `work_order_ui_shipment` where shipment_show = 1 and shipment_id = " . $exP,
+			'Shipping Document Invalid Selection at ID= ' . $exP . ' Not Found',
+			'mysqlSelect'
+		);
+	}
+	$WorkOrderMaster['master_wo_3_docs'] = implode(',', $_POST['work_order_3_docs']);
+}
+
+
+if ($structureMaster == 1) {
+	//Bag
+	selectChecker("SELECT * FROM `work_order_ui_pouch_bag_fill_opts` where pbfo_show =1 order by pbfo_value asc", 'Bag Pouch Filling Option Type Not Found', 'mysqlSelect');
+	$WorkOrderMaster["master_wo_2_pouchbag_fillops"] = $_POST["work_order_2_pouchbag_fillops"];
+
+
+	selectChecker("SELECT * FROM `work_order_ui_pouch_pack_ins` where pouch_pack_ins_show = 1", 'Carton Packing Instructions Type Not Found', 'mysqlSelect');
+	$WorkOrderMaster["master_wo_2_carton_pack_ins"] = $_POST["work_order_2_carton_pack_ins"];
+
+	$WorkOrderMaster["master_wo_bag_type"] = $_POST["work_order_bag_type"];
+	$WorkOrderMaster["master_wo_bags_val_a"] = $_POST["work_order_bags_val_a"];
+	$WorkOrderMaster["master_wo_bags_val_b"] = $_POST["work_order_bags_val_b"];
+	$WorkOrderMaster["master_wo_bags_val_c"] = $_POST["work_order_bags_val_c"];
+	$WorkOrderMaster["master_wo_bags_val_d"] = $_POST["work_order_bags_val_d"];
+	$WorkOrderMaster["master_wo_bags_val_e"] = $_POST["work_order_bags_val_e"];
+	$WorkOrderMaster["master_wo_bags_val_f"] = $_POST["work_order_bags_val_f"];
+	$WorkOrderMaster["master_wo_bags_val_g"] = $_POST["work_order_bags_val_g"];
+	$WorkOrderMaster["master_wo_bags_val_h"] = $_POST["work_order_bags_val_h"];
+	$WorkOrderMaster["master_wo_pouch_per_bund"] = $_POST["work_order_pouch_per_bund"];
+	$WorkOrderMaster["master_wo_bund_per_box"] = $_POST["work_order_bund_per_box"];
+} elseif ($structureMaster == 2) {
+	//Pouch
+	selectChecker("SELECT * FROM `work_order_ui_slitting_laser_config` where laser_show =1 and laser_id = " . $_POST['work_order_2_laser_config'], 'Laser Configuration Type Not Found', 'mysqlSelect');
+	$WorkOrderMaster["master_wo_2_laser_config"] = $_POST["work_order_2_laser_config"];
+
+	selectChecker("SELECT * FROM `work_order_ui_pouch_pack_ins` where pouch_pack_ins_show = 1 and pouch_pack_ins_id =" . $_POST['work_order_2_carton_pack_ins'], 'Carton Packing Instructions Type Not Found', 'mysqlSelect');
+	$WorkOrderMaster["master_wo_2_carton_pack_ins"] = $_POST["work_order_2_carton_pack_ins"];
+
+	selectChecker("SELECT * FROM `work_order_ui_pouch_bag_fill_opts` where pbfo_show =1 and pbfo_id =" . $_POST['work_order_2_pouchbag_fillops'], 'Bag Pouch Filling Option Type Not Found', 'mysqlSelect');
+	$WorkOrderMaster["master_wo_2_pouchbag_fillops"] = $_POST["work_order_2_pouchbag_fillops"];
+
+	$WorkOrderMaster["master_wo_pouch_type"] = $_POST["work_order_pouch_type"];
+	$WorkOrderMaster["master_wo_pouch_val_a"] = $_POST["work_order_pouch_val_a"];
+	$WorkOrderMaster["master_wo_pouch_val_b"] = $_POST["work_order_pouch_val_b"];
+	$WorkOrderMaster["master_wo_pouch_val_c"] = $_POST["work_order_pouch_val_c"];
+	$WorkOrderMaster["master_wo_pouch_val_d"] = $_POST["work_order_pouch_val_d"];
+	$WorkOrderMaster["master_wo_pouch_val_e"] = $_POST["work_order_pouch_val_e"];
+	$WorkOrderMaster["master_wo_pouch_val_f"] = $_POST["work_order_pouch_val_f"];
+	$WorkOrderMaster["master_wo_pouch_val_g"] = $_POST["work_order_pouch_val_g"];
+	$WorkOrderMaster["master_wo_pouch_val_h"] = $_POST["work_order_pouch_val_h"];
+	$WorkOrderMaster["master_wo_pouch_per_bund"] = $_POST["work_order_pouch_per_bund"];
+	$WorkOrderMaster["master_wo_bund_per_box"] = $_POST["work_order_bund_per_box"];
+
+	//Check if the posted options are valid
+	if (isset($_POST['work_order_3_pouch_lap_fin'])) {
+		foreach ($_POST['work_order_3_pouch_lap_fin'] as $exP) {
 			//check Antistatic
-			selectChecker("SELECT * FROM `work_order_ui_ext_options` where ext_options_show = 1 and ext_options_id = ".$exP ,
-			'Extrusion Option Value at ID= '.$exP.' Not Found',
-			'mysqlSelect');
+			selectChecker(
+				"SELECT * FROM `work_order_ui_pouch_lap_fin` where lap_fin_show = 1  and lap_fin_id = " . $exP,
+				'Pouch Lap Fin Value Not Found at ID= ' . $exP . ' Not Found',
+				'mysqlSelect'
+			);
 		}
+		$WorkOrderMaster['master_wo_3_pouch_lap_fin'] = implode(',', $_POST['work_order_3_pouch_lap_fin']);
 	}
-
-	//check Antistatic
-	selectChecker("SELECT * FROM `work_order_ui_ext_antistatic` where anti_show = 1 and anti_id = ".$_POST[$extrusionNames[1]],
-	'Extrusuion - Antistatic Option Value Not Found',
-	'mysqlSelect');
-
-	//check Layer Type
-	selectChecker("SELECT * FROM `work_order_ui_ext_layer_type` where layer_type_show = 1 and layer_type_id = ".$_POST[$extrusionNames[2]],
-	'Extrusuion - Layer Type Value Not Found',
-	'mysqlSelect');
-
-	//check Pack Units
-	selectChecker("SELECT * FROM `work_order_qty_units` where unit_show = 1 and unit_id = ".$_POST[$extrusionNames[5]],
-	'Extrusuion - Units Not Found',
-	'mysqlSelect');
-
-	//check Treatment
-	selectChecker("SELECT * FROM `work_order_ui_ext_treatment` where treat_show = 1 and treat_id = ".$_POST[$extrusionNames[7]],
-	'Extrusuion - Treatment Value Not Found',
-	'mysqlSelect');
-
-	//check ExtrudeIN
-	selectChecker("SELECT * FROM `work_order_ui_ext_extrude_in` where extrude_in_show = 1 and extrude_in_id = ".$_POST[$extrusionNames[9]],
-	'Extrusuion - Extrude In Value Not Found',
-	'mysqlSelect');
-
-	//check COF
-	selectChecker("SELECT * FROM `work_order_ui_ext_cof` where cof_show = 1 and cof_id = ".$_POST[$extrusionNames[11]],
-	'Extrusuion - COF Value Not Found',
-	'mysqlSelect');
-	
-	//check COF
-	selectChecker("SELECT * FROM `work_order_ui_pe_film_feature` where pe_film_feature_show = 1 and pe_film_feature_id = ".$_POST[$extrusionNames[16]],
-	'Extrusuion - PE Film Feature Not Found',
-	'mysqlSelect');
-
-	$WorkOrderExtrusion = array(
-	"s_wo_ex_pe_re"=>$_POST[$extrusionNames[0]],
-	"s_wo_ex_antistatic"=>$_POST[$extrusionNames[1]],
-	"s_wo_ex_layer"=>$_POST[$extrusionNames[2]],
-	"s_wo_ex_pack_weight"=>$_POST[$extrusionNames[3]],
-	"s_wo_ex_pkg_size"=>$_POST[$extrusionNames[4]],
-	"s_wo_ex_qty_units"=>$_POST[$extrusionNames[5]],
-	"s_wo_ex_thickness"=>$_POST[$extrusionNames[6]],
-	"s_wo_ex_treatment"=>$_POST[$extrusionNames[7]],
-	"s_wo_ex_roll_od"=>$_POST[$extrusionNames[8]],
-	"s_wo_ex_extrude_in"=>$_POST[$extrusionNames[9]],
-	"s_wo_ex_film_color"=>$_POST[$extrusionNames[10]],
-	"s_wo_ex_cof"=>$_POST[$extrusionNames[11]],
-	"s_wo_ext_cof_i2i"=>$_POST[$extrusionNames[12]],
-	"s_wo_ext_cof_o2o"=>$_POST[$extrusionNames[13]],
-	"s_wo_ext_cof_o2m"=>$_POST[$extrusionNames[14]],
-	"s_wo_ext_cof_i2m"=>$_POST[$extrusionNames[15]],
-	"s_wo_ext_pe_film_feature"=>$_POST[$extrusionNames[16]],
-	"s_wo_ext_dyne"=>$_POST[$extrusionNames[17]],
-	"s_wo_ext_single_coil_w"=>$_POST[$extrusionNames[18]],
-	"s_wo_ext_no_ups"=>$_POST[$extrusionNames[19]],
-	"s_wo_ext_jumbo_f_w"=>$_POST[$extrusionNames[20]],
-	"s_wo_ext_recycle_p"=>$_POST[$extrusionNames[21]],
-	"s_wo_remarks_ext"=>$_POST[$extrusionNames[22]]);
-	
-	
-	//Check if the posted options are numeric
-	if(isset($_POST[$extrusionOptions[0]])){
-		$WorkOrderExtrusion['s_wo_ex_options'] = implode(',',$_POST[$extrusionOptions[0]]);	
-	}
-
-
-
-
-}
-
-#Check Printing
-if($doPrintingModule){
-	checkPost($printingNames);
-	checkString($printingNames);
-
-	
-
-	//Check if the posted options are numeric and are valid
-	if(isset($_POST[$printingOptions[0]])){
-		foreach($_POST[$printingOptions[0]] as $exP){
-			if(!is_numeric($exP)){
-				die("Printing - Invalid Eyemark Side");
-			}else{
-				selectChecker("SELECT * FROM `work_order_ui_print_eyemark_da` where eyemark_da_show = 1 and eyemark_da_id = ".$exP ,
-				'Printing -  EyeMarkSide Options - Value at ID= '.$exP.' Not Found',
-				'mysqlSelect');
-			}
-		}
-	}
-
-	//Check if the posted options are numeric
-	if(isset($_POST[$printingOptions[1]])){
-		foreach($_POST[$printingOptions[1]] as $exP){
-			if(!is_numeric($exP)){
-				die("Printing - Invalid End Options");
-			}else{
-				selectChecker("SELECT * FROM `work_order_ui_print_end_options` where print_end_options_show = 1 and print_end_options_id = ".$exP ,
-				'Printing -  End Options - Value at ID= '.$exP.' Not Found',
-				'mysqlSelect');
-			}
-		}
-	}
-
-
-	//0,4,5,9,10
-	
-	//check Print Type
-	selectChecker("SELECT * FROM `work_order_ui_print_cylinder_supplier` 
-	where cylinder_supplier_show = 1 
-	and cylinder_supplier_id = ".$_POST[$printingNames[1]],
-	'Printing - Cylinder Supplier Option Value Not Found',
-	'mysqlSelect');
-
-	//check SurfaceRev Type
-	selectChecker("SELECT * FROM `work_order_ui_print_surfrev` 
-	where surfrev_show = 1 
-	and surfrev_id = ".$_POST[$printingNames[2]],
-	'Printing - Print Surface/Reverse Option Value Not Found',
-	'mysqlSelect');
-
-	//check SurfaceRev Type
-	selectChecker("SELECT * FROM `work_order_qty_units` 
-	where unit_show = 1 
-	and unit_id = ".$_POST[$printingNames[4]],
-	'Printing - Print Units Option Value Not Found',
-	'mysqlSelect');
-
-	//check ShadeCardNeeded
-	selectChecker("SELECT * FROM `work_order_ui_print_shadecardreq` 
-	where shadecardreq_show = 1 
-	and shadecardreq_id = ".$_POST[$printingNames[12]],
-	'Printing - Shade Card Option Value Not Found',
-	'mysqlSelect');
-
-	//check Tubesheet
-	selectChecker("SELECT * FROM `work_order_ui_print_shadecard_ref_type` 
-	where shadecard_ref_type_show = 1 
-	and shadecard_ref_type_id = ".$_POST[$printingNames[13]],
-	'Printing - Color Reference Type Option Value Not Found',
-	'mysqlSelect');
-	
-	//check Tubesheet
-	selectChecker("SELECT * FROM `work_order_ui_print_eyemark_path` 
-	where eyemark_path_show = 1 
-	and eyemark_path_id = ".$_POST[$printingNames[16]],
-	'Printing - Eyemark Path Show Value Not Found',
-	'mysqlSelect');
-	
-	//check Tubesheet
-	selectChecker("SELECT * FROM `work_order_ui_print_options` 
-	where print_options_show = 1 
-	and print_options_id = ".$_POST[$printingNames[17]],
-	'Printing - Print Approval Option Value Not Found',
-	'mysqlSelect');
-	
-	//check Tubesheet
-	selectChecker("SELECT * FROM `work_order_ui_print_ink_sys` 
-	where ink_sys_show = 1 
-	and ink_sys_id = ".$_POST[$printingNames[19]],
-	'Printing - Ink System Option Value Not Found',
-	'mysqlSelect');
-	
-	//check Tubesheet
-	selectChecker("SELECT * FROM `work_order_ui_print_baseshel` 
-	where print_baseshel_show = 1 
-	and print_baseshel_id = ".$_POST[$printingNames[20]],
-	'Printing - Base Shel Option Value Not Found',
-	'mysqlSelect');
-	
-	$PrintingEyeSize = str_replace(' ', '', $_POST[$printingNames[15]]);
-	
-	if(substr_count($PrintingEyeSize,"x") != 1){
-		die("Eyemark Size (mm) Format Invalid, Missing 'x'");
-	}
-
-	/**/
-
-	$pEyeScheck = explode("x",$PrintingEyeSize);
-	if(!is_numeric($pEyeScheck[0])){
-		die("Eyemark Size (mm) Format Invalid, Left side not Numeric");
-	}
-	if(!is_numeric($pEyeScheck[1])){
-		die("Eyemark Size (mm) Format Invalid, Right side not Numeric");
-	}
-
-	$WorkOrderPrinting= array(
-	"s_wo_print_design"=>$_POST[$printingNames[0]],
-	"s_wo_print_cylinder_supplier"=>$_POST[$printingNames[1]],
-	"s_wo_print_surface_reverse"=>$_POST[$printingNames[2]],
-	"s_wo_print_qty"=>$_POST[$printingNames[3]],
-	"s_wo_print_units"=>$_POST[$printingNames[4]],
-	"s_wo_print_substrate"=>$_POST[$printingNames[5]],
-	"s_wo_print_single_coil_width"=>$_POST[$printingNames[6]],
-	"s_wo_print_ups_val"=>$_POST[$printingNames[7]],
-	"s_wo_print_trim_val"=>$_POST[$printingNames[8]],
-	"s_wo_print_single_coil_circ"=>$_POST[$printingNames[9]],
-	"s_wo_print_accross_val"=>$_POST[$printingNames[10]],
-	"s_wo_print_bleed_val"=>$_POST[$printingNames[11]],
-	"s_wo_print_shade_card_needed"=>$_POST[$printingNames[12]],
-	"s_wo_print_color_ref_type"=>$_POST[$printingNames[13]],
-	"s_wo_print_eyemark_color"=>$_POST[$printingNames[14]],
-	"s_wo_print_size"=>$_POST[$printingNames[15]],
-	"s_wo_print_eyemark_path"=>$_POST[$printingNames[16]],
-	"s_wo_print_approvalby"=>$_POST[$printingNames[17]],
-	"s_wo_print_plate_cyl_pr"=>$_POST[$printingNames[18]],
-	"s_wo_print_ink_system"=>$_POST[$printingNames[19]],
-	"s_wo_print_baseshel"=>$_POST[$printingNames[20]],
-	"s_wo_print_ink_gsm"=>$_POST[$printingNames[21]],
-	"s_wo_print_pantone_1"=>$_POST[$printingNames[22]],
-	"s_wo_print_pantone_2"=>$_POST[$printingNames[23]],
-	"s_wo_print_pantone_3"=>$_POST[$printingNames[24]],
-	"s_wo_print_pantone_4"=>$_POST[$printingNames[25]],
-	"s_wo_print_pantone_5"=>$_POST[$printingNames[26]],
-	"s_wo_print_pantone_6"=>$_POST[$printingNames[27]],
-	"s_wo_print_pantone_7"=>$_POST[$printingNames[28]],
-	"s_wo_print_pantone_8"=>$_POST[$printingNames[29]],
-	"s_wo_remarks_print"=>$_POST[$printingNames[30]]);	
-	
-	//Insert Posted Options into Master Array
-	if(isset($_POST[$printingOptions[0]])){
-		$WorkOrderPrinting['s_wo_print_eyemark_side'] = implode(',',$_POST[$printingOptions[0]]);	
-	}
-
-	if(isset($_POST[$printingOptions[1]])){
-		$WorkOrderPrinting['s_wo_print_end_options'] = implode(',',$_POST[$printingOptions[1]]);	
-	}
-
-
-
-}
-
-#check Lamination
-if($doLaminationModule){
-	$plyNumberforLam = $plyNumber;
- 
-	checkPost($laminationNames);
-	checkString($laminationNames);
-
-	#check for the Layers in essentials
-	for($counter1 = 1; $counter1 <= $plyNumberforLam; $counter1++){
-		
-		if(!isset($_POST['work_order_lamination_layer_'.$counter1.'_film_width'])){
-			die('Missing Value of Lamination Layer  '.$counter1.' FILM Width ');
-		}
-		if(!isset($_POST['work_order_lamination_layer_'.$counter1.'_kgs'])){
-			die('Missing Value of Lamination Layer  '.$counter1.' KGS ');
-		}
-		if(!isset($_POST['work_order_lamination_layer_'.$counter1.'_mtr'])){
-			die('Missing Value of Lamination Layer '.$counter1.' MTR ');
-		}
-		
-		if(($counter1+1) <= $plyNumberforLam){
-			if(!isset($_POST['work_order_lamination_pass_'.$counter1.'_desc_1'])){
-				die('Missing Value of Pass Number  '.$counter1.' Description 1');
-			}
-			if(!isset($_POST['work_order_lamination_pass_'.$counter1.'_desc_2'])){
-				die('Missing Value of Pass Number '.$counter1.' Description 2');
-			}
-		}
-		
-	}
-
-	
-
-	//Check if the posted options are numeric and are valid
-	if(isset($_POST[$laminationOptions[0]])){
-		foreach($_POST[$laminationOptions[0]] as $exP){
-			if(!is_numeric($exP)){
-				die("Lamination - Invalid End Options ");
-			}else{
-				selectChecker("SELECT * FROM `work_order_ui_lam_end_options` 
-				where lam_end_options_show = 1 
-				and lam_end_options_id = ".$exP ,
-				'Lamination -  End Options - Value at ID '.$exP.' Not Found',
-				'mysqlSelect');
-			}
-		}
-	}
-	
-	$WorkOrderLamination= array(
-	"s_wo_lam_lam_sleeve"=>$_POST[$laminationNames[0]],
-	"s_wo_remarks_lam"=>$_POST[$laminationNames[1]]
-	);	
-
-	#check for the Layers in essentials
-	for($counterL = 1; $counterL <= $plyNumberforLam; $counterL++){
-
-		$WorkOrderLamination['s_wo_lam_f'.$counterL.'_width'] = $_POST['work_order_lamination_layer_'.$counterL.'_film_width'];	
-		$WorkOrderLamination['s_wo_lam_f'.$counterL.'_kgs'] = $_POST['work_order_lamination_layer_'.$counterL.'_kgs'];
-		$WorkOrderLamination['s_wo_lam_f'.$counterL.'_mtr'] = $_POST['work_order_lamination_layer_'.$counterL.'_mtr'];
-
-		
-		if(($counterL+1) <= $plyNumberforLam){
-			$WorkOrderLamination['s_wo_lam_p'.$counterL.'_desc_1'] = $_POST['work_order_lamination_pass_'.$counterL.'_desc_1'];	
-			$WorkOrderLamination['s_wo_lam_p'.$counterL.'_desc_2'] = $_POST['work_order_lamination_pass_'.$counterL.'_desc_2'];
-		}
-	
-	}
-
-	//Insert Posted Options into Master Array
-	if(isset($_POST[$laminationOptions[0]])){
-		$WorkOrderLamination['s_wo_lam_options'] = implode(',',$_POST[$laminationOptions[0]]);	
-	}
-	
-
-}
-
-#checkPouch
-if($doPouchModule){
-
-	checkPost($pouchNames);
-	checkString($pouchNames);
-	
-/*
-D:\wamp64\www\IPP\server_fundamentals\PostDataHeadChecker.php:149:
-array (size=22)
-  1 => string 'work_order_5_pouch_units' (length=24)
-  4 => string 'work_order_3_pouch_guset_side' (length=29)
-  5 => string 'work_order_3_pouch_guset_bottom' (length=31)
-  11 => string 'work_order_3_pouch_euro_punch' (length=29)
-  12 => string 'work_order_3_pouch_open' (length=23)
-  13 => string 'work_order_3_pouch_corner_type' (length=30)
-  14 => string 'work_order_3_pouch_seal' (length=23)
-  16 => string 'work_order_3_pouch_notch_side' (length=29)
-  18 => string 'work_order_3_pouch_hole_punch' (length=29)
-  20 => string 'work_order_3_pouch_special_tooling' (length=34)
-*/
-	//Check if the posted options are numeric and are valid
-	if(isset($_POST[$pouchOptions[0]])){
-		foreach($_POST[$pouchOptions[0]] as $exP){
-			if(!is_numeric($exP)){
-				die("Pouch - Invalid Pouch Type Type ");
-			}else{
-				selectChecker("SELECT * FROM `work_order_ui_pouch_type` where pouch_type_show = 1 and pouch_type_id = ".$exP ,
-				'Pouch -  Pouch Type Options - Value at ID= '.$exP.' Not Found',
-				'mysqlSelect');
-			}
-		}
-	}
-
-	//Check if the posted options are numeric
-	if(isset($_POST[$pouchOptions[1]])){
-		foreach($_POST[$pouchOptions[1]] as $exP){
-			if(!is_numeric($exP)){
-				die("Pouch - Invalid Closure Type");
-			}else{
-				selectChecker("SELECT * FROM `work_order_ui_pouch_closure_type` where pouch_closure_type_show = 1 and pouch_closure_type_id = ".$exP ,
-				'Pouch -  Closure Type Options - Value at ID= '.$exP.' Not Found',
-				'mysqlSelect');
-			}
-		}
-	}
-
-	//6,8,9,10,11,13
-	
-	//check Radio
-	selectChecker("SELECT * FROM `work_order_qty_units` 
-	where unit_show = 1 
-	and unit_id = ".$_POST[$pouchNames[1]],
-	'Pouch - Units Value Not Found',
-	'mysqlSelect');
-
-	selectChecker("SELECT * FROM `work_order_ui_pouch_gusset_side` 
-	where pouch_gusset_side_show = 1 
-	and pouch_gusset_side_id = ".$_POST[$pouchNames[4]],
-	'Pouch - Gusset Side  Type Option Value Not Found',
-	'mysqlSelect');
-
-	selectChecker("SELECT * FROM `work_order_ui_pouch_gusset_bottom` 
-	where pouch_gusset_bottom_show = 1 
-	and pouch_gusset_bottom_id = ".$_POST[$pouchNames[5]],
-	'Pouch - Gusset Bottom Option Value Not Found',
-	'mysqlSelect');
-
-	selectChecker("SELECT * FROM `work_order_ui_pouch_euro_punch` 
-	where pouch_euro_punch_show = 1 
-	and pouch_euro_punch_id = ".$_POST[$pouchNames[11]],
-	'Pouch - Pouch Euro Punch Radio Option Value Not Found',
-	'mysqlSelect');
-
-	selectChecker("SELECT * FROM `work_order_ui_pouch_pouch_open` 
-	where pouch_open_show = 1 
-	and pouch_open_id = ".$_POST[$pouchNames[12]],
-	'Pouch - Pouch Open Option Value Not Found',
-	'mysqlSelect');
-
-	selectChecker("SELECT * FROM `work_order_ui_pouch_corner_type` 
-	where pouch_corner_type_show = 1 
-	and pouch_corner_type_id = ".$_POST[$pouchNames[13]],
-	'Pouch - Corner Type Option Value Not Found',
-	'mysqlSelect');
-
-
-	selectChecker("SELECT * FROM `work_order_ui_pouch_seal` 
-	where pouch_seal_show = 1 
-	and pouch_seal_id = ".$_POST[$pouchNames[14]],
-	'Pouch - Pouch Seal Option Value Not Found',
-	'mysqlSelect');
-
-
-	selectChecker("SELECT * FROM `work_order_ui_pouch_notch_side` 
-	where pouch_notch_side_show = 1 
-	and pouch_notch_side_id = ".$_POST[$pouchNames[16]],
-	'Pouch - Pouch Notch Side Option Value Not Found',
-	'mysqlSelect');
-
-
-	selectChecker("SELECT * FROM `work_order_ui_pouch_hole_punch` 
-	where pouch_hole_punch_show = 1 
-	and pouch_hole_punch_id = ".$_POST[$pouchNames[19]],
-	'Pouch - Pouch Hole Punch Option Value Not Found',
-	'mysqlSelect');
-
-
-	selectChecker("SELECT * FROM `work_order_ui_pouch_special_tooling` 
-	where pouch_special_tooling_show = 1 
-	and pouch_special_tooling_id = ".$_POST[$pouchNames[21]],
-	'Pouch - Special Tooling Option Value Not Found',
-	'mysqlSelect');
-
-
-
-
-
-	$WorkOrderPouch= array(
-	"s_wo_pouch_qty"=>$_POST[$pouchNames[0]],
-	"s_wo_pouch_unit"=>$_POST[$pouchNames[1]],
-	"s_wo_pouch_width"=>$_POST[$pouchNames[2]],
-	"s_wo_pouch_length"=>$_POST[$pouchNames[3]],
-	"s_wo_pouch_gus_side"=>$_POST[$pouchNames[4]],
-	"s_wo_pouch_gus_bot"=>$_POST[$pouchNames[5]],
-	"s_wo_pouch_seal_width"=>$_POST[$pouchNames[6]],
-	"s_wo_pouch_side_gus_w"=>$_POST[$pouchNames[7]],
-	"s_wo_pouch_side_gus_l"=>$_POST[$pouchNames[8]],
-	"s_wo_pouch_bot_gus_w"=>$_POST[$pouchNames[9]],
-	"s_wo_pouch_bot_gus_l"=>$_POST[$pouchNames[10]],
-	"s_wo_pouch_euro_punch"=>$_POST[$pouchNames[11]],
-	"s_wo_pouch_open"=>$_POST[$pouchNames[12]],
-	"s_wo_pouch_corner_type"=>$_POST[$pouchNames[13]],
-	"s_wo_pouch_seal_type"=>$_POST[$pouchNames[14]],
-	"s_wo_pouch_zip_dist_top"=>$_POST[$pouchNames[15]],
-	"s_wo_pouch_notch_side"=>$_POST[$pouchNames[16]],
-	"s_wo_pouch_notch_dist_top"=>$_POST[$pouchNames[17]],
-	"s_wo_pouch_notch_dist_side"=>$_POST[$pouchNames[18]],
-	"s_wo_pouch_hole_punch"=>$_POST[$pouchNames[19]],
-	"s_wo_pouch_hole_punch_dia"=>$_POST[$pouchNames[20]],
-	"s_wo_pouch_special_tooling"=>$_POST[$pouchNames[21]],
-	"s_wo_remarks_pouch" => $_POST[$pouchNames[22]]
-);	
-	
-	//Insert Posted Options into Master Array
-	if(isset($_POST[$pouchOptions[0]])){
-		$WorkOrderPouch['s_wo_pouch_type'] = implode(',',$_POST[$pouchOptions[0]]);	
-	}
-	if(isset($_POST[$pouchOptions[1]])){
-		$WorkOrderPouch['s_wo_pouch_zip_closure_type'] = implode(',',$_POST[$pouchOptions[1]]);	
-	}
-	
-	
-
-
-
-
-}
-
-#check Bags
-if($doBagsModule){
-
-	checkPost($bagsNames);
-	checkString($bagsNames);
-
-	$specialField = false;
-
-	//Check if the posted options are numeric and are valid
-	if(isset($_POST[$bagsOptions[0]])){
-		foreach($_POST[$bagsOptions[0]] as $exP){
-			if(!is_numeric($exP)){
-				die("Bag - Invalid Sealing ");
-			}else{
-				selectChecker("SELECT * FROM `work_order_ui_bag_sealing_opts` where bag_sealing_opts_show = 1 and bag_sealing_opts_id = ".$exP ,
-				'Bag -  Sealing Options - Value at ID= '.$exP.' Not Found',
-				'mysqlSelect');
-				if($exP == 4){
-					$specialField = true;
-				}
-			}
-		}
-	}
-
-	//Check if the posted options are numeric and are valid
-	if(isset($_POST[$bagsOptions[1]])){
-		foreach($_POST[$bagsOptions[1]] as $exP){
-			if(!is_numeric($exP)){
-				die("Bag - Invalid Bag Handle Punch Options ");
-			}else{
-				selectChecker("SELECT * FROM `work_order_ui_bag_punch_opts` where bag_punch_opts_show = 1 and bag_punch_opts_id = ".$exP ,
-				'Bag -  Bag Punch Options - Value at ID= '.$exP.' Not Found',
-				'mysqlSelect');
-			}
-		}
-	}
-
-
-	
-	//check Radio
-	selectChecker("SELECT * FROM `work_order_qty_units` 
-	where unit_show = 1 
-	and unit_id = ".$_POST[$bagsNames[1]],
-	'Bag - Unit Option Value Not Found',
-	'mysqlSelect');
-
-	//check Radio
-	selectChecker("SELECT * FROM `work_order_ui_bag_gusset_side` 
-	where gusset_side_show = 1 
-	and gusset_side_id = ".$_POST[$bagsNames[12]],
-	'Bag - Gusset Side Type Option Value Not Found',
-	'mysqlSelect');
-
-	//check Radio
-	selectChecker("SELECT * FROM `work_order_ui_bag_gusset_bottom` 
-	where gusset_bottom_show = 1 
-	and gusset_bottom_id = ".$_POST[$bagsNames[13]],
-	'Bag - Gusset Bottom Option Value Not Found',
-	'mysqlSelect');
-
-	//check Radio
-	selectChecker("SELECT * FROM `work_order_ui_bag_handle` 
-	where bag_handle_show = 1 
-	and bag_handle_id = ".$_POST[$bagsNames[17]],
-	'Bag - Handle Type Value Not Found',
-	'mysqlSelect');
-
-	//check Radio
-	selectChecker("SELECT * FROM `work_order_ui_bag_vest_handle` 
-	where bag_vest_handle_show = 1 
-	and bag_vest_handle_id = ".$_POST[$bagsNames[18]],
-	'Bag - Bag Vest Handle Type Value Not Found',
-	'mysqlSelect');
-	
-		 
-	$WorkOrderBags = array(
-	"s_wo_bag_qty"=>$_POST[$bagsNames[0]],
-	"s_wo_bag_units"=>$_POST[$bagsNames[1]],
-	"s_wo_bag_width"=>$_POST[$bagsNames[2]],
-	"s_wo_bag_length"=>$_POST[$bagsNames[3]],
-	"s_wo_bag_gus_s_w"=>$_POST[$bagsNames[4]],
-	"s_wo_bag_gus_s_l"=>$_POST[$bagsNames[5]],
-	"s_wo_bag_gus_b_w"=>$_POST[$bagsNames[6]],
-	"s_wo_bag_gus_b_l"=>$_POST[$bagsNames[7]],
-	"s_wo_bag_handle_dist_top"=>$_POST[$bagsNames[8]],
-	"s_wo_bag_handle_w"=>$_POST[$bagsNames[9]],
-	"s_wo_bag_handle_l"=>$_POST[$bagsNames[10]],
-	"s_wo_bag_thick"=>$_POST[$bagsNames[11]],
-	"s_wo_bag_gusset_side_type"=>$_POST[$bagsNames[12]],
-	"s_wo_bag_gusset_bottom_type"=>$_POST[$bagsNames[13]],
-	"s_wo_bag_top_fold"=>$_POST[$bagsNames[14]],
-	"s_wo_bag_flap"=>$_POST[$bagsNames[15]],
-	"s_wo_bag_lip"=>$_POST[$bagsNames[16]],
-	"s_wo_bag_handle_type"=>$_POST[$bagsNames[17]],
-	"s_wo_bag_vest_hande_type"=>$_POST[$bagsNames[18]],
-	"s_wo_remarks_bag" => $_POST[$bagsNames[20]]
-);	
-
-	
-	//Insert Posted Options into Master Array
-	if(isset($_POST[$bagsOptions[0]])){
-		$WorkOrderBags['s_wo_bag_sealing'] = implode(',',$_POST[$bagsOptions[0]]);
-		if($specialField){
-			$WorkOrderBags['s_wo_bag_spl_dia'] = $_POST[$bagsNames[19]];
-		}
-	}
-	if(isset($_POST[$bagsOptions[1]])){
-		$WorkOrderBags['s_wo_bag_handle_punch'] = implode(',',$_POST[$bagsOptions[1]]);	
-	}
-	
-	
-
-
-
-
-}
-
-#check Slitting
-if($doSlittingModule){
-
-	checkPost($slittingNames);
-	checkString($slittingNames);
-
-	//Check if the posted options are numeric and are valid
-	if(isset($_POST[$slittingOptions[0]])){
-		foreach($_POST[$slittingOptions[0]] as $exP){
-			if(!is_numeric($exP)){
-				die("Slitting - Invalid Packing Options");
-			}else{
-				selectChecker("SELECT * FROM `work_order_ui_slitting_packing_opts` 
-				where slitting_packing_opts_show = 1 
-				and slitting_packing_opts_id = ".$exP ,
-				'Slitting -  Packing Options - Value at ID= '.$exP.' Not Found',
-				'mysqlSelect');
-			}
-		}
-	}
-
-
-	//Check if the posted options are numeric and are valid
-	if(isset($_POST[$slittingOptions[1]])){
-		foreach($_POST[$slittingOptions[1]] as $exP){
-			if(!is_numeric($exP)){
-				die("Slitting - Invalid Pallet Packing Instructions");
-			}else{
-				selectChecker("SELECT * FROM `work_order_ui_slitting_pallet_instructions` 
-				where pallet_instructions_show = 1 
-				and pallet_instructions_id = ".$exP ,
-				'Slitting -  Pallet Packing - Value at ID= '.$exP.' Not Found',
-				'mysqlSelect');
-			}
-		}
-	}
-
-	//Check if the posted options are numeric and are valid
-	if(isset($_POST[$slittingOptions[2]])){
-		foreach($_POST[$slittingOptions[2]] as $exP){
-			if(!is_numeric($exP)){
-				die("Slitting - Invalid Qc Option Type");
-			}else{
-				selectChecker("SELECT * FROM `work_order_ui_slitting_qc_ins` 
-				where slitting_qc_ins_show = 1 
-				and slitting_qc_ins_id = ".$exP ,
-				'Slitting -  QC Option Type - Value at ID= '.$exP.' Not Found',
-				'mysqlSelect');
-			}
-		}
-	}
-
-
-	//check Radio
-	selectChecker("SELECT * FROM `work_order_wind_dir` 
-	where wind_id= ".$_POST[$slittingNames[1]],
-	'Slitting - Winding DIR Option Value Not Found',
-	'mysqlSelect');
-
-	//check Radio
-	selectChecker("SELECT * FROM `work_order_ui_slitting_pallet` 
-	where slitting_pallet_show = 1 
-	and slitting_pallet_id = ".$_POST[$slittingNames[5]],
-	'Slitting - Pallet Option Value Not Found',
-	'mysqlSelect');
-
-	//check Radio
-	selectChecker("SELECT * FROM `work_order_ui_slitting_sticker` 
-	where slitting_sticker_show = 1 
-	and slitting_sticker_id = ".$_POST[$slittingNames[6]],
-	'Slitting - Sticker Type Value Not Found',
-	'mysqlSelect');
-
-	//check Radio
-	selectChecker("SELECT * FROM `work_order_ui_slitting_core_id_length` 
-	where slitting_core_id_length_show = 1 
-	and slitting_core_id_length_id = ".$_POST[$slittingNames[10]],
-	'Slitting - Core ID Option Value Not Found',
-	'mysqlSelect');
-
-	//check Radio
-	selectChecker("SELECT * FROM `work_order_ui_slitting_core_id_type` 
-	where slitting_core_id_type_show = 1 
-	and slitting_core_id_type_id = ".$_POST[$slittingNames[11]],
-	'Slitting - Core Material Value Not Found',
-	'mysqlSelect');
-
-	//check Radio
-	selectChecker("SELECT * FROM `work_order_ui_slitting_core_plugs` 
-	where core_plugs_show = 1 
-	and core_plugs_id = ".$_POST[$slittingNames[12]],
-	'Slitting - Core Plugs Option Value Not Found',
-	'mysqlSelect');
-
-	$WorkOrderSlitting = array(
-	"s_wo_slit_s_width"=>$_POST[$slittingNames[0]],
-	"s_wo_slit_wind_dir"=>$_POST[$slittingNames[1]],
-	"s_wo_slit_roll_od"=>$_POST[$slittingNames[2]],
-	"s_wo_slit_wt"=>$_POST[$slittingNames[3]],
-	"s_wo_slit_mtr"=>$_POST[$slittingNames[4]],
-	"s_wo_slit_pallet"=>$_POST[$slittingNames[5]],
-	"s_wo_slit_sticker"=>$_POST[$slittingNames[6]],
-	"s_wo_slit_pallet_length"=>$_POST[$slittingNames[7]],
-	"s_wo_slit_pallet_width"=>$_POST[$slittingNames[8]],
-	"s_wo_slit_pallet_height"=>$_POST[$slittingNames[9]],
-	"s_wo_slit_core_id"=>$_POST[$slittingNames[10]],
-	"s_wo_slit_core_type"=>$_POST[$slittingNames[11]],
-	"s_wo_slit_core_plugs"=>$_POST[$slittingNames[12]],
-	"s_wo_slit_reel_flag_col"=>$_POST[$slittingNames[13]],
-	"s_wo_slit_qc_max_jointrolls"=>$_POST[$slittingNames[14]],
-	"s_wo_remarks_slit"=>$_POST[$slittingNames[15]]
-	
-);	
-
-	
-	
-		//Insert Posted Options into Master Array
-	if(isset($_POST[$slittingOptions[0]])){
-		$WorkOrderSlitting['s_wo_slit_packing'] = implode(',',$_POST[$slittingOptions[0]]);	
-	}
-
-	if(isset($_POST[$slittingOptions[1]])){
-		$WorkOrderSlitting['s_wo_slit_pallet_pack_ins'] = implode(',',$_POST[$slittingOptions[1]]);	
-	}
-	if(isset($_POST[$slittingOptions[2]])){
-		$WorkOrderSlitting['s_wo_slit_qc_ins'] = implode(',',$_POST[$slittingOptions[2]]);	
-	}
-	
-
+} elseif ($structureMaster == 3) {
+	//Roll
+	selectChecker(
+		"SELECT * FROM `work_order_ui_slitting_laser_config` where laser_show =1 and laser_id = " . $_POST['work_order_2_laser_config'],
+		'Laser Configuration Type Not Found',
+		'mysqlSelect'
+	);
+	$WorkOrderMaster["master_wo_2_laser_config"] = $_POST["work_order_2_laser_config"];
+
+	selectChecker(
+		"SELECT * FROM `work_order_ui_roll_options` where rollopts_show =1 and rollopts_id = " . $_POST['work_order_2_roll_fill_opts'],
+		'Roll Filling Option Type Not Found',
+		'mysqlSelect'
+	);
+	$WorkOrderMaster["master_wo_2_roll_fill_opts"] = $_POST["work_order_2_roll_fill_opts"];
+
+	selectChecker(
+		"SELECT * FROM `work_order_wind_dir` where wind_show =1 and wind_id = " . $_POST['work_order_2_wind_dir'],
+		'Winding Direction Not Found',
+		'mysqlSelect'
+	);
+	$WorkOrderMaster["master_wo_2_wind_dir"] = $_POST["work_order_2_wind_dir"];
+
+	selectChecker(
+		"SELECT * FROM `work_order_ui_slitting_core_id_length` where slitting_core_id_length_show = 1 and slitting_core_id_length_id = " . $_POST['work_order_2_slitting_core_id'],
+		'Slitting Core ID Not Found',
+		'mysqlSelect'
+	);
+	$WorkOrderMaster["master_wo_2_slitting_core_id"] = $_POST["work_order_2_slitting_core_id"];
+
+	selectChecker(
+		"SELECT * FROM `work_order_ui_slitting_core_id_type` where slitting_core_id_type_show = 1 and slitting_core_id_type_id = " . $_POST['work_order_2_slitting_core_material'],
+		'Core Material Type Not Found',
+		'mysqlSelect'
+	);
+	$WorkOrderMaster["master_wo_2_slitting_core_material"] = $_POST["work_order_2_slitting_core_material"];
+
+	selectChecker(
+		"SELECT * FROM `work_order_ui_slitting_core_plugs` where core_plugs_show = 1 and core_plugs_id = " . $_POST['work_order_2_slitting_core_plugs'],
+		'Core Plugs Type Not Found',
+		'mysqlSelect'
+	);
+	$WorkOrderMaster["master_wo_2_slitting_core_plugs"] = $_POST["work_order_2_slitting_core_plugs"];
+
+	selectChecker(
+		"SELECT * FROM `work_order_ui_slitting_qc_ins` where slitting_qc_ins_show = 1 and slitting_qc_ins_id = " . $_POST['work_order_2_slitting_qc_ins'],
+		'QC Instructions Type Not Found',
+		'mysqlSelect'
+	);
+	$WorkOrderMaster["master_wo_2_slitting_qc_ins"] = $_POST["work_order_2_slitting_qc_ins"];
+
+	selectChecker(
+		"SELECT * FROM `work_order_ui_slitting_pack_ins` where pack_ins_show = 1 and pack_ins_id = " . $_POST['work_order_2_roll_pack_ins'],
+		'Packing Instructions Not Found',
+		'mysqlSelect'
+	);
+
+	$WorkOrderMaster["master_wo_2_roll_pack_ins"] = $_POST["work_order_2_roll_pack_ins"];
+	$WorkOrderMaster["master_wo_roll_od"] = $_POST["work_order_roll_od"];
+	$WorkOrderMaster["master_wo_roll_width"] = $_POST["work_order_roll_width"];
+	$WorkOrderMaster["master_wo_roll_cutoff_len"] = $_POST["work_order_roll_cutoff_len"];
+	$WorkOrderMaster["master_wo_max_w_p_r"] = $_POST["work_order_max_w_p_r"];
+	$WorkOrderMaster["master_wo_max_lmtr_p_r"] = $_POST["work_order_max_lmtr_p_r"];
+	$WorkOrderMaster["master_wo_max_imps_p_r"] = $_POST["work_order_max_imps_p_r"];
+	$WorkOrderMaster["master_wo_max_joints"] = $_POST["work_order_max_joints"];
 }
 
 
-	$finalMaster = (array_merge($WorkOrderMaster,$WorkOrderExtrusion,$WorkOrderPrinting,
-	$WorkOrderLamination,$WorkOrderPouch,$WorkOrderBags,$WorkOrderSlitting));
 
-	if(isset($_POST['work_order_edit_draft_id'])){
-			
-			$updateCols = array();
-		
-			foreach($finalMaster as $a=>$b){
-				$updateCols[] = '`'.$a.'`'." = '".$b."' "; 
-			}
-		
-			$insertSql = 'update `sales_work_order_main` 
-			set
-			'.implode(', ',$updateCols).' 
-			
-			where
-			s_wo_id = '.$_POST['work_order_edit_draft_id'];
-			
-			$check = mysqlUpdateData($insertSql,true);
-			if(!is_numeric($check)){
-				die("503 - Internal Server Error, Update Failed");
-			}
-		
-			logInsert(basename($_SERVER['PHP_SELF']), 
-					$_SESSION[SESSION_HASH_NAME], 
-					$USER_ARRAY['lum_id'], 
-					$_SERVER['REMOTE_ADDR'], 
-					$USER_ARRAY['lum_code']." edited draft with ID: ".$_POST['work_order_edit_draft_id'], 
-					"mysqlInsertData");
+//make the master Reference entry in the Table and get the New Work Order ID
+$insertReference = mysqlInsertData("INSERT INTO `master_work_order_reference_number`(`mwo_dnt`,`mwo_gen_on_behalf_lum_id`,`mwo_gen_lum_id`) VALUES (
+			'" . time() . "',
+			'" . $WorkOrderMaster['master_wo_2_sales_id'] . "',
+			'" . $USER_ARRAY['lum_id'] . "')", true);
 
 
-	}else{
-			//Time and GEN LUM ID only added when a new WO is generated
-			$finalMaster['s_wo_gen_dnt'] = time();
-			$finalMaster['s_wo_gen_lum_id'] = $USER_ARRAY['lum_id'];
-
-			$QueryCols = array();
-			$QueryVals = array();
-		
-			foreach($finalMaster as $a=>$b){
-				$QueryCols[] = '`'.$a.'`'; 
-				$QueryVals[] = "'".$b."'";
-			}
-		
-			$insertSql = 'INSERT INTO `sales_work_order_main` ('.implode(', 
-			',$QueryCols).') VALUES ('.implode(',
-			',$QueryVals).')';
-			
-			
-			$check = mysqlInsertData($insertSql,true);
-			if(!is_numeric($check)){
-				die("503 - Internal Server Error, Insert Failed");
-			}
-			
-			logInsert(basename($_SERVER['PHP_SELF']), 
-					$_SESSION[SESSION_HASH_NAME], 
-					$USER_ARRAY['lum_id'], 
-					$_SERVER['REMOTE_ADDR'], 
-					$USER_ARRAY['lum_code']." added a new draft with ID: ".$check, 
-					"mysqlInsertData");
+if (!is_numeric($insertReference)) {
+	die("503: Internal Error, Could not insert WORK ORDER REFERENCE");
+}
 
 
+if (($_POST["work_order_remarks_overall"] != '')) {
+	$RemarksMain[] = "(
+				'" . $USER_ARRAY['lum_id'] . "',
+				'" . $_POST["work_order_remarks_overall"] . "',
+				'" . $insertReference . "',
+				'" . time() . "',
+				'1')";
+}
+if (($_POST["work_order_remarks_pouch"] != '')) {
+	$RemarksMain[] = "(
+				'" . $USER_ARRAY['lum_id'] . "',
+				'" . $_POST["work_order_remarks_pouch"] . "',
+				'" . $insertReference . "',
+				'" . time() . "',
+				'1')";
+}
+if (($_POST["work_order_remarks_bags"] != '')) {
+	$RemarksMain[] = "(
+				'" . $USER_ARRAY['lum_id'] . "',
+				'" . $_POST["work_order_remarks_bags"] . "',
+				'" . $insertReference . "',
+				'" . time() . "',
+				'1')";
+}
+if (($_POST["work_order_remarks_roll"] != '')) {
+	$RemarksMain[] = "(
+				'" . $USER_ARRAY['lum_id'] . "',
+				'" . $_POST["work_order_remarks_roll"] . "',
+				'" . $insertReference . "',
+				'" . time() . "',
+				'1')";
+}
 
-		
+$WorkOrderMaster['master_wo_ref'] = $insertReference;
+$WorkOrderMaster['master_wo_gen_dnt'] = time();
+$WorkOrderMaster['master_wo_gen_lum_id'] = $USER_ARRAY['lum_id'];
+
+//Insert  Query Content Builder
+foreach ($WorkOrderMaster as $a => $b) {
+	$QueryCols[] = '`' . $a . '`';
+	$QueryVals[] = ((is_null($b)) ? "NULL" : "'" . $b . "'");
+}
+
+//Append Data from Content Builder onto Main Query
+$insertWO = 'INSERT INTO `master_work_order_main` (' . implode(', 
+	', $QueryCols) . ') VALUES (' . implode(',
+	', $QueryVals) . ')';
+
+//Insert the Work Order into the Main Conainter TAble
+$insertWorkOrderMain = mysqlInsertData($insertWO, true);
+if (!is_numeric($insertWorkOrderMain)) {
+	die("503.1 - Fatal Internal Server Error, Work Order Could not be inserted, REFERENCE INSERTED");
+}
+
+//If previous insert is sucessful then take the ID and insert the remarks associated to it
+if (is_array($RemarksMain)) {
+	if (count($RemarksMain) > 0) {
+		$q = mysqlInsertData("INSERT INTO `remarks_wo`(
+			`remark_lum_id`, `remark_text`, `remark_master_wo_id`, `remark_dnt`, `remark_type`) VALUES " . implode(', ', $RemarksMain), true);
+
+		if (!is_numeric($q)) {
+			die("Internal Server Error. <br> Work Order Added, Remark Not Added  <br>ERR: " . $q);
+		}
 	}
-?>
+}
+
+// if (isset($_POST['work_order_edit_draft_id'])) {
+
+// 	$updateCols = array();
+
+// 	foreach ($finalMaster as $a => $b) {
+// 		$updateCols[] = '`' . $a . '`' . " = '" . $b . "' ";
+// 	}
+
+// 	$insertSql = 'update `sales_work_order_main` 
+// 			set
+// 			' . implode(', ', $updateCols) . ' 
+			
+// 			where
+// 			s_wo_id = ' . $_POST['work_order_edit_draft_id'];
+
+// 	$check = mysqlUpdateData($insertSql, true);
+// 	if (!is_numeric($check)) {
+// 		die("503 - Internal Server Error, Update Failed");
+// 	}
+
+// 	logInsert(
+// 		basename($_SERVER['PHP_SELF']),
+// 		$_SESSION[SESSION_HASH_NAME],
+// 		$USER_ARRAY['lum_id'],
+// 		$_SERVER['REMOTE_ADDR'],
+// 		$USER_ARRAY['lum_code'] . " edited draft with ID: " . $_POST['work_order_edit_draft_id'],
+// 		"mysqlInsertData"
+// 	);
+// } else {
+// 	//Time and GEN LUM ID only added when a new WO is generated
+// 	$finalMaster['s_wo_gen_dnt'] = time();
+// 	$finalMaster['s_wo_gen_lum_id'] = $USER_ARRAY['lum_id'];
+
+// 	$QueryCols = array();
+// 	$QueryVals = array();
+
+// 	foreach ($finalMaster as $a => $b) {
+// 		$QueryCols[] = '`' . $a . '`';
+// 		$QueryVals[] = "'" . $b . "'";
+// 	}
+
+// 	$insertSql = 'INSERT INTO `sales_work_order_main` (' . implode(', 
+// 			', $QueryCols) . ') VALUES (' . implode(',
+// 			', $QueryVals) . ')';
+
+
+// 	$check = mysqlInsertData($insertSql, true);
+// 	if (!is_numeric($check)) {
+// 		die("503 - Internal Server Error, Insert Failed");
+// 	}
+
+// 	logInsert(
+// 		basename($_SERVER['PHP_SELF']),
+// 		$_SESSION[SESSION_HASH_NAME],
+// 		$USER_ARRAY['lum_id'],
+// 		$_SERVER['REMOTE_ADDR'],
+// 		$USER_ARRAY['lum_code'] . " added a new draft with ID: " . $check,
+// 		"mysqlInsertData"
+// 	);
+// }

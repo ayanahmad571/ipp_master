@@ -38,13 +38,11 @@ getHead("WO Sales");
                 </div>
                 <div class="card-wrap">
                   <div class="card-header">
-                    <h4>Drafts</h4>
+                    <h4>Total</h4>
                   </div>
                   <div class="card-body">
                     <?php
-                    $getD = mysqlSelect("SELECT count(s_wo_id) as ccc FROM `sales_work_order_main` 
-		left join clients_main on s_wo_client_id = client_id
-		where s_wo_status = 1 order by s_wo_id desc");
+                    $getD = mysqlSelect("SELECT count(mwo_ref_id) as ccc FROM `master_work_order_reference_number`");
                     echo $getD[0]['ccc'];
                     ?>
                   </div>
@@ -62,10 +60,10 @@ getHead("WO Sales");
                   </div>
                   <div class="card-body">
                     <?php
-                    $getDs = mysqlSelect("SELECT count(s_wo_id) as ccc FROM `sales_work_order_main` 
-		left join clients_main on s_wo_client_id = client_id
-		where s_wo_status = 2 order by s_wo_id desc");
-                    echo $getDs[0]['ccc'];
+                    //                 $getDs = mysqlSelect("SELECT count(s_wo_id) as ccc FROM `sales_work_order_main` 
+                    // left join clients_main on s_wo_client_id = client_id
+                    // where s_wo_status = 2 order by s_wo_id desc");
+                    //                 echo $getDs[0]['ccc'];
                     ?>
                   </div>
                 </div>
@@ -82,15 +80,15 @@ getHead("WO Sales");
                   </div>
                   <div class="card-body">
                     <?php
-                    $getPs = mysqlSelect($UpdatedStatusQuery . "
-       
-        
-		left join clients_main on master_wo_client_id = client_id
-		left join master_work_order_main_identitiy on master_wo_status = mwoid_id
+                    //                 $getPs = mysqlSelect($UpdatedStatusQuery . "
 
-        where master_wo_status not in (2) order by master_wo_id desc
-		");
-                    echo (!is_array($getPs) ? "0" : count($getPs));
+
+                    // left join clients_main on master_wo_client_id = client_id
+                    // left join master_work_order_main_identitiy on master_wo_status = mwoid_id
+
+                    //     where master_wo_status not in (2) order by master_wo_id desc
+                    // ");
+                    //                 echo (!is_array($getPs) ? "0" : count($getPs));
                     ?>
                   </div>
                 </div>
@@ -107,15 +105,15 @@ getHead("WO Sales");
                   </div>
                   <div class="card-body">
                     <?php
-                    $getrets = mysqlSelect($UpdatedStatusQuery . "
-       
-        
-		left join clients_main on master_wo_client_id = client_id
-		left join master_work_order_main_identitiy on master_wo_status = mwoid_id
+                    //                 $getrets = mysqlSelect($UpdatedStatusQuery . "
 
-        where master_wo_status = 2 order by master_wo_id desc
-		");
-                    echo (!is_array($getrets) ? "0" : count($getrets));
+
+                    // left join clients_main on master_wo_client_id = client_id
+                    // left join master_work_order_main_identitiy on master_wo_status = mwoid_id
+
+                    //     where master_wo_status = 2 order by master_wo_id desc
+                    // ");
+                    //                 echo (!is_array($getrets) ? "0" : count($getrets));
                     ?>
                   </div>
                 </div>
@@ -130,13 +128,13 @@ getHead("WO Sales");
             <div class="col-12 ">
               <div class="card card-primary">
                 <div class="card-header">
-                  <h4>Drafts </h4>
+                  <h4>Generated (Not Verified) </h4>
                 </div>
                 <div class="card-body text-justify">
                   <table class="table table-striped table-bordered " id="DraftsContainerTable">
                     <thead>
                       <tr>
-                        <th>Draft ID</th>
+                        <th>ID</th>
                         <th>Client</th>
                         <th>Design ID</th>
                         <th>User</th>
@@ -147,34 +145,37 @@ getHead("WO Sales");
 
                     <tbody>
                       <?php
-                      $getDrafts = mysqlSelect("SELECT s_wo_gen_lum_id, s_wo_lum_id,s_wo_id,s_wo_client_id, s_wo_gen_dnt, client_code, client_name,s_wo_design_id FROM `sales_work_order_main` 
-		left join clients_main on s_wo_client_id = client_id
-		where s_wo_status = 1 
-		" . $inColsDRAFT . "
-		order by s_wo_id desc");
+                      $getDrafts = mysqlSelect("SELECT master_wo_gen_lum_id, master_wo_2_sales_id, master_wo_id, master_wo_2_client_id, master_wo_gen_dnt, 
+                      client_code, client_name,master_wo_design_id FROM `master_work_order_main` 
+		left join clients_main on master_wo_2_client_id = client_id
+		where master_wo_status = 1 
+		order by master_wo_id desc");
 
                       if (is_array($getDrafts)) {
                         foreach ($getDrafts as $Draft) {
                       ?>
                           <tr>
-                            <td><?php echo $Draft['s_wo_id'] ?></td>
+                            <td><?php echo $Draft['master_wo_id'] ?></td>
                             <td><?php echo $Draft['client_code'] . " - " . $Draft['client_name']; ?></td>
-                            <td><?php echo $Draft['s_wo_design_id']; ?></td>
+                            <td><?php echo $Draft['master_wo_design_id']; ?></td>
                             <td>
                               <?php
-                              $getBy = mysqlSelect("select * from user_main where lum_id = " . $Draft['s_wo_gen_lum_id'] . " and lum_valid =1");
-                              $getFor = mysqlSelect("select * from user_main where lum_id = " . $Draft['s_wo_lum_id'] . " and lum_valid =1");
+                              $getBy = mysqlSelect("select * from user_main where lum_id = " . $Draft['master_wo_gen_lum_id'] . " and lum_valid =1");
+                              $getFor = mysqlSelect("select * from user_main where lum_id = " . $Draft['master_wo_2_sales_id'] . " and lum_valid =1");
 
                               echo (is_array($getBy) ? $getBy[0]['lum_code'] . "-" . $getBy[0]['lum_name'] : " - ") . ' for ' . (is_array($getFor) ? $getFor[0]['lum_code'] . "-" . $getFor[0]['lum_name'] : " - ");
                               ?>
                             </td>
-                            <td><?php echo date('d-m-Y @ h:i:s a', $Draft['s_wo_gen_dnt']); ?></td>
+                            <td><?php echo date('d-m-Y @ h:i:s a', $Draft['master_wo_gen_dnt']); ?></td>
                             <td>
-                              <a target="_blank" href="work_order_sales_generate?repeatFromDraft=<?php echo $Draft['s_wo_id'] ?>&draftID=<?php echo $Draft['s_wo_id'] ?>">
+                              <a target="_blank" href="work_order_sales_generate?repeatFromDraft=<?php echo $Draft['master_wo_ref'] ?>&draftID=<?php echo $Draft['master_wo_ref'] ?>">
                                 <button class="btn btn-warning mt-1">View/Edit</button>
                               </a>
-                              <button class="publishDraft btn btn-success mt-1" data-id="<?php echo ($Draft['s_wo_id']); ?>">Send to Verify</button>
-                              <button class="discardDraft btn btn-danger mt-1" data-id="<?php echo ($Draft['s_wo_id']); ?>">Discard</button>
+                              <button class="publishDraft btn btn-success mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Send to Verify</button>
+                              <button class="discardDraft btn btn-danger mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Discard</button>
+                              <a target="_blank" href="work_order_print?id=<?php echo $Draft['master_wo_ref'] ?>">
+                                <button class="btn btn-warning mt-1">Print</button>
+                              </a>
                             </td>
                           </tr>
                       <?php
@@ -344,75 +345,6 @@ getHead("WO Sales");
           </div>
 
 
-
-          <div class="row">
-            <div class="col-12 ">
-              <div class="card card-danger">
-                <div class="card-header">
-                  <h4>Discards </h4>
-                </div>
-                <div class="card-body text-justify">
-                  <table class="table table-striped table-bordered " id="DiscardsContainerTable">
-                    <thead>
-                      <tr>
-                        <th>Draft ID</th>
-                        <th>Client</th>
-                        <th>Design ID</th>
-                        <th>User</th>
-                        <th>TimeStamp</th>
-                        <th style="display:none">Action</th>
-                      </tr>
-                    </thead>
-
-                    <tbody>
-                      <?php
-                      $getDiscards = mysqlSelect("SELECT s_wo_gen_lum_id, s_wo_design_id, s_wo_lum_id, s_wo_id,s_wo_client_id, s_wo_gen_dnt, client_code, client_name FROM `sales_work_order_main` 
-		left join clients_main on s_wo_client_id = client_id
-		where s_wo_status = 2 
-		" . $inColsDRAFT . "
-		order by s_wo_id desc");
-
-                      if (is_array($getDiscards)) {
-                        foreach ($getDiscards as $Discard) {
-                      ?>
-                          <tr>
-                            <td><?php echo $Discard['s_wo_id'] ?></td>
-                            <td><?php echo $Discard['client_code'] . " - " . $Discard['client_name']; ?></td>
-                            <td><?php echo $Discard['s_wo_design_id']; ?></td>
-                            <td><?php echo date('d-m-Y @ h:i:s a', $Discard['s_wo_gen_dnt']); ?></td>
-                            <td>
-                              <?php
-                              $getBy = mysqlSelect("select * from user_main where lum_id = " . $Discard['s_wo_gen_lum_id'] . " and lum_valid =1");
-                              $getFor = mysqlSelect("select * from user_main where lum_id = " . $Discard['s_wo_lum_id'] . " and lum_valid =1");
-
-                              echo (is_array($getBy) ? $getBy[0]['lum_code'] . "-" . $getBy[0]['lum_name'] : " - ") . ' for ' . (is_array($getFor) ? $getFor[0]['lum_code'] . "-" . $getFor[0]['lum_name'] : " - ");
-                              ?>
-                            </td>
-                            <td style="display:none">
-                              <a href="work_order_view_print?Draftid=<?php echo $Discard['s_wo_id'] ?>" target="_blank">
-                                <button class="btn btn-warning mt-1">View</button>
-                              </a>
-                              <a target="_blank" href="work_order_sales_generate?repeatFromDraft=<?php echo $Discard['s_wo_id'] ?>"><button class="btn btn-primary mt-1">Repeat</button></a>
-                            </td>
-                          </tr>
-                      <?php
-                        }
-                      }
-                      ?>
-                    </tbody>
-
-                  </table>
-
-                  <p>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-
-
-
         </section>
 
 
@@ -437,7 +369,6 @@ getHead("WO Sales");
   <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
   <script>
     $("#DraftsContainerTable").DataTable();
-    $("#DiscardsContainerTable").DataTable();
     $("#PublishedContainerTable").DataTable();
     $("#ReturnedContainerTable").DataTable();
   </script>
