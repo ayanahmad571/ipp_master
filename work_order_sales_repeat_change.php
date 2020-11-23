@@ -19,10 +19,10 @@ getHead("Sales Order - Repeat with Change #" . $_GET['repeatChange']);
 $getWo = mysqlSelect($UpdatedStatusQuery . "
        
         
-		left join clients_main on master_wo_client_id = client_id
+		left join clients_main on master_wo_2_client_id = client_id
 		left join master_work_order_main_identitiy on master_wo_status = mwoid_id
 
-        where master_wo_status = 9 and master_wo_ref= " . $_GET['repeatChange'] . " 
+        where master_wo_status = 7 and master_wo_ref= " . $_GET['repeatChange'] . " 
 		" . $inColsWO . "
 		order by master_wo_id desc
 		");

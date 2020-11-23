@@ -134,7 +134,8 @@ getHead("WO Sales");
                   <table class="table table-striped table-bordered " id="DraftsContainerTable">
                     <thead>
                       <tr>
-                        <th>ID</th>
+                        <th>WO#</th>
+                        <th>SUB#</th>
                         <th>Client</th>
                         <th>Design ID</th>
                         <th>User</th>
@@ -145,16 +146,22 @@ getHead("WO Sales");
 
                     <tbody>
                       <?php
-                      $getDrafts = mysqlSelect("SELECT master_wo_gen_lum_id, master_wo_2_sales_id, master_wo_id, master_wo_2_client_id, master_wo_gen_dnt, 
-                      client_code, client_name,master_wo_design_id FROM `master_work_order_main` 
-		left join clients_main on master_wo_2_client_id = client_id
-		where master_wo_status = 1 
-		order by master_wo_id desc");
+                      $getDrafts = mysqlSelect($UpdatedStatusQuery . "
+       
+        
+                      left join clients_main on master_wo_2_client_id = client_id
+                      left join master_work_order_main_identitiy on master_wo_status = mwoid_id
+                      
+                          where master_wo_status = 1  
+                      " . $inColsWO . "
+                      order by master_wo_id desc
+                      ");
 
                       if (is_array($getDrafts)) {
                         foreach ($getDrafts as $Draft) {
                       ?>
                           <tr>
+                            <td><?php echo $Draft['master_wo_ref'] ?></td>
                             <td><?php echo $Draft['master_wo_id'] ?></td>
                             <td><?php echo $Draft['client_code'] . " - " . $Draft['client_name']; ?></td>
                             <td><?php echo $Draft['master_wo_design_id']; ?></td>
@@ -168,13 +175,13 @@ getHead("WO Sales");
                             </td>
                             <td><?php echo date('d-m-Y @ h:i:s a', $Draft['master_wo_gen_dnt']); ?></td>
                             <td>
-                              <a target="_blank" href="work_order_sales_generate?repeatFromDraft=<?php echo $Draft['master_wo_ref'] ?>&draftID=<?php echo $Draft['master_wo_ref'] ?>">
+                              <a target="_blank" href="work_order_sales_generate?editId=<?php echo $Draft['master_wo_ref'] ?>">
                                 <button class="btn btn-warning mt-1">View/Edit</button>
                               </a>
                               <button class="publishDraft btn btn-success mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Send to Verify</button>
                               <button class="discardDraft btn btn-danger mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Discard</button>
                               <a target="_blank" href="work_order_print?id=<?php echo $Draft['master_wo_ref'] ?>">
-                                <button class="btn btn-warning mt-1">Print</button>
+                                <button class="btn btn-primary mt-1">Print</button>
                               </a>
                             </td>
                           </tr>
@@ -218,13 +225,13 @@ getHead("WO Sales");
                       $getDiscards = mysqlSelect($UpdatedStatusQuery . "
        
         
-		left join clients_main on master_wo_client_id = client_id
-		left join master_work_order_main_identitiy on master_wo_status = mwoid_id
-
-        where master_wo_status = 2 
-		" . $inColsWO . "
-		order by master_wo_id desc
-		");
+                      left join clients_main on master_wo_2_client_id = client_id
+                      left join master_work_order_main_identitiy on master_wo_status = mwoid_id
+                      
+                          where master_wo_status = 3 
+                      " . $inColsWO . "
+                      order by master_wo_id desc
+                      ");
 
                       if (is_array($getDiscards)) {
                         foreach ($getDiscards as $Discard) {
@@ -244,7 +251,7 @@ getHead("WO Sales");
                             <td><?php echo date('d-m-Y @ h:i:s a', $Discard['master_wo_gen_dnt']); ?></td>
                             <td><?php echo $Discard['mwoid_desc2'] ?></td>
                             <td>
-                              <a href="work_order_main_edit?id=<?php echo $Discard['master_wo_ref'] ?>" target="_blank">
+                              <a href="work_order_sales_generate?editId=<?php echo $Discard['master_wo_ref'] ?>" target="_blank">
                                 <button class="btn btn-warning mt-1">View/Edit</button>
                               </a>
                               <button class="rePublish btn btn-success mt-1" data-id="<?php echo ($Discard['master_wo_ref']); ?>">Re-Publish</button>
@@ -288,13 +295,13 @@ getHead("WO Sales");
                       $getDiscards = mysqlSelect($UpdatedStatusQuery . "
        
         
-		left join clients_main on master_wo_client_id = client_id
-		left join master_work_order_main_identitiy on master_wo_status = mwoid_id
-
-        where master_wo_status not in (2) 
-		" . $inColsWO . "
-		order by master_wo_id desc
-		");
+                      left join clients_main on master_wo_2_client_id = client_id
+                      left join master_work_order_main_identitiy on master_wo_status = mwoid_id
+                      
+                          where master_wo_status not in (1,3)
+                      " . $inColsWO . "
+                      order by master_wo_id desc
+                      ");
 
                       if (is_array($getDiscards)) {
                         foreach ($getDiscards as $Discard) {
@@ -317,12 +324,12 @@ getHead("WO Sales");
                               <a href="work_order_view_print?id=<?php echo $Discard['master_wo_ref'] ?>" target="_blank">
                                 <button class="btn btn-warning mt-1" data-id="<?php echo md5($Discard['master_wo_id']); ?>">View</button>
                               </a>
-                              <?php if ($Discard['master_wo_status'] == 9) { ?>
+                              <?php if ($Discard['master_wo_status'] == 7) { ?>
                                 <a target="_blank" href="work_order_sales_repeat?repeatFromPublished=<?php echo $Discard['master_wo_ref'] ?>">
                                   <button class="btn btn-primary mt-1">Repeat</button>
                                 </a>
                               <?php } ?>
-                              <?php if ($Discard['master_wo_status'] == 9) { ?>
+                              <?php if ($Discard['master_wo_status'] == 7) { ?>
                                 <a target="_blank" href="work_order_sales_repeat_change?repeatChange=<?php echo $Discard['master_wo_ref'] ?>">
                                   <button class="btn btn-info mt-1">Repeat - Change</button>
                                 </a>
@@ -378,7 +385,7 @@ getHead("WO Sales");
       $('.publishDraft').click(function(e) {
         var dataId = ($(this).data("id"));
 
-        bootbox.confirm("Are you sure you want to publish Draft Number " + dataId + " ?<br>Action Can <strong>not</strong> be undone.", function(result) {
+        bootbox.confirm("Are you sure you want to send this Sales Order " + dataId + "  for Verification?<br>Action Can <strong>not</strong> be undone.", function(result) {
           if (result) {
 
 
@@ -420,7 +427,7 @@ getHead("WO Sales");
       $('.rePublish').click(function(e) {
         var dataId = ($(this).data("id"));
 
-        bootbox.confirm("Are you sure you want to Re-Publish Work Order Number " + dataId + " ?", function(result) {
+        bootbox.confirm("Are you sure you want to Re-Publish Sales Order Number " + dataId + " ?", function(result) {
           if (result) {
 
 

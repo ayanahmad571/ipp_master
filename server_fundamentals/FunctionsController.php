@@ -415,7 +415,7 @@ function getValueComparer($element,$version0,$version1,$version2){
 
 }
 
-function getvalueStacks($element,$version0,$version1,$classToAdd){
+function getvalueStacks($element,$version1,$version2,$classToAdd){
 						if($version1 != $version2){
 							echo $element.'.parent().addClass("'.$classToAdd.'");
 							';

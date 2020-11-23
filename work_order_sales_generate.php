@@ -1,7 +1,13 @@
 <?php
 require_once("server_fundamentals/SessionHandler.php");
 require_once("server_fundamentals/PostDataHeadChecker.php");
-getHead("Sales Order - Make New Draft");
+if (isset($_GET['editId']) && is_numeric($_GET['editId'])) {
+  $itisEdit = true;
+  # code...
+} else {
+  $itisEdit = false;
+}
+getHead("Sales Order - " . ($itisEdit ? "Edit Sales Order" : "Make New Sales Order"));
 
 ?>
 <link href="assets/css/select2.min.css" rel="stylesheet" />
@@ -22,7 +28,7 @@ getHead("Sales Order - Make New Draft");
       <div class="main-content">
         <section class="section">
           <div class="section-header">
-            <h1>New Sales Order</h1>
+            <h1> <?php echo ($itisEdit ? "Edit Sales Order" : "New Sales Order") ?></h1>
           </div>
           <!-- TOP CONTENT BLOCKS -->
           <?php
@@ -36,7 +42,7 @@ getHead("Sales Order - Make New Draft");
             <div class="col-12 ">
               <div class="card card-warning">
                 <div class="card-header">
-                  <h4>New Sales Order</h4>
+                  <h4><?php echo ($itisEdit ? "Edit Sales Order" : "New Sales Order") ?></h4>
                 </div>
 
                 <div class="card-body text-justify">
@@ -47,11 +53,16 @@ getHead("Sales Order - Make New Draft");
                   </div>
 
                   <div id="formSuccess" class="alert alert-success" style="display:none">
-                    This form has successfully been saved as a New draft, in order to send it for verification please click Request Verification.
+                    <?php echo ($itisEdit ? "This Sales Order has successfully been edited." :
+                      "This form has successfully been saved as a Sales Order, in order to send it for verification please click Request Verification.") ?>
+
                   </div>
 
                   <form id="formContainer" action="server_fundamentals/SalesWorkOrderSubmit" method="post">
-                  <!-- <form id="formContainer" action="PostDumper" method="post"> -->
+                    <!-- <form id="formContainer" action="PostDumper" method="post"> -->
+                    <?php if ($itisEdit) { ?>
+                      <input type="hidden" name="work_order_edit_id" value="<?php echo $_GET['editId'] ?>" />
+                    <?php } ?>
                     <div id="workOrderHeaderDetails">
 
                       <div class="row">
@@ -138,7 +149,7 @@ getHead("Sales Order - Make New Draft");
                           <input type="text" class="form-control" name="work_order_contact_person_email" placeholder="Contact Person Email">
                         </div>
                       </div>
-                      
+
                       <div class="row">
                         <div class="form-group col-12 col-md-6 col-lg-3 col-xl-3">
                           <label>IPP Sales Person Code</label>
@@ -500,6 +511,36 @@ getHead("Sales Order - Make New Draft");
                       <div class="row">
                         <div class="form-group col-12">
                           <label>Roll Remarks</label>
+                          <?php if ($itisEdit) { ?>
+                            <table class="table table-striped table-bordered">
+                              <tr>
+                                <th width="20%">User </th>
+                                <th width="70%">Remark</th>
+                                <th width="10%">Time</th>
+                              </tr>
+                              <?php
+                              $getOverallRem = mysqlSelect("SELECT r.*,m.lum_code,m.lum_name FROM `remarks_wo` r
+                              left join user_main m on remark_lum_id = m.lum_id
+                              where remark_status = 1
+                              and remark_type = 3
+                              and remark_master_wo_id = " . $_GET['editId']);
+
+                              if (is_array($getOverallRem)) {
+                                foreach ($getOverallRem as $OverallRem) {
+                                  echo '
+                                  <tr>
+                                      <td>' . $OverallRem['lum_code'] . ' - ' . $OverallRem['lum_name'] . '</td>
+                                      <td>' . $OverallRem['remark_text'] . '</td>
+                                      <td>' . date('d-m-Y @ h:i:s a', $OverallRem['remark_dnt']) . '</td>
+                                  </tr>
+                                  
+                                  ';
+                                }
+                              }
+
+                              ?>
+                            </table>
+                          <?php } ?>
                           <textarea name="work_order_remarks_roll" class="form-control remarksEdit" placeholder="Remarks" style="height:200px"></textarea>
                         </div>
                       </div>
@@ -586,6 +627,36 @@ getHead("Sales Order - Make New Draft");
                       <div class="row">
                         <div class="form-group col-12">
                           <label>Pouch Remarks</label>
+                          <?php if ($itisEdit) { ?>
+                            <table class="table table-striped table-bordered">
+                              <tr>
+                                <th width="20%">User </th>
+                                <th width="70%">Remark</th>
+                                <th width="10%">Time</th>
+                              </tr>
+                              <?php
+                              $getOverallRem = mysqlSelect("SELECT r.*,m.lum_code,m.lum_name FROM `remarks_wo` r
+                              left join user_main m on remark_lum_id = m.lum_id
+                              where remark_status = 1
+                              and remark_type = 2
+                              and remark_master_wo_id = " . $_GET['editId']);
+
+                              if (is_array($getOverallRem)) {
+                                foreach ($getOverallRem as $OverallRem) {
+                                  echo '
+                                  <tr>
+                                      <td>' . $OverallRem['lum_code'] . ' - ' . $OverallRem['lum_name'] . '</td>
+                                      <td>' . $OverallRem['remark_text'] . '</td>
+                                      <td>' . date('d-m-Y @ h:i:s a', $OverallRem['remark_dnt']) . '</td>
+                                  </tr>
+                                  
+                                  ';
+                                }
+                              }
+
+                              ?>
+                            </table>
+                          <?php } ?>
                           <textarea name="work_order_remarks_pouch" class="form-control remarksEdit" placeholder="Remarks" style="height:200px"></textarea>
                         </div>
                       </div>
@@ -653,6 +724,36 @@ getHead("Sales Order - Make New Draft");
                       <div class="row">
                         <div class="form-group col-12">
                           <label>Bags Remarks</label>
+                          <?php if ($itisEdit) { ?>
+                            <table class="table table-striped table-bordered">
+                              <tr>
+                                <th width="20%">User </th>
+                                <th width="70%">Remark</th>
+                                <th width="10%">Time</th>
+                              </tr>
+                              <?php
+                              $getOverallRem = mysqlSelect("SELECT r.*,m.lum_code,m.lum_name FROM `remarks_wo` r
+                              left join user_main m on remark_lum_id = m.lum_id
+                              where remark_status = 1
+                              and remark_type = 4
+                              and remark_master_wo_id = " . $_GET['editId']);
+
+                              if (is_array($getOverallRem)) {
+                                foreach ($getOverallRem as $OverallRem) {
+                                  echo '
+                                  <tr>
+                                      <td>' . $OverallRem['lum_code'] . ' - ' . $OverallRem['lum_name'] . '</td>
+                                      <td>' . $OverallRem['remark_text'] . '</td>
+                                      <td>' . date('d-m-Y @ h:i:s a', $OverallRem['remark_dnt']) . '</td>
+                                  </tr>
+                                  
+                                  ';
+                                }
+                              }
+
+                              ?>
+                            </table>
+                          <?php } ?>
                           <textarea name="work_order_remarks_bags" class="form-control remarksEdit" placeholder="Remarks" style="height:200px"></textarea>
                         </div>
                       </div>
@@ -863,6 +964,36 @@ getHead("Sales Order - Make New Draft");
                       <div class="row">
                         <div class="form-group col-12">
                           <label>Overall Remarks</label>
+                          <?php if ($itisEdit) { ?>
+                            <table class="table table-striped table-bordered">
+                              <tr>
+                                <th width="20%">User </th>
+                                <th width="70%">Remark</th>
+                                <th width="10%">Time</th>
+                              </tr>
+                              <?php
+                              $getOverallRem = mysqlSelect("SELECT r.*,m.lum_code,m.lum_name FROM `remarks_wo` r
+                              left join user_main m on remark_lum_id = m.lum_id
+                              where remark_status = 1
+                              and remark_type = 1
+                              and remark_master_wo_id = " . $_GET['editId']);
+
+                              if (is_array($getOverallRem)) {
+                                foreach ($getOverallRem as $OverallRem) {
+                                  echo '
+                                  <tr>
+                                      <td>' . $OverallRem['lum_code'] . ' - ' . $OverallRem['lum_name'] . '</td>
+                                      <td>' . $OverallRem['remark_text'] . '</td>
+                                      <td>' . date('d-m-Y @ h:i:s a', $OverallRem['remark_dnt']) . '</td>
+                                  </tr>
+                                  
+                                  ';
+                                }
+                              }
+
+                              ?>
+                            </table>
+                          <?php } ?>
                           <textarea name="work_order_remarks_overall" class="remarksEdit form-control" placeholder="Remarks" style="height:200px"></textarea>
                         </div>
                       </div>
@@ -870,7 +1001,7 @@ getHead("Sales Order - Make New Draft");
                     </div>
 
                     <div class="form-group" align="center">
-                      <button type="submit" class="btn btn-success">Save as Draft</button>
+                      <button type="submit" class="btn btn-success">Save</button>
                     </div>
 
 
@@ -905,6 +1036,80 @@ getHead("Sales Order - Make New Draft");
   <script src="assets/js/select2.full.min.js"></script>
   <script type="text/javascript" src="assets/bootstrap-wysihtml5/wysihtml5-0.3.0.js"></script>
   <script type="text/javascript" src="assets/bootstrap-wysihtml5/bootstrap-wysihtml5.js"></script>
+
+
+  <?php
+  if (isset($_GET['editId'])) {
+    //editing the WO
+    $WorkOrderMain = mysqlSelect($UpdatedStatusQuery . "
+       
+        
+		left join clients_main on master_wo_2_client_id = client_id
+		left join master_work_order_main_identitiy on master_wo_status = mwoid_id
+		
+        where master_wo_status in (1,3) and master_wo_ref= " . $_GET['editId'] . " 
+		" . $inColsWO . "
+		order by master_wo_id desc
+    ");
+
+
+    if (is_array($WorkOrderMain)) {
+      $WorkOrderMain = $WorkOrderMain[0];
+  ?>
+
+      <script>
+        $(document).ready(function(e) {
+          <?php
+          foreach ($WOstraightArrays as $k => $v) {
+            if (!is_null($WorkOrderMain[$v])) {
+              if ($k == 'work_order_delivery_date' || $k == "work_order_po_date") {
+                echo '$(\'input[name="' . $k . '"]\').val("' . date('d-m-Y', $WorkOrderMain[$v]) . '");
+						';
+              } else {
+                echo '$(\'input[name="' . $k . '"]\').val("' . $WorkOrderMain[$v] . '");
+						';
+              }
+            }
+          }
+          ?>
+
+          <?php
+          foreach ($WOcheckboxArrays as $k => $v) {
+
+            echo '$(\'input[name="' . $k . '[]"]\').each(function() {
+						this.checked = false;
+					});
+					';
+            if ($WorkOrderMain[$v] != '') {
+              $s = explode(',', $WorkOrderMain[$v]);
+              foreach ($s as $val) {
+                echo '$(\'input:checkbox[name="' . $k . '[]"]\').filter("[value=\'' . $val . '\']").prop(\'checked\', true);
+							';
+              }
+            }
+          }
+          ?>
+
+          <?php
+          foreach ($WOselectArrays as $k => $v) {
+            if (!is_null($WorkOrderMain[$v])) {
+              echo '$(\'select[name="' . $k . '"]\').val("' . $WorkOrderMain[$v] . '").change();
+          ';
+            }
+          }
+          ?>
+
+
+
+
+        });
+      </script>
+
+  <?php
+    }
+  }
+
+  ?>
 
   <script>
     $(document).ready(function() {
@@ -1221,6 +1426,27 @@ getHead("Sales Order - Make New Draft");
 
     }
   </script>
+
+  <script>
+    $(document).ready(function(e) {
+      <?php
+      if (isset($_GET['editId'])) {
+        if (is_array($WorkOrderMain)) {
+          if (is_numeric($WorkOrderMain['master_wo_ply'])) {
+
+            for ($counterL = 1; $counterL <= $WorkOrderMain['master_wo_ply']; $counterL++) {
+              echo '$(\'input[name="work_order_layer_' . $counterL . '_micron"]\').val("' . $WorkOrderMain['master_wo_layer_' . $counterL . '_micron'] . '");';
+              echo '$(\'select[name="work_order_5_layer_' . $counterL . '_material"]\').val("' . $WorkOrderMain['master_wo_layer_' . $counterL . '_structure'] . '").change();';
+            }
+          }
+        }
+      }
+      ?>
+
+
+    });
+  </script>
+
 
   <script>
     $(document).ready(function(e) {

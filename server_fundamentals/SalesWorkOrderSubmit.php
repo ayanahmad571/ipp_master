@@ -5,23 +5,31 @@ require_once("PostDataHeadChecker.php");
 if (!in_array($USER_ARRAY['user_type_id'], array(1, 2, 4, 10, 16))) {
 	die('User Not Authorized');
 }
+$getDraftWork = [];
+$itIsEdit = false;
+if (isset($_POST['work_order_edit_id'])) {
+	if (is_numeric($_POST['work_order_edit_id'])) {
+		$getDraftWork = mysqlSelect($UpdatedStatusQuery . "
+       
+        
+		left join clients_main on master_wo_2_client_id = client_id
+		left join master_work_order_main_identitiy on master_wo_status = mwoid_id
+		
+        where master_wo_status in (1,3) and master_wo_ref= " . $_POST['work_order_edit_id'] . " 
+		" . $inColsWO . "
+		order by master_wo_id desc
+    ");
 
-// if(isset($_POST['work_order_edit_draft_id'])){
-// 	if(is_numeric($_POST['work_order_edit_draft_id'])){
-// 		$getDraftWork = mysqlSelect("SELECT s_wo_id FROM `sales_work_order_main` 
-// 		where s_wo_status = 1 
-// 		".$inColsDRAFT."
-// 		and s_wo_id = ".$_POST['work_order_edit_draft_id']);
-
-// 		if(!is_array($getDraftWork)){
-// 			die("Editing Draft not Found.");
-// 		}
-
-// 	} else{
-// 			die("Editing Draft Invalid ID.");
-// 		}
-// }
-
+		if (!is_array($getDraftWork)) {
+			die("Editing Sales Order Not Found.");
+		}
+		$getDraftWork = $getDraftWork[0];
+	} else {
+		die("Editing Sales Order Invalid ID.");
+	}
+	$itIsEdit = true;
+}
+//NOT COMPLETE DONT USER
 $toCheck = array(
 	"work_order_2_client_id", "work_order_customer_design_name", "work_order_customer_item_code", "work_order_customer_po", "work_order_po_date", "work_order_delivery_date",
 	"work_order_3_customer_loc", "work_order_contact_person_name", "work_order_contact_person_mob_no", "work_order_contact_person_email", "work_order_2_sales_id",
@@ -34,7 +42,7 @@ $toCheck = array(
 	"work_order_max_lmtr_p_r", "work_order_max_imps_p_r", "work_order_2_slitting_core_id", "work_order_2_slitting_core_material", "work_order_2_slitting_core_plugs",
 	"work_order_2_slitting_qc_ins", "work_order_max_joints", "work_order_remarks_roll", "_wysihtml5_mode", "work_order_pouch_type",
 	"work_order_pouch_val_a", "work_order_pouch_val_b", "work_order_pouch_val_c", "work_order_pouch_val_d", "work_order_pouch_val_e",
-	"work_order_pouch_val_f", "work_order_pouch_val_g", "work_order_pouch_val_h", "work_order_3_pouch_lap_fin", "work_order_remarks_pouch",
+	"work_order_pouch_val_f", "work_order_pouch_val_g", "work_order_pouch_val_h", "work_order_remarks_pouch",
 	"work_order_bag_type", "work_order_bags_val_a", "work_order_bags_val_b", "work_order_bags_val_c", "work_order_bags_val_d",
 	"work_order_bags_val_e", "work_order_bags_val_f", "work_order_bags_val_g", "work_order_bags_val_h", "work_order_remarks_bags",
 	"work_order_2_foil_print_side", "work_order_2_printing_method", "work_order_2_printing_shade_card_needed", "work_order_2_printing_color_ref_type", "work_order_2_printing_approvalby",
@@ -130,7 +138,10 @@ if (!is_numeric($structureMaster)) {
 $WorkOrderMaster = array();
 
 
-selectChecker("SELECT * FROM `work_order_ui_structure` where structure_id = " . $_POST['work_order_2_structure'], 'Struchhhture Not Found', 'mysqlSelect');
+selectChecker("SELECT * FROM `work_order_ui_structure` where structure_id = " . $_POST['work_order_2_structure'], 'Structure Not Found', 'mysqlSelect');
+$WorkOrderMaster["master_wo_2_structure"] = $_POST["work_order_2_structure"];
+
+selectChecker("SELECT * FROM `work_order_qty_units` where unit_show =1 and unit_id = " . $_POST['work_order_2_units'], 'Order Qty Units Not Found', 'mysqlSelect');
 $WorkOrderMaster["master_wo_2_units"] = $_POST["work_order_2_units"];
 
 selectChecker("SELECT * FROM `clients_main` where `client_show` = 1 and client_id = " . $_POST['work_order_2_client_id'], 'Invalid Client', 'mysqlSelect');
@@ -198,8 +209,8 @@ if ($foilPrint) {
 $WorkOrderMaster["master_wo_customer_design_name"] = $_POST["work_order_customer_design_name"];
 $WorkOrderMaster["master_wo_customer_item_code"] = $_POST["work_order_customer_item_code"];
 $WorkOrderMaster["master_wo_customer_po"] = $_POST["work_order_customer_po"];
-$WorkOrderMaster["master_wo_po_date"] = $_POST["work_order_po_date"];
-$WorkOrderMaster["master_wo_delivery_date"] = $_POST["work_order_delivery_date"];
+$WorkOrderMaster["master_wo_po_date"] = $checkCustPoDate;
+$WorkOrderMaster["master_wo_delivery_date"] = $checkDeliveryDate;
 
 $WorkOrderMaster["master_wo_contact_person_name"] = $_POST["work_order_contact_person_name"];
 $WorkOrderMaster["master_wo_contact_person_mob_no"] = $_POST["work_order_contact_person_mob_no"];
@@ -390,18 +401,25 @@ if ($structureMaster == 1) {
 }
 
 
-
-//make the master Reference entry in the Table and get the New Work Order ID
-$insertReference = mysqlInsertData("INSERT INTO `master_work_order_reference_number`(`mwo_dnt`,`mwo_gen_on_behalf_lum_id`,`mwo_gen_lum_id`) VALUES (
+if (!$itIsEdit) {
+	//make the master Reference entry in the Table and get the New Work Order ID
+	$insertReference = mysqlInsertData("INSERT INTO `master_work_order_reference_number`(`mwo_dnt`,`mwo_gen_on_behalf_lum_id`,`mwo_gen_lum_id`) VALUES (
 			'" . time() . "',
 			'" . $WorkOrderMaster['master_wo_2_sales_id'] . "',
 			'" . $USER_ARRAY['lum_id'] . "')", true);
 
 
-if (!is_numeric($insertReference)) {
-	die("503: Internal Error, Could not insert WORK ORDER REFERENCE");
+	if (!is_numeric($insertReference)) {
+		die("503: Internal Error, Could not insert WORK ORDER REFERENCE");
+	}
+	$statusNo = 1;
+}else{
+	$statusNo = 1;
+	$insertReference = $getDraftWork['master_wo_ref'];
+	if($getDraftWork['master_wo_status'] == 3){
+		$statusNo = 3;
+	}
 }
-
 
 if (($_POST["work_order_remarks_overall"] != '')) {
 	$RemarksMain[] = "(
@@ -417,7 +435,7 @@ if (($_POST["work_order_remarks_pouch"] != '')) {
 				'" . $_POST["work_order_remarks_pouch"] . "',
 				'" . $insertReference . "',
 				'" . time() . "',
-				'1')";
+				'2')";
 }
 if (($_POST["work_order_remarks_bags"] != '')) {
 	$RemarksMain[] = "(
@@ -425,7 +443,7 @@ if (($_POST["work_order_remarks_bags"] != '')) {
 				'" . $_POST["work_order_remarks_bags"] . "',
 				'" . $insertReference . "',
 				'" . time() . "',
-				'1')";
+				'4')";
 }
 if (($_POST["work_order_remarks_roll"] != '')) {
 	$RemarksMain[] = "(
@@ -433,12 +451,13 @@ if (($_POST["work_order_remarks_roll"] != '')) {
 				'" . $_POST["work_order_remarks_roll"] . "',
 				'" . $insertReference . "',
 				'" . time() . "',
-				'1')";
+				'3')";
 }
 
 $WorkOrderMaster['master_wo_ref'] = $insertReference;
 $WorkOrderMaster['master_wo_gen_dnt'] = time();
 $WorkOrderMaster['master_wo_gen_lum_id'] = $USER_ARRAY['lum_id'];
+$WorkOrderMaster['master_wo_status'] = $statusNo;
 
 //Insert  Query Content Builder
 foreach ($WorkOrderMaster as $a => $b) {

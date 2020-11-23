@@ -19,13 +19,13 @@ getHead("Repeat #" . $_GET['repeatFromPublished']);
 $getWo = mysqlSelect($UpdatedStatusQuery . "
        
         
-		left join clients_main on master_wo_client_id = client_id
-		left join master_work_order_main_identitiy on master_wo_status = mwoid_id
+left join clients_main on master_wo_2_client_id = client_id
+left join master_work_order_main_identitiy on master_wo_status = mwoid_id
 
-        where master_wo_status = 9 and master_wo_ref= " . $_GET['repeatFromPublished'] . " 
-		" . $inColsWO . "
-		order by master_wo_id desc
-		");
+    where master_wo_status = 7 and master_wo_ref = " . $_GET['repeatFromPublished'] . " 
+" . $inColsWO . "
+order by master_wo_id desc
+");
 
 if (!is_array($getWo)) {
   header('Location: work_order_sales');
@@ -267,7 +267,6 @@ $WorkOrderRepPub =  $getWo[0];
 
 
     }
-
   </script>
 
 
