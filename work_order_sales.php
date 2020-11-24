@@ -431,7 +431,7 @@ getHead("WO Sales");
           if (result) {
 
 
-            $.post("server_fundamentals/MainWorkOrderSubmitAll", {
+            $.post("server_fundamentals/MainWorkOrderSubmit", {
                 rePublishSales: dataId,
               },
               function(data, status) {

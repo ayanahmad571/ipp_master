@@ -40,7 +40,6 @@ getHead("Version Control");
             <th>Version Number</th>
             <th>Status</th>
             <th>Generated</th>
-            <th>Pubished</th>
             <th>Action</th>
             
         </tr>
@@ -58,43 +57,19 @@ getHead("Version Control");
 		if(is_array($getDrafts)){
 			$x = 1;
 			foreach($getDrafts as $Draft){
-				$gent = '';
-				$action = '';
-				if($x==1){
-					if($Draft['master_wo_status'] == 1){
-						$getBacklink = mysqlSelect("select * from sales_work_order_main where s_wo_id = ".$Draft['mwo_sales_wo_id']." and s_wo_status = 3");
-						if(is_array($getBacklink)){
-							$gent = date('d-m-Y @ h:i:s a', $getBacklink[0]['s_wo_gen_dnt']);
-							$action = '<a href="work_order_view_print?did='.$getBacklink[0]['s_wo_id'].'"><button class="btn btn-warning">View Published Draft</button></a>';
-						}
-					}
-					
-				}else{
-												$getBacklink = mysqlSelect("
-						SELECT * FROM `master_work_order_main` 
-						left join master_work_order_reference_number on mwo_ref_id = master_wo_ref
-						where master_wo_ref = ".$_GET['id']."
-						and master_wo_id < ".$Draft['master_wo_id']."
-						order by master_wo_id desc
-						limit 1");
-						if(is_array($getBacklink)){
-							$gent = date('d-m-Y @ h:i:s a', $getBacklink[0]['master_wo_gen_dnt']);
-							$action = '<a href="work_order_view_print?pid='.$getBacklink[0]['master_wo_id'].'"><button class="btn btn-primary">View Published</button></a>';
-						}
-					}
-				
-				
+		
 
 				$os = array(1,2,3,4);
 				if (!in_array($USER_ARRAY['lum_user_type'], $os)) {
 					$action = '<a href="work_order_view_print?id='.$_GET['id'].'"><button class="btn btn-primary">View Final</button></a>';
+				}else{
+					$action = '<a href="work_order_view_print?pid='.$Draft['master_wo_id'].'"><button class="btn btn-primary">View</button></a>';
 				}
 				
 				?>
                 <tr>
                 	<td><?php echo $Draft['master_wo_id']; ?></td>
                 	<td><?php echo ($Draft['mwoid_desc1']) ?></td>
-                	<td><?php echo $gent ?></td>
                 	<td><?php echo date('d-m-Y @ h:i:s a',$Draft['master_wo_gen_dnt']) ?></td>
 					<td><?php echo $action; ?></td>
 </tr>
@@ -124,7 +99,7 @@ getHead("Version Control");
 
 		left join master_work_order_main_identitiy on master_wo_status = mwoid_id
 
-        order by master_wo_id desc
+        order by mwo_ref_id desc
 		");
 		
 		if(is_array($getDrafts)){
