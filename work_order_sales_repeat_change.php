@@ -25,7 +25,8 @@ $getWo = mysqlSelect($UpdatedStatusQuery . "
         where master_wo_status = 7 and master_wo_ref= " . $_GET['repeatChange'] . " 
 		" . $inColsWO . "
 		order by master_wo_id desc
-		");
+    ");
+  
 
 if (!is_array($getWo)) {
   header('Location: work_order_sales');
@@ -83,7 +84,8 @@ $WorkOrderRepPub =  $getWo[0];
                   </div>
 
                   <!-- <form id="formContainer" action="server_fundamentals/SalesWorkOrderSubmit" method="post"> -->
-                  <form id="formContainer" action="PostDumper" method="post">
+                  <form id="formContainer" action="server_fundamentals/SalesWorkOrderRepeatChange" method="post">
+                  <input type="hidden" name="work_order_repeat_publish_id" value="<?php echo $_GET['repeatChange'] ?>" />
                     <div id="workOrderHeaderDetails">
 
                       <div class="row">
@@ -92,20 +94,37 @@ $WorkOrderRepPub =  $getWo[0];
 
                           <div class="selectgroup selectgroup-pills">
                             <?php
-                            $getSlitCustomrs = array("Text", "Color", "Structure", "B'Code","Other");
+                            $getSlitCustomrs = mysqlSelect("SELECT * FROM `work_order_ui_repeat_types` where rept_show = 1 ");
                             if (is_array($getSlitCustomrs)) {
                               foreach ($getSlitCustomrs as $SingularOP) {
                                 echo '
                           <label class="selectgroup-item">
-                            <input type="checkbox" name="work_order_3_changes[]" value="' . $SingularOP . '" class="selectgroup-input" />
-                            <span class="selectgroup-button">' . $SingularOP . '</span>
+                            <input type="checkbox" name="work_order_3_changes[]" value="' . $SingularOP['rept_id'] . '" class="selectgroup-input" ' . ($SingularOP['rept_id'] == 1 ? 'checked' : '') . ' />
+                            <span class="selectgroup-button">' . $SingularOP['rept_value'] . '</span>
                           </label>';
-                                }
+                              }
                             }
                             ?>
 
                           </div>
                         </div>
+                      </div>
+                      <div class="row">
+                        <div class="form-group col-sm-12 col-md-6 col-xl-4 ">
+                          <label>LWO</label>
+                          <input type="text" class="form-control" disabled value="# <?php echo $_GET['repeatChange'] ?>">
+                        </div>
+
+                        <div class="form-group col-sm-12 col-md-6 col-xl-4 ">
+                          <label>Previous NCR #</label>
+                          <input type="text" class="form-control" name="work_order_ncr_no" placeholder="NCR Number">
+                        </div>
+
+                        <div class="form-group col-sm-12 col-md-6 col-xl-4 ">
+                          <label>Previous CCR #</label>
+                          <input type="text" class="form-control" name="work_order_ccr_no" placeholder="CCR Number">
+                        </div>
+
                       </div>
 
                       <div class="row">
@@ -168,10 +187,10 @@ $WorkOrderRepPub =  $getWo[0];
                             if (is_array($getSlitCustomrs)) {
                               foreach ($getSlitCustomrs as $SingularOP) {
                                 echo '
-                        <label class="selectgroup-item">
-                          <input type="checkbox" name="work_order_3_customer_loc[]" value="' . $SingularOP['customer_location_id'] . '" class="selectgroup-input" ' . ($SingularOP['customer_location_id'] == 1 ? 'checked' : '') . '>
-                          <span class="selectgroup-button">' . $SingularOP['customer_location_value'] . '</span>
-                        </label>';
+<label class="selectgroup-item">
+  <input type="checkbox" name="work_order_3_customer_loc[]" value="' . $SingularOP['customer_location_id'] . '" class="selectgroup-input" ' . ($SingularOP['customer_location_id'] == 1 ? 'checked' : '') . '>
+  <span class="selectgroup-button">' . $SingularOP['customer_location_value'] . '</span>
+</label>';
                               }
                             }
                             ?>
@@ -192,7 +211,7 @@ $WorkOrderRepPub =  $getWo[0];
                           <input type="text" class="form-control" name="work_order_contact_person_email" placeholder="Contact Person Email">
                         </div>
                       </div>
-                      
+
                       <div class="row">
                         <div class="form-group col-12 col-md-6 col-lg-3 col-xl-3">
                           <label>IPP Sales Person Code</label>
@@ -394,29 +413,7 @@ $WorkOrderRepPub =  $getWo[0];
 
                       </div>
 
-
-                      <div class="row">
-                        <div class="form-group col-sm-12 col-md-6 col-xl-4 ">
-                          <label>LWO</label>
-                          <input type="text" class="form-control" disabled value="#<?php echo $_GET['repeatChange'] ?>">
-                        </div>
-
-                        <div class="form-group col-sm-12 col-md-6 col-xl-4 ">
-                          <label>Previous CCR #</label>
-                          <input type="text" class="form-control" name="work_order_ncr_no" placeholder="CCR Number">
-                        </div>
-
-                        <div class="form-group col-sm-12 col-md-6 col-xl-4 ">
-                          <label>Previous NCR #</label>
-                          <input type="text" class="form-control" name="work_order_ccr_no" placeholder="NCR Number">
-                        </div>
-
-                      </div>
-
                     </div>
-
-
-
 
                     <hr>
 
@@ -477,7 +474,7 @@ $WorkOrderRepPub =  $getWo[0];
                               "form-group col-12 col-lg-3",
                               "Wind DIR",
                               "work_order_2_wind_dir",
-                              "SELECT * FROM `work_order_wind_dir` where wind_dir =1 order by wind_value asc",
+                              "SELECT * FROM `work_order_wind_dir` where wind_show =1 order by wind_value asc",
                               'wind_id',
                               'wind_value'
                             );
@@ -641,10 +638,10 @@ $WorkOrderRepPub =  $getWo[0];
                                 if (is_array($getExtOp1)) {
                                   foreach ($getExtOp1 as $ExtOp1) {
                                     echo '
-                              <label class="selectgroup-item">
-                                      <input type="checkbox" name="work_order_4_pouch_lap_fin[]" value="' . $ExtOp1['lap_fin_id'] . '" class="selectgroup-input" ' . ($ExtOp1['lap_fin_id'] == 1 ? 'checked' : '') . '>
-                                      <span class="selectgroup-button">' . $ExtOp1['lap_fin_value'] . '</span>
-                                    </label>';
+      <label class="selectgroup-item">
+              <input type="checkbox" name="work_order_3_pouch_lap_fin[]" value="' . $ExtOp1['lap_fin_id'] . '" class="selectgroup-input" ' . ($ExtOp1['lap_fin_id'] == 1 ? 'checked' : '') . '>
+              <span class="selectgroup-button">' . $ExtOp1['lap_fin_value'] . '</span>
+            </label>';
                                   }
                                 }
                                 ?>
@@ -729,6 +726,7 @@ $WorkOrderRepPub =  $getWo[0];
                       <div class="row">
                         <div class="form-group col-12">
                           <label>Bags Remarks</label>
+
                           <textarea name="work_order_remarks_bags" class="form-control remarksEdit" placeholder="Remarks" style="height:200px"></textarea>
                         </div>
                       </div>
@@ -919,10 +917,10 @@ $WorkOrderRepPub =  $getWo[0];
                             if (is_array($getSlitCustomrs)) {
                               foreach ($getSlitCustomrs as $SingularOP) {
                                 echo '
-                        <label class="selectgroup-item">
-                          <input type="checkbox" name="work_order_3_docs[]" value="' . $SingularOP['shipment_id'] . '" class="selectgroup-input" ' . ($SingularOP['shipment_id'] == 1 ? 'checked' : '') . '>
-                          <span class="selectgroup-button">' . $SingularOP['shipment_value'] . '</span>
-                        </label>';
+<label class="selectgroup-item">
+  <input type="checkbox" name="work_order_3_docs[]" value="' . $SingularOP['shipment_id'] . '" class="selectgroup-input" ' . ($SingularOP['shipment_id'] == 1 ? 'checked' : '') . '>
+  <span class="selectgroup-button">' . $SingularOP['shipment_value'] . '</span>
+</label>';
                               }
                             }
                             ?>
@@ -945,12 +943,8 @@ $WorkOrderRepPub =  $getWo[0];
 
                     </div>
 
-
-
-
-
                     <div class="form-group" align="center">
-                      <button type="submit" class="btn btn-success">Save as Draft</button>
+                      <button type="submit" class="btn btn-success">Save</button>
                     </div>
 
 
@@ -981,10 +975,68 @@ $WorkOrderRepPub =  $getWo[0];
 
   getScripts();
   ?>
-    <script src="assets/js/bootbox.min.js"></script>
+  <script src="assets/js/bootbox.min.js"></script>
   <script src="assets/js/select2.full.min.js"></script>
   <script type="text/javascript" src="assets/bootstrap-wysihtml5/wysihtml5-0.3.0.js"></script>
   <script type="text/javascript" src="assets/bootstrap-wysihtml5/bootstrap-wysihtml5.js"></script>
+
+
+  <?php
+    if (is_array($WorkOrderRepPub)) {
+  ?>
+      <script>
+        $(document).ready(function(e) {
+          <?php
+          foreach ($WOstraightArrays as $k => $v) {
+            if (!is_null($WorkOrderRepPub[$v])) {
+              if ($k == 'work_order_delivery_date' || $k == "work_order_po_date") {
+                echo '$(\'input[name="' . $k . '"]\').val("' . date('d-m-Y', $WorkOrderRepPub[$v]) . '");
+						';
+              } else {
+                echo '$(\'input[name="' . $k . '"]\').val("' . $WorkOrderRepPub[$v] . '");
+						';
+              }
+            }
+          }
+          ?>
+
+          <?php
+          foreach ($WOcheckboxArrays as $k => $v) {
+
+            echo '$(\'input[name="' . $k . '[]"]\').each(function() {
+						this.checked = false;
+					});
+					';
+            if ($WorkOrderRepPub[$v] != '') {
+              $s = explode(',', $WorkOrderRepPub[$v]);
+              foreach ($s as $val) {
+                echo '$(\'input:checkbox[name="' . $k . '[]"]\').filter("[value=\'' . $val . '\']").prop(\'checked\', true);
+							';
+              }
+            }
+          }
+          ?>
+
+          <?php
+          foreach ($WOselectArrays as $k => $v) {
+            if (!is_null($WorkOrderRepPub[$v])) {
+              echo '$(\'select[name="' . $k . '"]\').val("' . $WorkOrderRepPub[$v] . '").change();
+          ';
+            }
+          }
+          ?>
+
+
+
+
+        });
+      </script>
+
+  <?php
+    }
+  
+
+  ?>
 
   <script>
     $(document).ready(function() {
@@ -1100,12 +1152,12 @@ $WorkOrderRepPub =  $getWo[0];
 
       var layers = $('#plyValueInput').val();
       var l;
-      var c =0;
+      var c = 0;
 
       for (l = 1; l <= (layers); l++) {
         var den = $('select[name=work_order_5_layer_' + l + '_material]').find(':selected').data('density');
         var gsm = $('input[name=work_order_layer_' + l + '_micron]').val();
-        c+= den * gsm;
+        c += den * gsm;
       }
       $("#calcLamGSM").val(c);
     }
@@ -1302,6 +1354,25 @@ $WorkOrderRepPub =  $getWo[0];
     }
   </script>
 
+<script>
+    $(document).ready(function(e) {
+      <?php
+      
+        if (is_array($WorkOrderRepPub)) {
+          if (is_numeric($WorkOrderRepPub['master_wo_ply'])) {
+
+            for ($counterL = 1; $counterL <= $WorkOrderRepPub['master_wo_ply']; $counterL++) {
+              echo '$(\'input[name="work_order_layer_' . $counterL . '_micron"]\').val("' . $WorkOrderRepPub['master_wo_layer_' . $counterL . '_micron'] . '");';
+              echo '$(\'select[name="work_order_5_layer_' . $counterL . '_material"]\').val("' . $WorkOrderRepPub['master_wo_layer_' . $counterL . '_structure'] . '").change();';
+            }
+          }
+        }
+      
+      ?>
+
+
+    });
+  </script>
   <script>
     $(document).ready(function(e) {
 

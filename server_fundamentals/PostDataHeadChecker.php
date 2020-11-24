@@ -95,6 +95,8 @@ $WOstraightArrays = array(
 	"work_order_bund_per_box" => "master_wo_bund_per_box",
 	"work_order_max_gross_pallet_weight" => "master_wo_max_gross_pallet_weight",
 	"work_order_cart_thick" => "master_wo_cart_thick",
+	"work_order_ccr_no" => "master_wo_extra_ccr",
+	"work_order_ncr_no" => "master_wo_extra_ncr",
 
 );
 

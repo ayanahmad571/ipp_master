@@ -63,7 +63,7 @@ $WorkOrderRepPub =  $getWo[0];
             <div class="col-12 ">
               <div class="card card-warning">
                 <div class="card-header">
-                  <h4>Work Order Repeat</h4>
+                  <h4>Sales Work Order Repeat</h4>
                 </div>
 
                 <div class="card-body text-justify">
@@ -74,16 +74,14 @@ $WorkOrderRepPub =  $getWo[0];
                   </div>
 
                   <div id="formSuccess" class="alert alert-success" style="display:none">
-                    A new Sales order has been created. Data from the Last Work Order has been utilised.
+                    A new Sales order has been created. Data from the Last Work Order has been auto populated.
                   </div>
 
-                  <form id="formContainer" action="server_fundamentals/SalesWorkOrderSubmit" method="post">
+                  <form id="formContainer" action="server_fundamentals/SalesWorkOrderRepeat" method="post">
 
                     <input type="hidden" name="work_order_repeat_publish_id" value="<?php echo $_GET['repeatFromPublished'] ?>" />
 
                     <div id="workOrderHeaderDetails">
-
-
 
                       <div class="row">
                         <div class="form-group col-sm-12 col-md-6 col-xl-2 ">
@@ -114,12 +112,12 @@ $WorkOrderRepPub =  $getWo[0];
 
                         <div class="form-group col-sm-12 col-md-6 col-xl-2 ">
                           <label>Previous CCR #</label>
-                          <input type="text" class="form-control" name="work_order_ncr_no" placeholder="CCR Number">
+                          <input type="text" class="form-control" name="work_order_ccr_no" placeholder="CCR Number">
                         </div>
 
                         <div class="form-group col-sm-12 col-md-6 col-xl-2 ">
                           <label>Previous NCR #</label>
-                          <input type="text" class="form-control" name="work_order_ccr_no" placeholder="NCR Number">
+                          <input type="text" class="form-control" name="work_order_ncr_no" placeholder="NCR Number">
                         </div>
 
                       </div>
@@ -129,7 +127,7 @@ $WorkOrderRepPub =  $getWo[0];
                       <div class="row">
                         <div class="form-group col-12 col-md-6 col-xl-3">
                           <label>Sales Code</label>
-                          <select class="form-control select_a" required name="work_order_5_sales_id">
+                          <select class="form-control select_a" required name="work_order_2_sales_id">
                             <?php
                             $getDrafts = mysqlSelect($getAttachedTreeSql);
 
@@ -191,7 +189,7 @@ $WorkOrderRepPub =  $getWo[0];
 
 
                     <div class="form-group" align="center">
-                      <button type="submit" class="btn btn-success">Send for Verification</button>
+                      <button type="submit" class="btn btn-success">Save</button>
                     </div>
 
 

@@ -1,7 +1,25 @@
 <?php
 require_once("server_fundamentals/SessionHandler.php");
 require_once("server_fundamentals/PostDataHeadChecker.php");
+$WorkOrderMain = array();
 if (isset($_GET['editId']) && is_numeric($_GET['editId'])) {
+  $WorkOrderMain = mysqlSelect($UpdatedStatusQuery . "
+       
+        
+  left join clients_main on master_wo_2_client_id = client_id
+  left join master_work_order_main_identitiy on master_wo_status = mwoid_id
+  
+      where master_wo_status in (1,3) and master_wo_ref= " . $_GET['editId'] . " 
+  " . $inColsWO . "
+  order by master_wo_id desc
+  ");
+
+
+  if (is_array($WorkOrderMain)) {
+    $WorkOrderMain = $WorkOrderMain[0];
+  }else{
+    die('Invalid Work Order Supplied');
+  }
   $itisEdit = true;
   # code...
 } else {
@@ -64,6 +82,29 @@ getHead("Sales Order - " . ($itisEdit ? "Edit Sales Order" : "Make New Sales Ord
                       <input type="hidden" name="work_order_edit_id" value="<?php echo $_GET['editId'] ?>" />
                     <?php } ?>
                     <div id="workOrderHeaderDetails">
+                      <?php 
+                      if($itisEdit && $WorkOrderMain['mwo_type'] != 1){
+                      ?>
+                      <div class="row">
+                        <div class="form-group col-sm-12 col-md-6 col-xl-4 ">
+                          <label>LWO</label>
+                          <input type="text" class="form-control" disabled value="# <?php echo $WorkOrderMain['mwo_repeat_wo_id'] ?>">
+                        </div>
+
+                        <div class="form-group col-sm-12 col-md-6 col-xl-4 ">
+                          <label>Previous NCR #</label>
+                          <input type="text" class="form-control" name="work_order_ncr_no" placeholder="NCR Number">
+                        </div>
+
+                        <div class="form-group col-sm-12 col-md-6 col-xl-4 ">
+                          <label>Previous CCR #</label>
+                          <input type="text" class="form-control" name="work_order_ccr_no" placeholder="CCR Number">
+                        </div>
+
+                      </div>
+                      <?php
+                      }
+                      ?>
 
                       <div class="row">
 
@@ -1040,23 +1081,8 @@ getHead("Sales Order - " . ($itisEdit ? "Edit Sales Order" : "Make New Sales Ord
 
   <?php
   if (isset($_GET['editId'])) {
-    //editing the WO
-    $WorkOrderMain = mysqlSelect($UpdatedStatusQuery . "
-       
-        
-		left join clients_main on master_wo_2_client_id = client_id
-		left join master_work_order_main_identitiy on master_wo_status = mwoid_id
-		
-        where master_wo_status in (1,3) and master_wo_ref= " . $_GET['editId'] . " 
-		" . $inColsWO . "
-		order by master_wo_id desc
-    ");
-
-
     if (is_array($WorkOrderMain)) {
-      $WorkOrderMain = $WorkOrderMain[0];
   ?>
-
       <script>
         $(document).ready(function(e) {
           <?php
