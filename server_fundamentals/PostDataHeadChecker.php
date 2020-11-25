@@ -97,6 +97,7 @@ $WOstraightArrays = array(
 	"work_order_cart_thick" => "master_wo_cart_thick",
 	"work_order_ccr_no" => "master_wo_extra_ccr",
 	"work_order_ncr_no" => "master_wo_extra_ncr",
+	"work_order_3_pr_end_ops" => "master_wo_extra_print_end_ops"
 
 );
 

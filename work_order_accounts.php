@@ -335,7 +335,7 @@ getHead("WO Accounts");
       $('.publishConditionalDraft').click(function(e) {
         var dataId = ($(this).data("id"));
 
-        $.post("server_fundamentals/PrePressController", {
+        $.post("server_fundamentals/AccountsController", {
             WorkOrderGetDetails: dataId,
           },
           function(data, status) {

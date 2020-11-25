@@ -139,7 +139,7 @@ getHead("WO Technical");
                         <th>Action</th>
                       </tr>
                     </thead>
-                    
+
 
                     <tbody>
                       <?php
@@ -149,7 +149,7 @@ getHead("WO Technical");
                       left join clients_main on master_wo_2_client_id = client_id
                       left join master_work_order_main_identitiy on master_wo_status = mwoid_id
                       
-                          where master_wo_status in (4,5)  
+                          where master_wo_status in (6,5)  
                       " . $inColsWO . "
                       order by master_wo_id desc
                       ");
@@ -172,11 +172,21 @@ getHead("WO Technical");
                             </td>
                             <td><?php echo date('d-m-Y @ h:i:s a', $Draft['master_wo_gen_dnt']); ?></td>
                             <td>
-                              <a target="_blank" href="work_order_sales_generate?editId=<?php echo $Draft['master_wo_ref'] ?>">
+                              <a target="_blank" href="work_order_main_edit?techID=<?php echo $Draft['master_wo_ref'] ?>">
                                 <button class="btn btn-warning mt-1">View/Edit</button>
                               </a>
-                              <button class="publishDraft btn btn-success mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Send to Verify</button>
-                              <button class="discardDraft btn btn-danger mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Discard</button>
+                              <?php
+                              if ($Draft['master_wo_status'] == 5) {
+                              ?>
+                                <button class="publishDraft  btn btn-success mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Send to Verify</button>
+                              <?php
+                              } else {
+                              ?>
+                                <button class="publishDraftCond btn btn-success mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Send to Verify</button>
+                              <?php
+                              }
+                              ?>
+
                               <a target="_blank" href="work_order_print?id=<?php echo $Draft['master_wo_ref'] ?>">
                                 <button class="btn btn-primary mt-1">Print</button>
                               </a>
@@ -196,7 +206,6 @@ getHead("WO Technical");
               </div>
             </div>
           </div>
-
           <div class="row">
             <div class="col-12 ">
               <div class="card card-warning">
@@ -225,7 +234,7 @@ getHead("WO Technical");
                       left join clients_main on master_wo_2_client_id = client_id
                       left join master_work_order_main_identitiy on master_wo_status = mwoid_id
                       
-                          where master_wo_status = 3 
+                          where master_wo_status = 8
                       " . $inColsWO . "
                       order by master_wo_id desc
                       ");
@@ -248,10 +257,11 @@ getHead("WO Technical");
                             <td><?php echo date('d-m-Y @ h:i:s a', $Discard['master_wo_gen_dnt']); ?></td>
                             <td><?php echo $Discard['mwoid_desc2'] ?></td>
                             <td>
-                              <a href="work_order_sales_generate?editId=<?php echo $Discard['master_wo_ref'] ?>" target="_blank">
+                              <a target="_blank" href="work_order_main_edit?techID=<?php echo $Discard['master_wo_ref'] ?>">
                                 <button class="btn btn-warning mt-1">View/Edit</button>
                               </a>
-                              <button class="rePublish btn btn-success mt-1" data-id="<?php echo ($Discard['master_wo_ref']); ?>">Re-Publish</button>
+                              <button class="rePublishDraft  btn btn-success mt-1" data-id="<?php echo ($Discard['master_wo_ref']); ?>">Re-Send to Verify</button>
+
                             </td>
                           </tr>
                       <?php
@@ -266,7 +276,6 @@ getHead("WO Technical");
               </div>
             </div>
           </div>
-
           <div class="row">
             <div class="col-12 ">
               <div class="card card-success">
@@ -295,7 +304,7 @@ getHead("WO Technical");
                       left join clients_main on master_wo_2_client_id = client_id
                       left join master_work_order_main_identitiy on master_wo_status = mwoid_id
                       
-                          where master_wo_status not in (1,3)
+                          where master_wo_status = 7
                       " . $inColsWO . "
                       order by master_wo_id desc
                       ");
@@ -321,16 +330,6 @@ getHead("WO Technical");
                               <a href="work_order_view_print?id=<?php echo $Discard['master_wo_ref'] ?>" target="_blank">
                                 <button class="btn btn-warning mt-1" data-id="<?php echo md5($Discard['master_wo_id']); ?>">View</button>
                               </a>
-                              <?php if ($Discard['master_wo_status'] == 7) { ?>
-                                <a target="_blank" href="work_order_sales_repeat?repeatFromPublished=<?php echo $Discard['master_wo_ref'] ?>">
-                                  <button class="btn btn-primary mt-1">Repeat</button>
-                                </a>
-                              <?php } ?>
-                              <?php if ($Discard['master_wo_status'] == 7) { ?>
-                                <a target="_blank" href="work_order_sales_repeat_change?repeatChange=<?php echo $Discard['master_wo_ref'] ?>">
-                                  <button class="btn btn-info mt-1">Repeat - Change</button>
-                                </a>
-                              <?php } ?>
 
                             </td>
                           </tr>
@@ -382,12 +381,12 @@ getHead("WO Technical");
       $('.publishDraft').click(function(e) {
         var dataId = ($(this).data("id"));
 
-        bootbox.confirm("Are you sure you want to send this Sales Order " + dataId + "  for Verification?<br>Action Can <strong>not</strong> be undone.", function(result) {
+        bootbox.confirm("Are you sure you want to send this Work Order " + dataId + "  for Verification?<br>Action Can <strong>not</strong> be undone.", function(result) {
           if (result) {
 
 
             $.post("server_fundamentals/MainWorkOrderSubmit", {
-                draftToMain: dataId,
+                technicalToVerify: dataId,
               },
               function(data, status) {
                 bootbox.alert(data);
@@ -400,15 +399,16 @@ getHead("WO Technical");
     }); /*Doc Ready*/
 
     $(document).ready(function(e) {
-      $('.discardDraft').click(function(e) {
+      $('.rePublishDraft').click(function(e) {
+        console.log($(this));
         var dataId = ($(this).data("id"));
 
-        bootbox.confirm("Are you sure you want to DISCARD Draft Number " + dataId + " ? <br> This action can not be undone", function(result) {
+        bootbox.confirm("Are you sure you want to re-send this Work Order " + dataId + "  for Verification?<br>Action Can <strong>not</strong> be undone.", function(result) {
           if (result) {
 
 
-            $.post("server_fundamentals/SalesWorkOrderController", {
-                draftDiscard: dataId,
+            $.post("server_fundamentals/MainWorkOrderSubmit", {
+                techRePub: dataId,
               },
               function(data, status) {
                 bootbox.alert(data);
@@ -420,16 +420,17 @@ getHead("WO Technical");
       }); /* .pubslishDraft Click*/
     }); /*Doc Ready*/
 
+
     $(document).ready(function(e) {
-      $('.rePublish').click(function(e) {
+      $('.publishDraftCond').click(function(e) {
         var dataId = ($(this).data("id"));
 
-        bootbox.confirm("Are you sure you want to Re-Publish Sales Order Number " + dataId + " ?", function(result) {
+        bootbox.confirm("Are you sure you want to send this Work Order " + dataId + "  for Verification?<br>Action Can <strong>not</strong> be undone.", function(result) {
           if (result) {
 
 
             $.post("server_fundamentals/MainWorkOrderSubmit", {
-                rePublishSales: dataId,
+                technicalToVerifyCond: dataId,
               },
               function(data, status) {
                 bootbox.alert(data);
