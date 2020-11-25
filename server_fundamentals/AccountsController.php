@@ -21,7 +21,9 @@ if(isset($_POST['WorkOrderGetDetails'])){
 	left join master_work_order_main_identitiy on master_wo_status = mwoid_id
 	
 		where master_wo_status = 4 and master_wo_ref = ".$_POST['WorkOrderGetDetails']."
-	" . $inColsWO);
+	" . $inColsWO . "
+	order by master_wo_id desc
+	");
 	
 
 	if(!is_array($getRecieved)){

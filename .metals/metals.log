@@ -1,0 +1,10 @@
+2020.11.25 23:21:08 INFO  Started: Metals version 0.9.6 in workspace 'C:\wamp64\www\ipp_master' for client vscode.
+2020.11.25 23:21:09 INFO  time: initialize in 1.89s
+2020.11.25 23:21:10 WARN  Build server is not auto-connectable.
+2020.11.25 23:21:10 WARN  no build tool detected in workspace 'C:\wamp64\www\ipp_master'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+2020.11.25 23:21:28 WARN  no build target for: C:\Users\ayanz\Downloads\5CCS2PEP-Scala-Assignments-master\5CCS2PEP-Scala-Assignments-master\scala-assignment-2\danube.scala
+2020.11.25 23:21:31 INFO  no build target: using presentation compiler with only scala-library
+2020.11.25 23:21:48 WARN  no build target for: C:\Users\ayanz\Downloads\5CCS2PEP-Scala-Assignments-master\5CCS2PEP-Scala-Assignments-master\scala-assignment-1\collatz.scala
+2020.11.25 23:22:26 WARN  no build target for: C:\Users\ayanz\Downloads\5CCS2PEP-Scala-Assignments-master\5CCS2PEP-Scala-Assignments-master\scala-assignment-2\docdiff.scala
+Nov 26, 2020 1:23:56 AM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTraceNotification

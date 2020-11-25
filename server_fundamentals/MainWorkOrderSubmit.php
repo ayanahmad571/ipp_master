@@ -48,7 +48,9 @@ if(isset($_POST['draftToMain'])){
 	left join master_work_order_main_identitiy on master_wo_status = mwoid_id
 	
 		where master_wo_status = 4 and master_wo_ref = ".$_POST['AccountsCondToTechnical']."
-	" . $inColsWO);
+	" . $inColsWO . "
+	order by master_wo_id desc
+	");
 
 	if(!is_array($getRecieved)){
 		die("<p style='color:red'>Work Order Not Found</p>");
