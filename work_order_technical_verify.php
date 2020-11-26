@@ -362,7 +362,24 @@ getHead("WO Technical");
     $("#PublishedContainerTable").DataTable();
     $("#ReturnedContainerTable").DataTable();
   </script>
+  <div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg ">
 
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p>Some text in the modal.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
   <script>
     $(document).ready(function(e) {
       $('.publishDraft').click(function(e) {
@@ -384,26 +401,24 @@ getHead("WO Technical");
         });
       }); /* .pubslishDraft Click*/
     }); /*Doc Ready*/
+
     $(document).ready(function(e) {
       $('.discardDraft').click(function(e) {
         var dataId = ($(this).data("id"));
 
-        bootbox.confirm("Are you sure you want to return this Work Order Number: " + dataId + " to the Technical Team? <br> This action can not be undone", function(result) {
-          if (result) {
+        $.post("server_fundamentals/SalesWorkOrderController", {
+            WorkOrderGetDetailsTech: dataId,
+          },
+          function(data, status) {
+            $(".modal-body").html(data);
 
+            $('#myModal').modal('show');
+          });
 
-            $.post("server_fundamentals/MainWorkOrderSubmit", {
-                technicalToVerifyRej: dataId,
-              },
-              function(data, status) {
-                bootbox.alert(data);
-              });
-
-
-          }
-        });
       }); /* .pubslishDraft Click*/
-    }); /*Doc Ready*/
+    }); 
+
+
   </script>
 </body>
 

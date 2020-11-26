@@ -405,9 +405,9 @@ function groupConcatGetVal($table, $starting, $vals, $func)
 	$checkQuery = $func($sql);
 	//	var_dump($checkQuery);
 	if (!is_array($checkQuery)) {
-		echo '-';
+		return '-';
 	} else {
-		echo $checkQuery[0]['opts'];
+		return $checkQuery[0]['opts'];
 	}
 }
 function getValueComparer($element, $version0, $version1, $version2)
@@ -491,8 +491,12 @@ function getTableTH($val1, $val2 = "")
 
 function getTableTD($val1,  $val2 ="", $rowcol = 3)
 {
-	if (!empty(trim($val2))) {
-		echo '<td colspan="' . ($rowcol != 3 ? $rowcol : 3) . '"><strong class="titleMan">' . $val1 . '</strong> - ' . $val2 . '</td>';
+	$outputleft = '<strong class="titleMan">' . $val1 . '</strong> -';
+	if(empty(trim($val1))){
+		$outputleft = "";
+	}
+	if (!empty(trim($val2)) || true) {
+		echo '<td colspan="' . ($rowcol != 3 ? $rowcol : 3) . '">'.$outputleft.' ' . $val2 . '</td>';
 	}
 }
 

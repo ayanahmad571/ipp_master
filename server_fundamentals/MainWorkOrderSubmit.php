@@ -2,7 +2,7 @@
 
 require_once("SessionHandler.php");
 require_once("PostDataHeadChecker.php");
-
+$extraInput = "";
 if(isset($_POST['draftToMain'])){
 	#                         POST NAME			 Prev ID, Send ID NAME
 	$PAGE_ESSENTIALS= array('draftToMain',1,2);
@@ -12,8 +12,16 @@ if(isset($_POST['draftToMain'])){
 	$PAGE_ESSENTIALS= array('salesToAccounts',2,4);
 
 }else if(isset($_POST['returnSales'])){
+	if(!isset($_POST['reasonRej'])){
+		die("<p style='color:red'>Incomplete Form Submitted</p>");
+	}
+
+	if(trim($_POST['reasonRej']) == ''){
+		die("<p style='color:red'>Invalid Release Reason Input</p>");
+	}
 
 	$PAGE_ESSENTIALS= array('returnSales',2,3);
+	$extraInput = array("master_reject_text"=>$_POST['reasonRej']);
 
 }else if(isset($_POST['rePublishSales'])){
 
@@ -85,8 +93,16 @@ if(isset($_POST['draftToMain'])){
 	$PAGE_ESSENTIALS= array('techRePub',8,7);
     
 }else if(isset($_POST['technicalToVerifyRej'])){
+	if(!isset($_POST['reasonRejected'])){
+		die("<p style='color:red'>Incomplete Form Submitted</p>");
+	}
+
+	if(trim($_POST['reasonRejected']) == ''){
+		die("<p style='color:red'>Invalid Release Reason Input</p>");
+	}
 
 	$PAGE_ESSENTIALS= array('technicalToVerifyRej',7,8);
+	$extraInput = array("master_reject_text"=>$_POST['reasonRejected']);
     
 }else if(isset($_POST['techVerPublish'])){
 
@@ -131,9 +147,9 @@ $getWO['master_wo_gen_dnt'] = time();
 $getWO['master_wo_gen_lum_id'] = $USER_ARRAY['lum_id'];
 $getWO['master_wo_status'] = $PAGE_ESSENTIALS[2];
 
-$QueryCols = array();
-$QueryVals = array();
+
 //Insert  Query Content Builder
+$WorkOrderInsert = array();
 foreach ($getWO as $a => $b) {
     $goahead = true;
     if(substr( $a, 0, 10) != "master_wo_"){
@@ -143,9 +159,24 @@ foreach ($getWO as $a => $b) {
         $goahead = false;
     }
     if ($goahead) {
-        $QueryCols[] = '`' . $a . '`';
-        $QueryVals[] = ((is_null($b)) ? "NULL" : "'" . $b . "'");
+		$WorkOrderInsert[$a] = $b;
     }
+}
+
+
+if(isset($extraInput) && is_array($extraInput)){
+	foreach ($extraInput as $key => $value) {
+		$WorkOrderInsert[$key] = $value;
+		# code...
+	}
+}
+
+$QueryCols = array();
+$QueryVals = array();
+
+foreach ($WorkOrderInsert as $a => $b) {
+	$QueryCols[] = '`' . $a . '`';
+	$QueryVals[] = ((is_null($b)) ? "NULL" : "'" . $b . "'");
 }
 
 //Append Data from Content Builder onto Main Query
@@ -159,5 +190,3 @@ if (!is_numeric($insertWorkOrderMain)) {
     die("ERROR - 503.1 - Fatal Internal Server Error, Work Order Could not be inserted, REFERENCE INSERTED");
 }
 die("Success- Work Order Successfully Published");
-
-?>

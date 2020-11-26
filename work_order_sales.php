@@ -23,7 +23,7 @@ getHead("WO Sales");
       <div class="main-content">
         <section class="section">
           <div class="section-header">
-            <h1>Work Order - Sales <?php if ($inColsWO == "") {
+            <h1>Sales Order - Sales <?php if ($inColsWO == "") {
                                       echo "Full View";
                                     } else {
                                       echo "Limited View";
@@ -179,8 +179,7 @@ getHead("WO Sales");
                                 <button class="btn btn-warning mt-1">View/Edit</button>
                               </a>
                               <button class="publishDraft btn btn-success mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Send to Verify</button>
-                              <button class="discardDraft btn btn-danger mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Discard</button>
-                              <a target="_blank" href="work_order_print?id=<?php echo $Draft['master_wo_ref'] ?>">
+                              <a target="_blank" href="work_order_view_print?id=<?php echo $Draft['master_wo_ref'] ?>">
                                 <button class="btn btn-primary mt-1">Print</button>
                               </a>
                             </td>
@@ -249,7 +248,7 @@ getHead("WO Sales");
                               ?>
                             </td>
                             <td><?php echo date('d-m-Y @ h:i:s a', $Discard['master_wo_gen_dnt']); ?></td>
-                            <td><?php echo $Discard['mwoid_desc2'] ?></td>
+                            <td><?php echo $Discard['mwoid_desc2'] ?><br> <hr><?php echo $Discard['master_reject_text'] ?></td>
                             <td>
                               <a href="work_order_sales_generate?editId=<?php echo $Discard['master_wo_ref'] ?>" target="_blank">
                                 <button class="btn btn-warning mt-1">View/Edit</button>
@@ -324,12 +323,12 @@ getHead("WO Sales");
                               <a href="work_order_view_print?id=<?php echo $Discard['master_wo_ref'] ?>" target="_blank">
                                 <button class="btn btn-warning mt-1" data-id="<?php echo md5($Discard['master_wo_id']); ?>">View</button>
                               </a>
-                              <?php if ($Discard['master_wo_status'] == 7) { ?>
+                              <?php if ($Discard['master_wo_status'] == 9) { ?>
                                 <a target="_blank" href="work_order_sales_repeat?repeatFromPublished=<?php echo $Discard['master_wo_ref'] ?>">
                                   <button class="btn btn-primary mt-1">Repeat</button>
                                 </a>
                               <?php } ?>
-                              <?php if ($Discard['master_wo_status'] == 7) { ?>
+                              <?php if ($Discard['master_wo_status'] == 9) { ?>
                                 <a target="_blank" href="work_order_sales_repeat_change?repeatChange=<?php echo $Discard['master_wo_ref'] ?>">
                                   <button class="btn btn-info mt-1">Repeat - Change</button>
                                 </a>

@@ -23,7 +23,7 @@ getHead("WO Sales Verification");
       <div class="main-content">
         <section class="section">
           <div class="section-header">
-            <h1>Sales Work Order - Verification</h1>
+            <h1>Sales Order - Verification</h1>
           </div>
           <!-- TOP CONTENT BLOCKS -->
           <div class="row">
@@ -171,7 +171,7 @@ getHead("WO Sales Verification");
                             <td>
                               <button class="publishDraft btn btn-success mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Publish</button>
                               <button class="discardDraft btn btn-danger mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Return</button>
-                              <a target="_blank" href="work_order_print?id=<?php echo $Draft['master_wo_ref'] ?>">
+                              <a target="_blank" href="work_order_view_print?id=<?php echo $Draft['master_wo_ref'] ?>">
                                 <button class="btn btn-primary mt-1">View</button>
                               </a>
                             </td>
@@ -353,6 +353,27 @@ getHead("WO Sales Verification");
   <script type="text/javascript" src="assets/Datatables/datatables.min.js"></script>
 
   <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+
+  <div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg ">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p>Some text in the modal.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
   <script>
     $("#DraftsContainerTable").DataTable();
     $("#PublishedContainerTable").DataTable();
@@ -385,22 +406,39 @@ getHead("WO Sales Verification");
       $('.discardDraft').click(function(e) {
         var dataId = ($(this).data("id"));
 
-        bootbox.confirm("Are you sure you want to return Sales Order Number: " + dataId + " to sales? <br> This action can not be undone", function(result) {
-          if (result) {
+        $.post("server_fundamentals/SalesWorkOrderController", {
+            WorkOrderGetDetails: dataId,
+          },
+          function(data, status) {
+            $(".modal-body").html(data);
 
+            $('#myModal').modal('show');
+          });
 
-            $.post("server_fundamentals/MainWorkOrderSubmit", {
-                returnSales: dataId,
-              },
-              function(data, status) {
-                bootbox.alert(data);
-              });
-
-
-          }
-        });
       }); /* .pubslishDraft Click*/
     }); /*Doc Ready*/
+
+
+    // $(document).ready(function(e) {
+    //   $('.diSscardDraft').click(function(e) {
+    //     var dataId = ($(this).data("id"));
+
+    //     bootbox.confirm("Are you sure you want to return Sales Order Number: " + dataId + " to sales? <br> This action can not be undone", function(result) {
+    //       if (result) {
+
+
+    //         $.post("server_fundamentals/MainWorkOrderSubmit", {
+    //             returnSales: dataId,
+    //           },
+    //           function(data, status) {
+    //             bootbox.alert(data);
+    //           });
+
+
+    //       }
+    //     });
+    //   }); /* .pubslishDraft Click*/
+    // }); /*Doc Ready*/
 
   </script>
 </body>

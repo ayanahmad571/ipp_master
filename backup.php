@@ -215,21 +215,7 @@ getHead("Home");
 
 <link rel="stylesheet" type="text/css" href="assets/DataTables/datatables.min.css" />
 <style>
-.sales{
-	Black
-}
 
-.quality{
-	Blue
-}
-
-.FM{
-	Red
-}
-
-.PL{
-	green
-}
 </style>
 <body>
   <div id="app">

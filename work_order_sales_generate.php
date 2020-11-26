@@ -17,7 +17,7 @@ if (isset($_GET['editId']) && is_numeric($_GET['editId'])) {
 
   if (is_array($WorkOrderMain)) {
     $WorkOrderMain = $WorkOrderMain[0];
-  }else{
+  } else {
     die('Invalid Work Order Supplied');
   }
   $itisEdit = true;
@@ -81,10 +81,9 @@ getHead("Sales Order - " . ($itisEdit ? "Edit Sales Order" : "Make New Sales Ord
                     <?php if ($itisEdit) { ?>
                       <input type="hidden" name="work_order_edit_id" value="<?php echo $_GET['editId'] ?>" />
                     <?php } ?>
-                    <div id="workOrderHeaderDetails">
-                      <?php 
-                      if($itisEdit && $WorkOrderMain['mwo_type'] != 1){
-                      ?>
+                    <?php
+                    if ($itisEdit && $WorkOrderMain['mwo_type'] != 1) {
+                    ?>
                       <div class="row">
                         <div class="form-group col-sm-12 col-md-6 col-xl-4 ">
                           <label>LWO</label>
@@ -102,294 +101,288 @@ getHead("Sales Order - " . ($itisEdit ? "Edit Sales Order" : "Make New Sales Ord
                         </div>
 
                       </div>
-                      <?php
-                      }
-                      ?>
+                    <?php
+                    }
+                    ?>
 
-                      <div class="row">
+                    <div class="row">
 
-                        <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-1">
-                          <label>Customer Code</label>
-                          <select class="form-control select_a" required name="work_order_2_client_id">
-                            <?php
-                            $getClients = mysqlSelect("SELECT * FROM `clients_main` where `client_show` = 1 order by client_name asc ");
-                            if (is_array($getClients)) {
-                              foreach ($getClients as $Client) {
-                                echo '<option data-name="' . $Client['client_name'] . '" value="' . $Client['client_id'] . '">' . $Client['client_code'] . '</option>';
-                              }
-                            } else {
-                              echo '<option value="-m-x">None</option>';
+                      <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-1">
+                        <label>Customer Code</label>
+                        <select class="form-control select_a" required name="work_order_2_client_id">
+                          <?php
+                          $getClients = mysqlSelect("SELECT * FROM `clients_main` where `client_show` = 1 order by client_name asc ");
+                          if (is_array($getClients)) {
+                            foreach ($getClients as $Client) {
+                              echo '<option data-name="' . $Client['client_name'] . '" value="' . $Client['client_id'] . '">' . $Client['client_code'] . '</option>';
                             }
-                            ?>
-                          </select>
-                        </div>
+                          } else {
+                            echo '<option value="-m-x">None</option>';
+                          }
+                          ?>
+                        </select>
+                      </div>
 
-                        <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-3">
-                          <label>Customer Name</label>
-                          <input type="text" disabled class="form-control" id="custNameGetter" placeholder="">
-                        </div>
+                      <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-3">
+                        <label>Customer Name</label>
+                        <input type="text" disabled class="form-control" id="custNameGetter" placeholder="">
+                      </div>
 
-                        <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
-                          <label>Customer's Design Name</label>
-                          <input type="text" class="form-control" name="work_order_customer_design_name" placeholder="Customer Design Name">
-                        </div>
-                        <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
-                          <label>Customer's Item Code</label>
-                          <input type="text" class="form-control" name="work_order_customer_item_code" placeholder="Customer Item Code">
-                        </div>
+                      <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
+                        <label>Customer's Design Name</label>
+                        <input type="text" class="form-control" name="work_order_customer_design_name" placeholder="Customer Design Name">
+                      </div>
+                      <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
+                        <label>Customer's Item Code</label>
+                        <input type="text" class="form-control" name="work_order_customer_item_code" placeholder="Customer Item Code">
+                      </div>
 
-                        <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
-                          <label>Customer P.O#</label>
-                          <input type="text" class="form-control" name="work_order_customer_po" placeholder="Customer P.O#">
-                        </div>
-                        <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
-                          <label>Customer P.O Date</label>
-                          <input onchange="getDif()" type="text" class="form-control" name="work_order_po_date" placeholder="DD-MM-YYYY">
-                        </div>
+                      <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
+                        <label>Customer P.O#</label>
+                        <input type="text" class="form-control" name="work_order_customer_po" placeholder="Customer P.O#">
+                      </div>
+                      <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
+                        <label>Customer P.O Date</label>
+                        <input onchange="getDif()" type="text" class="form-control" name="work_order_po_date" placeholder="DD-MM-YYYY">
+                      </div>
 
-                        <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
-                          <label>Required Delivery Date</label>
-                          <input onchange="getDif()" type="text" class="form-control" name="work_order_delivery_date" placeholder="DD-MM-YYYY">
-                        </div>
+                      <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
+                        <label>Required Delivery Date</label>
+                        <input onchange="getDif()" type="text" class="form-control" name="work_order_delivery_date" placeholder="DD-MM-YYYY">
+                      </div>
 
-                        <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
-                          <label>Delivery Required In</label>
-                          <input id="numberOfDays" type="text" disabled class="form-control" name="">
-                        </div>
+                      <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
+                        <label>Delivery Required In</label>
+                        <input id="numberOfDays" type="text" disabled class="form-control" name="">
+                      </div>
 
-                        <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
-                          <label>Customer Location</label>
+                      <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
+                        <label>Customer Location</label>
 
-                          <div class="selectgroup selectgroup-pills">
-                            <?php
-                            $getSlitCustomrs = mysqlSelect("SELECT * FROM `work_order_ui_customer_location` where customer_location_show = 1 ");
-                            if (is_array($getSlitCustomrs)) {
-                              foreach ($getSlitCustomrs as $SingularOP) {
-                                echo '
+                        <div class="selectgroup selectgroup-pills">
+                          <?php
+                          $getSlitCustomrs = mysqlSelect("SELECT * FROM `work_order_ui_customer_location` where customer_location_show = 1 ");
+                          if (is_array($getSlitCustomrs)) {
+                            foreach ($getSlitCustomrs as $SingularOP) {
+                              echo '
                         <label class="selectgroup-item">
                           <input type="checkbox" name="work_order_3_customer_loc[]" value="' . $SingularOP['customer_location_id'] . '" class="selectgroup-input" ' . ($SingularOP['customer_location_id'] == 1 ? 'checked' : '') . '>
                           <span class="selectgroup-button">' . $SingularOP['customer_location_value'] . '</span>
                         </label>';
-                              }
                             }
-                            ?>
-
-                          </div>
-                        </div>
-
-                        <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
-                          <label>Contact Person Name</label>
-                          <input type="text" class="form-control" name="work_order_contact_person_name" placeholder="Contact Person Name">
-                        </div>
-                        <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
-                          <label>Contact Person Mob NO</label>
-                          <input type="text" class="form-control" name="work_order_contact_person_mob_no" placeholder="Contact Person Mob NO">
-                        </div>
-                        <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
-                          <label>Contact Person Email</label>
-                          <input type="text" class="form-control" name="work_order_contact_person_email" placeholder="Contact Person Email">
-                        </div>
-                      </div>
-
-                      <div class="row">
-                        <div class="form-group col-12 col-md-6 col-lg-3 col-xl-3">
-                          <label>IPP Sales Person Code</label>
-                          <select class="form-control select_a" required name="work_order_2_sales_id">
-                            <?php
-                            $getDrafts = mysqlSelect($getAttachedTreeSql);
-
-                            if (is_array($getDrafts)) {
-                              foreach ($getDrafts as $Draft) {
-                                echo '<option value="' . $Draft['lum_id'] . '">' . $Draft['lum_code'] . ' - ' . $Draft['lum_name'] . '</option>';
-                              }
-                            }
-                            ?>
-                          </select>
-
-
-                        </div>
-                        <?php
-                        getSelectBox(
-                          "form-group col-12 col-md-6 col-lg-3 col-xl-2",
-                          "Product Type",
-                          "work_order_2_structure",
-                          "SELECT * FROM `work_order_ui_structure` ",
-                          'structure_id',
-                          'structure_value'
-                        );
-                        ?>
-                        <?php
-                        getSelectBox(
-                          "form-group col-12 col-md-6 col-lg-3 col-xl-2",
-                          "_ ",
-                          "work_order_2_type_printed",
-                          "SELECT * FROM `work_order_product_type_printed` where ptp_show = 1 order by ptp_value asc ",
-                          'ptp_id',
-                          'ptp_value'
-                        );
-                        ?>
-                        <div id="whenPrintedClickedGO" class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
-                          <label>Ink GSM as per PRE-COSTING</label>
-                          <input type="text" class="form-control" name="work_order_ink_gsm_pre_c" placeholder="Ink GSM">
-                        </div>
-
-                        <?php
-                        getSelectBox(
-                          "form-group col-sm-12 col-xl-3",
-                          "Application",
-                          "work_order_2_application",
-                          "SELECT * FROM `work_order_applications` where application_show =1 order by application_value asc ",
-                          'application_id',
-                          'application_value'
-                        );
-                        ?>
-
-
-                      </div>
-
-                      <div class="row">
-                        <?php
-                        getSelectBox(
-                          "form-group col-sm-12 col-xl-3 classOnlyRoll",
-                          "Roll Filling Options",
-                          "work_order_2_roll_fill_opts",
-                          "SELECT * FROM `work_order_ui_roll_options` where rollopts_show =1 order by rollopts_value asc ",
-                          'rollopts_id',
-                          'rollopts_value'
-                        );
-                        ?>
-                        <?php
-                        getSelectBox(
-                          "form-group col-sm-12 col-xl-3 classBagPouch",
-                          "Bag/Pouch Filling Options Temperature",
-                          "work_order_2_pouchbag_fillops",
-                          "SELECT * FROM `work_order_ui_pouch_bag_fill_opts` where pbfo_show =1 order by pbfo_value asc ",
-                          'pbfo_id',
-                          'pbfo_value'
-                        );
-                        ?>
-
-                        <?php
-                        getSelectBox(
-                          "form-group col-sm-12 col-xl-3",
-                          "Filling Temperature",
-                          "work_order_2_fill_temp",
-                          "SELECT * FROM `work_order_ui_filling_temp` where filling_temp_show =1 order by filling_temp_value asc ",
-                          'filling_temp_id',
-                          'filling_temp_value'
-                        );
-                        ?>
-                        <div class="form-group col-sm-12 col-md-6 col-lg-3">
-                          <label>Filling Time Duration</label>
-                          <input type="text" class="form-control" name="work_order_fill_duration" placeholder="Time Duration">
-                        </div>
-                        <div class="form-group col-sm-12 col-md-6 col-lg-3">
-                          <label>Filling Temperature</label>
-                          <input type="text" class="form-control" name="work_order_fill_temp" placeholder="Temperature">
-                        </div>
-
-                        <div class="form-group col-sm-12 col-md-6 col-lg-3">
-                          <label>Line Speed Time Duration</label>
-                          <input type="text" class="form-control" name="work_order_line_speed" placeholder="Time Duration">
-                        </div>
-                        <div class="form-group col-sm-12 col-md-6 col-lg-3">
-                          <label>Dwell Time</label>
-                          <input type="text" class="form-control" name="work_order_dwell_time" placeholder="Temperature">
-                        </div>
-                        <div class="form-group col-sm-12 col-md-6 col-lg-3">
-                          <label>Seal Temperature</label>
-                          <input type="text" class="form-control" name="work_order_seal_temp" placeholder="Time Duration">
-                        </div>
-
-
-                      </div>
-
-                      <div class="row">
-
-                        <div class="col-12 col-md-6 col-xl-4">
-                          <div class="row">
-                            <div class="form-group col-sm-12 col-md-9">
-                              <label>IPP Design ID</label>
-                              <input type="text" class="form-control" name="work_order_design_id" placeholder="IPP Design ID">
-                            </div>
-                            <div class="form-group col-sm-12 col-md-3">
-                              <label>Rev No</label>
-                              <input type="number" min="0" value="0" class="form-control" name="work_order_rev_no" placeholder="Rev">
-                            </div>
-                          </div>
-                        </div>
-
-
-                        <div class="form-group col-sm-12 col-lg-6 col-xl-2">
-                          <label>Approved Sample WO No.</label>
-                          <input type="text" class="form-control" name="work_order_approved_sample_wo_no" placeholder="Approved Sample WO NO">
-                        </div>
-
-
-
-                        <div class="form-group col-sm-12 col-lg-6 col-xl-2">
-                          <label>Pack Size </label>
-                          <input type="number" min="1" max="999999" step="0.01" class="form-control" name="work_order_pack_size" placeholder="Pack Size ">
-                        </div>
-
-                        <div class="form-group col-sm-12 col-lg-6 col-xl-2">
-                          <label>Pack Weight </label>
-                          <input type="number" min="1" max="999999" step="0.01" class="form-control" name="work_order_pack_weight" placeholder="Pack Weight ">
-                        </div>
-
-
-
-                        <?php
-                        getSelectBox(
-                          "form-group col-4 col-xl-2",
-                          "Pack Weight Unit",
-                          "work_order_2_pack_weight_unit",
-                          "SELECT * FROM `work_order_pack_size_unit` where psu_show = 1",
-                          'psu_id',
-                          'psu_value'
-                        );
-                        ?>
-
-
-                      </div>
-
-                      <div class="row">
-                        <div class="form-group col-8 col-xl-2">
-                          <label>Order Qty</label>
-                          <input placeholder="Order Quantity" name="work_order_quantity" type="number" step="0.01" class="form-control" min="0.10">
-                        </div>
-
-                        <?php
-                        getSelectBox(
-                          "form-group col-4 col-xl-2",
-                          "Qty Unit",
-                          "work_order_2_units",
-                          "SELECT * FROM `work_order_qty_units` where unit_show =1",
-                          'unit_id',
-                          'unit_value'
-                        );
-                        ?>
-
-                        <div class="form-group col-4 col-xl-2">
-                          <label>Tolerance % +/-</label>
-                          <input placeholder="Tolerance +/-" name="work_order_quantity_tolerance" type="number" step="0.01" class="form-control" />
-                        </div>
-
-
-                        <div class="classPouchRoll col-sm-12 col-xl-2">
-
-                          <?php
-                          getSelectBox(
-                            "form-group",
-                            "Laser Configuration",
-                            "work_order_2_laser_config",
-                            "SELECT * FROM `work_order_ui_slitting_laser_config` where laser_show =1 order by laser_value asc ",
-                            'laser_id',
-                            'laser_value'
-                          );
+                          }
                           ?>
-                        </div>
 
+                        </div>
+                      </div>
+
+                      <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
+                        <label>Contact Person Name</label>
+                        <input type="text" class="form-control" name="work_order_contact_person_name" placeholder="Contact Person Name">
+                      </div>
+                      <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
+                        <label>Contact Person Mob NO</label>
+                        <input type="text" class="form-control" name="work_order_contact_person_mob_no" placeholder="Contact Person Mob NO">
+                      </div>
+                      <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
+                        <label>Contact Person Email</label>
+                        <input type="text" class="form-control" name="work_order_contact_person_email" placeholder="Contact Person Email">
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="form-group col-12 col-md-6 col-lg-3 col-xl-2">
+                        <label>IPP Sales Person Code</label>
+                        <select class="form-control select_a" required name="work_order_2_sales_id">
+                          <?php
+                          $getDrafts = mysqlSelect($getAttachedTreeSql);
+
+                          if (is_array($getDrafts)) {
+                            foreach ($getDrafts as $Draft) {
+                              echo '<option value="' . $Draft['lum_id'] . '">' . $Draft['lum_code'] . ' - ' . $Draft['lum_name'] . '</option>';
+                            }
+                          }
+                          ?>
+                        </select>
+
+
+                      </div>
+                      <?php
+                      getSelectBox(
+                        "form-group col-12 col-md-6 col-lg-3 col-xl-2",
+                        "Product Type",
+                        "work_order_2_structure",
+                        "SELECT * FROM `work_order_ui_structure` ",
+                        'structure_id',
+                        'structure_value'
+                      );
+                      ?>
+                      <?php
+                      getSelectBox(
+                        "form-group col-12 col-md-6 col-lg-3 col-xl-2",
+                        "_ ",
+                        "work_order_2_type_printed",
+                        "SELECT * FROM `work_order_product_type_printed` where ptp_show = 1 order by ptp_value asc ",
+                        'ptp_id',
+                        'ptp_value'
+                      );
+                      ?>
+                      <div id="whenPrintedClickedGO" class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
+                        <label>Ink GSM as per PRE-COSTING</label>
+                        <input type="text" class="form-control" name="work_order_ink_gsm_pre_c" placeholder="Ink GSM">
+                      </div>
+
+                      <div class="col-12 col-md-6 col-xl-4">
+                        <div class="row">
+                          <div class="form-group col-sm-12 col-md-9">
+                            <label>IPP Design ID</label>
+                            <input type="text" class="form-control" name="work_order_design_id" placeholder="IPP Design ID">
+                          </div>
+                          <div class="form-group col-sm-12 col-md-3">
+                            <label>Rev No</label>
+                            <input type="number" min="0" value="0" class="form-control" name="work_order_rev_no" placeholder="Rev">
+                          </div>
+                        </div>
+                      </div>
+
+
+                    </div>
+                    <hr>
+                    <div class="row">
+                      <?php
+                      getSelectBox(
+                        "form-group col-sm-12 col-xl-2",
+                        "Application",
+                        "work_order_2_application",
+                        "SELECT * FROM `work_order_applications` where application_show =1 order by application_value asc ",
+                        'application_id',
+                        'application_value'
+                      );
+                      ?>
+                      <?php
+                      getSelectBox(
+                        "form-group col-sm-12 col-xl-2 classOnlyRoll",
+                        "Roll Filling Options",
+                        "work_order_2_roll_fill_opts",
+                        "SELECT * FROM `work_order_ui_roll_options` where rollopts_show =1 order by rollopts_value asc ",
+                        'rollopts_id',
+                        'rollopts_value'
+                      );
+                      ?>
+                      <?php
+                      getSelectBox(
+                        "form-group col-sm-12 col-xl-2 classBagPouch",
+                        "Bag/Pouch Filling Options Temperature",
+                        "work_order_2_pouchbag_fillops",
+                        "SELECT * FROM `work_order_ui_pouch_bag_fill_opts` where pbfo_show =1 order by pbfo_value asc ",
+                        'pbfo_id',
+                        'pbfo_value'
+                      );
+                      ?>
+
+                      <?php
+                      getSelectBox(
+                        "form-group col-sm-12 col-xl-2",
+                        "Customer Filling Machine Details",
+                        "work_order_2_fill_temp",
+                        "SELECT * FROM `work_order_ui_filling_temp` where filling_temp_show =1 order by filling_temp_value asc ",
+                        'filling_temp_id',
+                        'filling_temp_value'
+                      );
+                      ?>
+                      <div class="form-group col-sm-12 col-md-6 col-lg-2">
+                        <label>Filling Time Duration</label>
+                        <input type="text" class="form-control" name="work_order_fill_duration" placeholder="Time Duration">
+                      </div>
+                      <div class="form-group col-sm-12 col-md-6 col-lg-2">
+                        <label>Filling Temperature</label>
+                        <input type="text" class="form-control" name="work_order_fill_temp" placeholder="Temperature">
+                      </div>
+
+                      <div class="form-group col-sm-12 col-md-6 col-lg-2">
+                        <label>Line Speed Time Duration</label>
+                        <input type="text" class="form-control" name="work_order_line_speed" placeholder="Time Duration">
+                      </div>
+                      <div class="form-group col-sm-12 col-md-6 col-lg-2">
+                        <label>Dwell Time</label>
+                        <input type="text" class="form-control" name="work_order_dwell_time" placeholder="Temperature">
+                      </div>
+                      <div class="form-group col-sm-12 col-md-6 col-lg-2">
+                        <label>Seal Temperature</label>
+                        <input type="text" class="form-control" name="work_order_seal_temp" placeholder="Time Duration">
+                      </div>
+                      <div class="form-group col-sm-12 col-lg-6 col-xl-2">
+                        <label>Pack Size </label>
+                        <input type="number" min="1" max="999999" step="0.01" class="form-control" name="work_order_pack_size" placeholder="Pack Size ">
+                      </div>
+
+                      <div class="form-group col-sm-12 col-lg-6 col-xl-2">
+                        <label>Pack Weight </label>
+                        <input type="number" min="1" max="999999" step="0.01" class="form-control" name="work_order_pack_weight" placeholder="Pack Weight ">
+                      </div>
+
+
+
+                      <?php
+                      getSelectBox(
+                        "form-group col-4 col-xl-2",
+                        "Weight Unit",
+                        "work_order_2_pack_weight_unit",
+                        "SELECT * FROM `work_order_pack_size_unit` where psu_show = 1",
+                        'psu_id',
+                        'psu_value'
+                      );
+                      ?>
+
+
+                    </div>
+                    <hr>
+
+                    <div class="row">
+
+
+
+
+                      <div class="form-group col-sm-12 col-lg-6 col-xl-3">
+                        <label>Approved Sample WO No.</label>
+                        <input type="text" class="form-control" name="work_order_approved_sample_wo_no" placeholder="Approved Sample WO NO">
+                      </div>
+
+
+                      <div class="form-group col-8 col-xl-2">
+                        <label>Order Qty</label>
+                        <input placeholder="Order Quantity" name="work_order_quantity" type="number" step="0.01" class="form-control" min="0.10">
+                      </div>
+
+                      <?php
+                      getSelectBox(
+                        "form-group col-4 col-xl-2",
+                        "Qty Unit",
+                        "work_order_2_units",
+                        "SELECT * FROM `work_order_qty_units` where unit_show =1",
+                        'unit_id',
+                        'unit_value'
+                      );
+                      ?>
+
+                      <div class="form-group col-4 col-xl-2">
+                        <label>Tolerance % +/-</label>
+                        <input placeholder="Tolerance +/-" name="work_order_quantity_tolerance" type="number" step="0.01" class="form-control" />
+                      </div>
+
+
+                      <div class="classPouchRoll col-sm-12 col-xl-3">
+
+                        <?php
+                        getSelectBox(
+                          "form-group",
+                          "Laser Configuration",
+                          "work_order_2_laser_config",
+                          "SELECT * FROM `work_order_ui_slitting_laser_config` where laser_show =1 order by laser_value asc ",
+                          'laser_id',
+                          'laser_value'
+                        );
+                        ?>
                       </div>
 
                     </div>
@@ -439,7 +432,7 @@ getHead("Sales Order - " . ($itisEdit ? "Edit Sales Order" : "Make New Sales Ord
 
                         <div class="col-12 col-lg-4">
                           <div class="row">
-                            <div class="col-12 ">
+                            <div id="imgRollPut" class="col-12 ">
                               <img class="img-thumbnail" src="assets/img/winding_dir.png" />
                             </div>
                           </div>
@@ -448,16 +441,21 @@ getHead("Sales Order - " . ($itisEdit ? "Edit Sales Order" : "Make New Sales Ord
 
                         <div class="col-12 col-lg-8">
                           <div class="row">
-                            <?php
-                            getSelectBox(
-                              "form-group col-12 col-lg-3",
-                              "Wind DIR",
-                              "work_order_2_wind_dir",
-                              "SELECT * FROM `work_order_wind_dir` where wind_show =1 order by wind_value asc",
-                              'wind_id',
-                              'wind_value'
-                            );
-                            ?>
+                            <div class="form-group col-12 col-lg-3">
+                              <label>Wind DIR</label>
+                              <select class="form-control select_a" required name="work_order_2_wind_dir">
+                                <?php
+                                $getWinds = mysqlSelect("SELECT * FROM `work_order_wind_dir` where wind_show =1 order by wind_value asc");
+                                if (is_array($getWinds)) {
+                                  foreach ($getWinds  as $Wind) {
+                                    echo '<option data-id="' . strtolower($Wind['wind_value']) . '" value="' . $Wind['wind_id'] . '">' . $Wind['wind_value'] . '</option>';
+                                  }
+                                }
+                                ?>
+                              </select>
+                            </div>
+
+
                             <div class="form-group col-12 col-lg-3">
                               <label>Customer Roll OD(mm)</label>
                               <input type="number" min="1" max="999999999" step="0.01" class="form-control" name="work_order_roll_od" placeholder="Customer Roll OD">
@@ -943,7 +941,7 @@ getHead("Sales Order - " . ($itisEdit ? "Edit Sales Order" : "Make New Sales Ord
                         ?>
 
                         <div class="form-group col-12 col-sm-6 col-lg-6 col-xl-2">
-                          <label>Max Gross Weight per Pallet</label>
+                          <label>Max Gross Weight per Pallet (KG)</label>
                           <input min="1" max="99999999999" type="number" class="form-control" name="work_order_max_gross_pallet_weight" placeholder="Max Gross Weight per Pallet">
                         </div>
 
@@ -969,7 +967,7 @@ getHead("Sales Order - " . ($itisEdit ? "Edit Sales Order" : "Make New Sales Ord
                         );
                         ?>
 
-                        <div class="form-group col-12 col-sm-6 col-lg-6 col-xl-2">
+                        <div id="cartonPly" class="form-group col-12 col-sm-6 col-lg-6 col-xl-2">
                           <label>Carton Thickness</label>
                           <input name="work_order_cart_thick" type="number" min="3" max="7" class="form-control" value="3" placeholder="Ply">
                         </div>
@@ -986,7 +984,7 @@ getHead("Sales Order - " . ($itisEdit ? "Edit Sales Order" : "Make New Sales Ord
                               foreach ($getSlitCustomrs as $SingularOP) {
                                 echo '
                         <label class="selectgroup-item">
-                          <input type="checkbox" name="work_order_3_docs[]" value="' . $SingularOP['shipment_id'] . '" class="selectgroup-input" ' . ($SingularOP['shipment_id'] == 1 ? 'checked' : '') . '>
+                          <input type="checkbox" name="work_order_3_docs[]" value="' . $SingularOP['shipment_id'] . '" class="selectgroup-input" ' . ($SingularOP['shipment_id'] == 4 ? 'checked' : '') . '>
                           <span class="selectgroup-button">' . $SingularOP['shipment_value'] . '</span>
                         </label>';
                               }
@@ -1150,10 +1148,12 @@ getHead("Sales Order - " . ($itisEdit ? "Edit Sales Order" : "Make New Sales Ord
       getDif();
       setUpPouchImage();
       setUpBagImage();
+      setUpRollImage();
       setCustName();
       setUpMaxPouch();
       setUpPrintingOption();
       setLamGSM();
+      // setCartonPly();
       $(".remarksEdit").wysihtml5();
 
       //Listeners	
@@ -1232,6 +1232,10 @@ getHead("Sales Order - " . ($itisEdit ? "Edit Sales Order" : "Make New Sales Ord
         setUpBagImage();
       });
 
+      $("select[name=work_order_2_wind_dir]").change(function(e) {
+        setUpRollImage();
+      });
+
       $("#pouchPerBundle").change(function(e) {
         setUpMaxPouch();
       });
@@ -1246,6 +1250,25 @@ getHead("Sales Order - " . ($itisEdit ? "Edit Sales Order" : "Make New Sales Ord
 
       $("#formLoading").hide();
     });
+
+    // function setCartonPly() {
+    //   let struct = $('select[name=work_order_2_structure]').find(':selected').val();
+    //   let bagPouchCont = $('select[name=work_order_2_roll_pack_ins]').find(':selected').val();
+    //   let rollCont = $('select[name=work_order_2_carton_pack_ins]').find(':selected').val();
+
+    //   if (struct == 1 || struct == 2) {
+    //     //Bag/Pouch
+    //     $("#cartonPly").show();
+    //   } else {
+    //     //ROll
+
+    //     if (bagPouchCont == ) {
+    //       $("#cartonPly").hide();
+    //     } else {
+    //       $("#cartonPly").show();
+    //     }
+    //   }
+    // }
 
     function setLamGSM() {
 
@@ -1451,6 +1474,11 @@ getHead("Sales Order - " . ($itisEdit ? "Edit Sales Order" : "Make New Sales Ord
       $("#bagSwHolder").html('<img class="img-thumbnail" src="' + $("#bag_switcher").find(':selected').data('id') + '" />');
 
     }
+
+    function setUpRollImage() {
+      $("#imgRollPut").html('<img class="img-thumbnail" src="assets/slitting/' + $("select[name=work_order_2_wind_dir]").find(':selected').data('id') + '.jpg" />');
+
+    }
   </script>
 
   <script>
@@ -1525,6 +1553,11 @@ getHead("Sales Order - " . ($itisEdit ? "Edit Sales Order" : "Make New Sales Ord
 
     });
   </script>
+  <!-- <script>
+    $(window).bind('beforeunload', function() {
+      return 'Are you sure you want to leave?';
+    });
+  </script> -->
 </body>
 
 </html>
