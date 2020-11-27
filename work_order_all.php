@@ -149,7 +149,7 @@ getHead("WO Technical");
                       left join clients_main on master_wo_2_client_id = client_id
                       left join master_work_order_main_identitiy on master_wo_status = mwoid_id
                       
-                          where master_wo_status in (6,5)  
+                          where master_wo_status = 9 
                       " . $inColsWO . "
                       order by master_wo_id desc
                       ");
@@ -173,7 +173,7 @@ getHead("WO Technical");
                             <td><?php echo date('d-m-Y @ h:i:s a', $Draft['master_wo_gen_dnt']); ?></td>
                             <td>
 
-                              <a target="_blank" href="work_order_print?id=<?php echo $Draft['master_wo_ref'] ?>">
+                              <a target="_blank" href="work_order_view_print?id=<?php echo $Draft['master_wo_ref'] ?>">
                                 <button class="btn btn-primary mt-1">View</button>
                               </a>
                             </td>

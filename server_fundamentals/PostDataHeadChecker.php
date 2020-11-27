@@ -37,7 +37,8 @@ $WOselectArrays = array(
 $WOcheckboxArrays = array(
 	"work_order_3_customer_loc" => "master_wo_3_customer_loc",
 	"work_order_3_docs" => "master_wo_3_docs",
-	"work_order_3_pouch_lap_fin" => "master_wo_3_pouch_lap_fin"
+	"work_order_3_pouch_lap_fin" => "master_wo_3_pouch_lap_fin",
+	"work_order_3_pr_end_ops" => "master_wo_extra_print_end_ops"
 
 );
 
