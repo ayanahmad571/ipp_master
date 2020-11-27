@@ -14,7 +14,7 @@ if (isset($_POST['work_order_repeat_publish_id'])) {
 		left join clients_main on master_wo_2_client_id = client_id
 		left join master_work_order_main_identitiy on master_wo_status = mwoid_id
 		
-        where master_wo_status = 7 and master_wo_ref= " . $_POST['work_order_repeat_publish_id'] . " 
+        where master_wo_status = 9 and master_wo_ref= " . $_POST['work_order_repeat_publish_id'] . " 
 		" . $inColsWO . "
 		order by master_wo_id desc
         ");

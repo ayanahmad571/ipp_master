@@ -26,7 +26,7 @@ $getWo = mysqlSelect($UpdatedStatusQuery . "
 		" . $inColsWO . "
 		order by master_wo_id desc
     ");
-  
+
 
 if (!is_array($getWo)) {
   header('Location: work_order_technical');
@@ -85,7 +85,7 @@ $WorkOrderRepPub =  $getWo[0];
 
                   <!-- <form id="formContainer" action="server_fundamentals/SalesWorkOrderSubmit" method="post"> -->
                   <form id="formContainer" action="server_fundamentals/SalesWorkOrdertechID" method="post">
-                  <input type="hidden" name="work_order_repeat_publish_id" value="<?php echo $_GET['techID'] ?>" />
+                    <input disabled type="hidden" name="work_order_repeat_publish_id" value="<?php echo $_GET['techID'] ?>" />
                     <div id="workOrderHeaderDetails">
 
                       <div class="row">
@@ -99,7 +99,7 @@ $WorkOrderRepPub =  $getWo[0];
                               foreach ($getSlitCustomrs as $SingularOP) {
                                 echo '
                           <label class="selectgroup-item">
-                            <input type="checkbox" name="work_order_3_changes[]" value="' . $SingularOP['rept_id'] . '" class="selectgroup-input" ' . ($SingularOP['rept_id'] == 1 ? 'checked' : '') . ' />
+                            <input disabled  type="checkbox" name="work_order_3_changes[]" value="' . $SingularOP['rept_id'] . '" class="selectgroup-input" ' . ($SingularOP['rept_id'] == 1 ? 'checked' : '') . ' />
                             <span class="selectgroup-button">' . $SingularOP['rept_value'] . '</span>
                           </label>';
                               }
@@ -112,17 +112,17 @@ $WorkOrderRepPub =  $getWo[0];
                       <div class="row">
                         <div class="form-group col-sm-12 col-md-6 col-xl-4 ">
                           <label>LWO</label>
-                          <input type="text" class="form-control" disabled value="# <?php echo $_GET['techID'] ?>">
+                          <input disabled type="text" class="form-control" disabled value="# <?php echo $_GET['techID'] ?>">
                         </div>
 
                         <div class="form-group col-sm-12 col-md-6 col-xl-4 ">
                           <label>Previous NCR #</label>
-                          <input type="text" class="form-control" name="work_order_ncr_no" placeholder="NCR Number">
+                          <input disabled type="text" class="form-control" name="work_order_ncr_no" placeholder="NCR Number">
                         </div>
 
                         <div class="form-group col-sm-12 col-md-6 col-xl-4 ">
                           <label>Previous CCR #</label>
-                          <input type="text" class="form-control" name="work_order_ccr_no" placeholder="CCR Number">
+                          <input disabled type="text" class="form-control" name="work_order_ccr_no" placeholder="CCR Number">
                         </div>
 
                       </div>
@@ -147,35 +147,35 @@ $WorkOrderRepPub =  $getWo[0];
 
                         <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-3">
                           <label>Customer Name</label>
-                          <input type="text" disabled class="form-control" id="custNameGetter" placeholder="">
+                          <input disabled type="text" disabled class="form-control" id="custNameGetter" placeholder="">
                         </div>
 
                         <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
                           <label>Customer's Design Name</label>
-                          <input type="text" class="form-control" name="work_order_customer_design_name" placeholder="Customer Design Name">
+                          <input disabled type="text" class="form-control" name="work_order_customer_design_name" placeholder="Customer Design Name">
                         </div>
                         <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
                           <label>Customer's Item Code</label>
-                          <input type="text" class="form-control" name="work_order_customer_item_code" placeholder="Customer Item Code">
+                          <input disabled type="text" class="form-control" name="work_order_customer_item_code" placeholder="Customer Item Code">
                         </div>
 
                         <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
                           <label>Customer P.O#</label>
-                          <input type="text" class="form-control" name="work_order_customer_po" placeholder="Customer P.O#">
+                          <input disabled type="text" class="form-control" name="work_order_customer_po" placeholder="Customer P.O#">
                         </div>
                         <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
                           <label>Customer P.O Date</label>
-                          <input onchange="getDif()" type="text" class="form-control" name="work_order_po_date" placeholder="DD-MM-YYYY">
+                          <input disabled onchange="getDif()" type="text" class="form-control" name="work_order_po_date" placeholder="DD-MM-YYYY">
                         </div>
 
                         <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
                           <label>Required Delivery Date</label>
-                          <input onchange="getDif()" type="text" class="form-control" name="work_order_delivery_date" placeholder="DD-MM-YYYY">
+                          <input disabled onchange="getDif()" type="text" class="form-control" name="work_order_delivery_date" placeholder="DD-MM-YYYY">
                         </div>
 
                         <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
                           <label>Delivery Required In</label>
-                          <input id="numberOfDays" type="text" disabled class="form-control" name="">
+                          <input disabled id="numberOfDays" type="text" disabled class="form-control" name="">
                         </div>
 
                         <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
@@ -188,7 +188,7 @@ $WorkOrderRepPub =  $getWo[0];
                               foreach ($getSlitCustomrs as $SingularOP) {
                                 echo '
                                 <label class="selectgroup-item">
-                                  <input type="checkbox" name="work_order_3_customer_loc[]" 
+                                  <input disabled  type="checkbox" name="work_order_3_customer_loc[]" 
                                   value="' . $SingularOP['customer_location_id'] . '" 
                                   class="selectgroup-input" ' . ($SingularOP['customer_location_id'] == 1 ? 'checked' : '') . '>
                                   <span class="selectgroup-button">' . $SingularOP['customer_location_value'] . '</span>
@@ -203,13 +203,13 @@ $WorkOrderRepPub =  $getWo[0];
                           <label>Printing End Options</label>
 
                           <div class="selectgroup selectgroup-pills">
-                          <?php
+                            <?php
                             $getSlitCustomrs = mysqlSelect("SELECT * FROM `work_order_ui_print_end_options` where print_end_opts_show = 1 ");
                             if (is_array($getSlitCustomrs)) {
                               foreach ($getSlitCustomrs as $SingularOP) {
-                                    echo '
+                                echo '
                               <label class="selectgroup-item">
-                                <input type="checkbox" name="work_order_3_pr_end_ops[]" 
+                                <input  type="checkbox" name="work_order_3_pr_end_ops[]" 
                                 value="' . $SingularOP['print_end_opts_id'] . '" 
                                 class="selectgroup-input" ' . ($SingularOP['print_end_opts_id'] == 1 ? 'checked' : '') . ' />
                                 <span class="selectgroup-button">' . $SingularOP['print_end_opts_value'] . '</span>
@@ -262,7 +262,7 @@ $WorkOrderRepPub =  $getWo[0];
                         ?>
                         <div id="whenPrintedClickedGO" class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
                           <label>Ink GSM as per PRE-COSTING</label>
-                          <input type="text" class="form-control" name="work_order_ink_gsm_pre_c" placeholder="Ink GSM">
+                          <input disabled type="text" class="form-control" name="work_order_ink_gsm_pre_c" placeholder="Ink GSM">
                         </div>
 
                         <?php
@@ -313,24 +313,24 @@ $WorkOrderRepPub =  $getWo[0];
                         ?>
                         <div class="form-group col-sm-12 col-md-6 col-lg-3">
                           <label>Filling Time Duration</label>
-                          <input type="text" class="form-control" name="work_order_fill_duration" placeholder="Time Duration">
+                          <input disabled type="text" class="form-control" name="work_order_fill_duration" placeholder="Time Duration">
                         </div>
                         <div class="form-group col-sm-12 col-md-6 col-lg-3">
                           <label>Filling Temperature</label>
-                          <input type="text" class="form-control" name="work_order_fill_temp" placeholder="Temperature">
+                          <input disabled type="text" class="form-control" name="work_order_fill_temp" placeholder="Temperature">
                         </div>
 
                         <div class="form-group col-sm-12 col-md-6 col-lg-3">
                           <label>Line Speed Time Duration</label>
-                          <input type="text" class="form-control" name="work_order_line_speed" placeholder="Time Duration">
+                          <input disabled type="text" class="form-control" name="work_order_line_speed" placeholder="Time Duration">
                         </div>
                         <div class="form-group col-sm-12 col-md-6 col-lg-3">
                           <label>Dwell Time</label>
-                          <input type="text" class="form-control" name="work_order_dwell_time" placeholder="Temperature">
+                          <input disabled type="text" class="form-control" name="work_order_dwell_time" placeholder="Temperature">
                         </div>
                         <div class="form-group col-sm-12 col-md-6 col-lg-3">
                           <label>Seal Temperature</label>
-                          <input type="text" class="form-control" name="work_order_seal_temp" placeholder="Time Duration">
+                          <input disabled type="text" class="form-control" name="work_order_seal_temp" placeholder="Time Duration">
                         </div>
 
 
@@ -342,11 +342,11 @@ $WorkOrderRepPub =  $getWo[0];
                           <div class="row">
                             <div class="form-group col-sm-12 col-md-9">
                               <label>IPP Design ID</label>
-                              <input type="text" class="form-control" name="work_order_design_id" placeholder="IPP Design ID">
+                              <input disabled type="text" class="form-control" name="work_order_design_id" placeholder="IPP Design ID">
                             </div>
                             <div class="form-group col-sm-12 col-md-3">
                               <label>Rev No</label>
-                              <input type="number" min="0" value="0" class="form-control" name="work_order_rev_no" placeholder="Rev">
+                              <input disabled type="number" min="0" value="0" class="form-control" name="work_order_rev_no" placeholder="Rev">
                             </div>
                           </div>
                         </div>
@@ -354,19 +354,19 @@ $WorkOrderRepPub =  $getWo[0];
 
                         <div class="form-group col-sm-12 col-lg-6 col-xl-2">
                           <label>Approved Sample WO No.</label>
-                          <input type="text" class="form-control" name="work_order_approved_sample_wo_no" placeholder="Approved Sample WO NO">
+                          <input disabled type="text" class="form-control" name="work_order_approved_sample_wo_no" placeholder="Approved Sample WO NO">
                         </div>
 
 
 
                         <div class="form-group col-sm-12 col-lg-6 col-xl-2">
                           <label>Pack Size </label>
-                          <input type="number" min="1" max="999999" step="0.01" class="form-control" name="work_order_pack_size" placeholder="Pack Size ">
+                          <input disabled type="number" min="1" max="999999" step="0.01" class="form-control" name="work_order_pack_size" placeholder="Pack Size ">
                         </div>
 
                         <div class="form-group col-sm-12 col-lg-6 col-xl-2">
                           <label>Pack Weight </label>
-                          <input type="number" min="1" max="999999" step="0.01" class="form-control" name="work_order_pack_weight" placeholder="Pack Weight ">
+                          <input disabled type="number" min="1" max="999999" step="0.01" class="form-control" name="work_order_pack_weight" placeholder="Pack Weight ">
                         </div>
 
 
@@ -388,7 +388,7 @@ $WorkOrderRepPub =  $getWo[0];
                       <div class="row">
                         <div class="form-group col-8 col-xl-2">
                           <label>Order Qty</label>
-                          <input placeholder="Order Quantity" name="work_order_quantity" type="number" step="0.01" class="form-control" min="0.10">
+                          <input disabled placeholder="Order Quantity" name="work_order_quantity" type="number" step="0.01" class="form-control" min="0.10">
                         </div>
 
                         <?php
@@ -404,7 +404,7 @@ $WorkOrderRepPub =  $getWo[0];
 
                         <div class="form-group col-4 col-xl-2">
                           <label>Tolerance % +/-</label>
-                          <input placeholder="Tolerance +/-" name="work_order_quantity_tolerance" type="number" step="0.01" class="form-control" />
+                          <input disabled placeholder="Tolerance +/-" name="work_order_quantity_tolerance" type="number" step="0.01" class="form-control" />
                         </div>
 
 
@@ -431,7 +431,7 @@ $WorkOrderRepPub =  $getWo[0];
                     <div class="row">
                       <div class="form-group col-sm-12 col-lg-6 col-xl-2 ">
                         <label>Number of Layers</label>
-                        <input id="plyValueInput" type="number" min="1" max="5" class="form-control" name="work_order_ply" value="2" placeholder="Ply">
+                        <input disabled id="plyValueInput" type="number" min="1" max="5" class="form-control" name="work_order_ply" value="2" placeholder="Ply">
                       </div>
                       <?php
                       getSelectBox(
@@ -451,16 +451,16 @@ $WorkOrderRepPub =  $getWo[0];
                     <div class="row">
                       <div class="form-group  col-12 col-md-6 col-xl-4">
                         <label>Customer Specified Total Laminate GSM</label>
-                        <input placeholder="Customer Specified Total Laminate GSM" name="work_order_total_gsm" type="number" step="0.01" class="form-control" min="0.10">
+                        <input disabled placeholder="Customer Specified Total Laminate GSM" name="work_order_total_gsm" type="number" step="0.01" class="form-control" min="0.10">
                       </div>
 
                       <div class="form-group  col-12 col-md-6 col-xl-4">
                         <label>&nbsp;</label>
-                        <input placeholder="Tolerance +/-" name="work_order_total_gsm_tolerance" type="number" step="0.01" class="form-control" min="0">
+                        <input disabled placeholder="Tolerance +/-" name="work_order_total_gsm_tolerance" type="number" step="0.01" class="form-control" min="0">
                       </div>
                       <div class="form-group  col-12 col-md-6 col-xl-4">
                         <label>Calculated Laminate GSM</label>
-                        <input id="calcLamGSM" disabled class="form-control" min="0.10">
+                        <input disabled id="calcLamGSM" disabled class="form-control" min="0.10">
                       </div>
                     </div>
 
@@ -492,31 +492,31 @@ $WorkOrderRepPub =  $getWo[0];
                             ?>
                             <div class="form-group col-12 col-lg-3">
                               <label>Customer Roll OD(mm)</label>
-                              <input type="number" min="1" max="999999999" step="0.01" class="form-control" name="work_order_roll_od" placeholder="Customer Roll OD">
+                              <input disabled type="number" min="1" max="999999999" step="0.01" class="form-control" name="work_order_roll_od" placeholder="Customer Roll OD">
                             </div>
                             <div class="form-group col-12 col-md-6 col-lg-3 col-xl-3">
                               <label>Roll Width</label>
-                              <input type="text" class="form-control" name="work_order_roll_width" placeholder="Roll Width">
+                              <input disabled type="text" class="form-control" name="work_order_roll_width" placeholder="Roll Width">
                             </div>
 
                             <div class="form-group col-12 col-md-6 col-lg-3 col-xl-3">
                               <label>Roll Cut Off Length</label>
-                              <input type="text" class="form-control" name="work_order_roll_cutoff_len" placeholder="Roll Cut Off Length">
+                              <input disabled type="text" class="form-control" name="work_order_roll_cutoff_len" placeholder="Roll Cut Off Length">
                             </div>
 
 
 
                             <div class="form-group col-12 col-lg-4">
                               <label>Max Weight per Roll</label>
-                              <input type="number" min="1" max="999999999" step="0.01" class="form-control" name="work_order_max_w_p_r" placeholder="Max Weight per Roll">
+                              <input disabled type="number" min="1" max="999999999" step="0.01" class="form-control" name="work_order_max_w_p_r" placeholder="Max Weight per Roll">
                             </div>
                             <div class="form-group col-12 col-lg-4">
                               <label>Max L.MTR per Roll</label>
-                              <input type="number" min="1" max="999999999" step="0.01" class="form-control" name="work_order_max_lmtr_p_r" placeholder="Max L.MTR per Roll">
+                              <input disabled type="number" min="1" max="999999999" step="0.01" class="form-control" name="work_order_max_lmtr_p_r" placeholder="Max L.MTR per Roll">
                             </div>
                             <div class="form-group col-12 col-lg-4">
                               <label>Max IMPs per Roll</label>
-                              <input type="number" min="1" max="999999999" step="0.01" class="form-control" name="work_order_max_imps_p_r" placeholder="Max IMPs per Roll">
+                              <input disabled type="number" min="1" max="999999999" step="0.01" class="form-control" name="work_order_max_imps_p_r" placeholder="Max IMPs per Roll">
                             </div>
 
                             <?php
@@ -568,7 +568,7 @@ $WorkOrderRepPub =  $getWo[0];
 
                             <div class="form-group col-12 col-lg-4">
                               <label>Max No of Joints per Roll</label>
-                              <input type="number" min="0" max="3" class="form-control" name="work_order_max_joints" placeholder="Max Joints/Roll">
+                              <input disabled type="number" min="0" max="3" class="form-control" name="work_order_max_joints" placeholder="Max Joints/Roll">
                             </div>
 
 
@@ -584,22 +584,22 @@ $WorkOrderRepPub =  $getWo[0];
                       <div class="row">
                         <div class="form-group col-12">
                           <label>Roll Remarks</label>
-                            <table class="table table-striped table-bordered">
-                              <tr>
-                                <th width="20%">User </th>
-                                <th width="70%">Remark</th>
-                                <th width="10%">Time</th>
-                              </tr>
-                              <?php
-                              $getOverallRem = mysqlSelect("SELECT r.*,m.lum_code,m.lum_name FROM `remarks_wo` r
+                          <table class="table table-striped table-bordered">
+                            <tr>
+                              <th width="20%">User </th>
+                              <th width="70%">Remark</th>
+                              <th width="10%">Time</th>
+                            </tr>
+                            <?php
+                            $getOverallRem = mysqlSelect("SELECT r.*,m.lum_code,m.lum_name FROM `remarks_wo` r
                               left join user_main m on remark_lum_id = m.lum_id
                               where remark_status = 1
                               and remark_type = 3
                               and remark_master_wo_id = " . $_GET['techID']);
 
-                              if (is_array($getOverallRem)) {
-                                foreach ($getOverallRem as $OverallRem) {
-                                  echo '
+                            if (is_array($getOverallRem)) {
+                              foreach ($getOverallRem as $OverallRem) {
+                                echo '
                                   <tr>
                                       <td>' . $OverallRem['lum_code'] . ' - ' . $OverallRem['lum_name'] . '</td>
                                       <td>' . $OverallRem['remark_text'] . '</td>
@@ -607,11 +607,11 @@ $WorkOrderRepPub =  $getWo[0];
                                   </tr>
                                   
                                   ';
-                                }
                               }
+                            }
 
-                              ?>
-                            </table>
+                            ?>
+                          </table>
                           <textarea name="work_order_remarks_roll" class="form-control remarksEdit" placeholder="Remarks" style="height:200px"></textarea>
                         </div>
                       </div>
@@ -638,35 +638,35 @@ $WorkOrderRepPub =  $getWo[0];
                           <div class="row">
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>A </label>
-                              <input type="text" class="form-control" name="work_order_pouch_val_a" placeholder="A">
+                              <input disabled type="text" class="form-control" name="work_order_pouch_val_a" placeholder="A">
                             </div>
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>B </label>
-                              <input type="text" class="form-control" name="work_order_pouch_val_b" placeholder="B">
+                              <input disabled type="text" class="form-control" name="work_order_pouch_val_b" placeholder="B">
                             </div>
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>C </label>
-                              <input type="text" class="form-control" name="work_order_pouch_val_c" placeholder="C">
+                              <input disabled type="text" class="form-control" name="work_order_pouch_val_c" placeholder="C">
                             </div>
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>D </label>
-                              <input type="text" class="form-control" name="work_order_pouch_val_d" placeholder="D">
+                              <input disabled type="text" class="form-control" name="work_order_pouch_val_d" placeholder="D">
                             </div>
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>E </label>
-                              <input type="text" class="form-control" name="work_order_pouch_val_e" placeholder="E">
+                              <input disabled type="text" class="form-control" name="work_order_pouch_val_e" placeholder="E">
                             </div>
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>F </label>
-                              <input type="text" class="form-control" name="work_order_pouch_val_f" placeholder="F">
+                              <input disabled type="text" class="form-control" name="work_order_pouch_val_f" placeholder="F">
                             </div>
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>G</label>
-                              <input type="text" class="form-control" name="work_order_pouch_val_g" placeholder="G">
+                              <input disabled type="text" class="form-control" name="work_order_pouch_val_g" placeholder="G">
                             </div>
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>H</label>
-                              <input type="text" class="form-control" name="work_order_pouch_val_h" placeholder="H">
+                              <input disabled type="text" class="form-control" name="work_order_pouch_val_h" placeholder="H">
                             </div>
 
                             <div class="form-group col-12">
@@ -678,7 +678,7 @@ $WorkOrderRepPub =  $getWo[0];
                                   foreach ($getExtOp1 as $ExtOp1) {
                                     echo '
                                     <label class="selectgroup-item">
-                                      <input type="checkbox" name="work_order_3_pouch_lap_fin[]" 
+                                      <input disabled  type="checkbox" name="work_order_3_pouch_lap_fin[]" 
                                       value="' . $ExtOp1['lap_fin_id'] . '" 
                                       class="selectgroup-input" ' . ($ExtOp1['lap_fin_id'] == 1 ? 'checked' : '') . '>
                                       <span class="selectgroup-button">' . $ExtOp1['lap_fin_value'] . '</span>
@@ -700,22 +700,22 @@ $WorkOrderRepPub =  $getWo[0];
                       <div class="row">
                         <div class="form-group col-12">
                           <label>Pouch Remarks</label>
-                            <table class="table table-striped table-bordered">
-                              <tr>
-                                <th width="20%">User </th>
-                                <th width="70%">Remark</th>
-                                <th width="10%">Time</th>
-                              </tr>
-                              <?php
-                              $getOverallRem = mysqlSelect("SELECT r.*,m.lum_code,m.lum_name FROM `remarks_wo` r
+                          <table class="table table-striped table-bordered">
+                            <tr>
+                              <th width="20%">User </th>
+                              <th width="70%">Remark</th>
+                              <th width="10%">Time</th>
+                            </tr>
+                            <?php
+                            $getOverallRem = mysqlSelect("SELECT r.*,m.lum_code,m.lum_name FROM `remarks_wo` r
                               left join user_main m on remark_lum_id = m.lum_id
                               where remark_status = 1
                               and remark_type = 2
                               and remark_master_wo_id = " . $_GET['techID']);
 
-                              if (is_array($getOverallRem)) {
-                                foreach ($getOverallRem as $OverallRem) {
-                                  echo '
+                            if (is_array($getOverallRem)) {
+                              foreach ($getOverallRem as $OverallRem) {
+                                echo '
                                   <tr>
                                       <td>' . $OverallRem['lum_code'] . ' - ' . $OverallRem['lum_name'] . '</td>
                                       <td>' . $OverallRem['remark_text'] . '</td>
@@ -723,11 +723,11 @@ $WorkOrderRepPub =  $getWo[0];
                                   </tr>
                                   
                                   ';
-                                }
                               }
+                            }
 
-                              ?>
-                            </table>
+                            ?>
+                          </table>
                           <textarea name="work_order_remarks_pouch" class="form-control remarksEdit" placeholder="Remarks" style="height:200px"></textarea>
 
                         </div>
@@ -757,35 +757,35 @@ $WorkOrderRepPub =  $getWo[0];
                           <div class="row">
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>A </label>
-                              <input type="text" class="form-control" name="work_order_bags_val_a" placeholder="A">
+                              <input disabled type="text" class="form-control" name="work_order_bags_val_a" placeholder="A">
                             </div>
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>B </label>
-                              <input type="text" class="form-control" name="work_order_bags_val_b" placeholder="B">
+                              <input disabled type="text" class="form-control" name="work_order_bags_val_b" placeholder="B">
                             </div>
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>C </label>
-                              <input type="text" class="form-control" name="work_order_bags_val_c" placeholder="C">
+                              <input disabled type="text" class="form-control" name="work_order_bags_val_c" placeholder="C">
                             </div>
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>D </label>
-                              <input type="text" class="form-control" name="work_order_bags_val_d" placeholder="D">
+                              <input disabled type="text" class="form-control" name="work_order_bags_val_d" placeholder="D">
                             </div>
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>E </label>
-                              <input type="text" class="form-control" name="work_order_bags_val_e" placeholder="E">
+                              <input disabled type="text" class="form-control" name="work_order_bags_val_e" placeholder="E">
                             </div>
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>F </label>
-                              <input type="text" class="form-control" name="work_order_bags_val_f" placeholder="F">
+                              <input disabled type="text" class="form-control" name="work_order_bags_val_f" placeholder="F">
                             </div>
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>G</label>
-                              <input type="text" class="form-control" name="work_order_bags_val_g" placeholder="G">
+                              <input disabled type="text" class="form-control" name="work_order_bags_val_g" placeholder="G">
                             </div>
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>H</label>
-                              <input type="text" class="form-control" name="work_order_bags_val_h" placeholder="H">
+                              <input disabled type="text" class="form-control" name="work_order_bags_val_h" placeholder="H">
                             </div>
                           </div>
 
@@ -796,22 +796,22 @@ $WorkOrderRepPub =  $getWo[0];
                       <div class="row">
                         <div class="form-group col-12">
                           <label>Bags Remarks</label>
-                            <table class="table table-striped table-bordered">
-                              <tr>
-                                <th width="20%">User </th>
-                                <th width="70%">Remark</th>
-                                <th width="10%">Time</th>
-                              </tr>
-                              <?php
-                              $getOverallRem = mysqlSelect("SELECT r.*,m.lum_code,m.lum_name FROM `remarks_wo` r
+                          <table class="table table-striped table-bordered">
+                            <tr>
+                              <th width="20%">User </th>
+                              <th width="70%">Remark</th>
+                              <th width="10%">Time</th>
+                            </tr>
+                            <?php
+                            $getOverallRem = mysqlSelect("SELECT r.*,m.lum_code,m.lum_name FROM `remarks_wo` r
                               left join user_main m on remark_lum_id = m.lum_id
                               where remark_status = 1
                               and remark_type = 4
                               and remark_master_wo_id = " . $_GET['techID']);
 
-                              if (is_array($getOverallRem)) {
-                                foreach ($getOverallRem as $OverallRem) {
-                                  echo '
+                            if (is_array($getOverallRem)) {
+                              foreach ($getOverallRem as $OverallRem) {
+                                echo '
                                   <tr>
                                       <td>' . $OverallRem['lum_code'] . ' - ' . $OverallRem['lum_name'] . '</td>
                                       <td>' . $OverallRem['remark_text'] . '</td>
@@ -819,11 +819,11 @@ $WorkOrderRepPub =  $getWo[0];
                                   </tr>
                                   
                                   ';
-                                }
                               }
+                            }
 
-                              ?>
-                            </table>
+                            ?>
+                          </table>
                           <textarea name="work_order_remarks_bags" class="form-control remarksEdit" placeholder="Remarks" style="height:200px"></textarea>
                         </div>
                       </div>
@@ -935,16 +935,16 @@ $WorkOrderRepPub =  $getWo[0];
 
                         <div class="classBagPouch form-group col-12 col-sm-6 col-lg-6 col-xl-2">
                           <label>No. Pouches per Bundle</label>
-                          <input id="pouchPerBundle" min="1" max="99999999999" type="number" class="form-control" name="work_order_pouch_per_bund" placeholder="Pouches per Bundle">
+                          <input disabled id="pouchPerBundle" min="1" max="99999999999" type="number" class="form-control" name="work_order_pouch_per_bund" placeholder="Pouches per Bundle">
                         </div>
 
                         <div class="classBagPouch form-group col-12 col-sm-6 col-lg-6 col-xl-2">
                           <label>No. Bundles per Box</label>
-                          <input id="bundlePerBox" min="1" max="99999999999" type="number" class="form-control" name="work_order_bund_per_box" placeholder="Bundles per Box">
+                          <input disabled id="bundlePerBox" min="1" max="99999999999" type="number" class="form-control" name="work_order_bund_per_box" placeholder="Bundles per Box">
                         </div>
                         <div class="classBagPouch form-group col-12 col-sm-6 col-lg-6 col-xl-2">
                           <label>Max Pouches in a BOX</label>
-                          <input type="text" class="form-control" id="piecePerBox" placeholder="" disabled>
+                          <input disabled type="text" class="form-control" id="piecePerBox" placeholder="" disabled>
                         </div>
 
                       </div>
@@ -973,7 +973,7 @@ $WorkOrderRepPub =  $getWo[0];
 
                         <div class="form-group col-12 col-sm-6 col-lg-6 col-xl-2">
                           <label>Max Gross Weight per Pallet</label>
-                          <input min="1" max="99999999999" type="number" class="form-control" name="work_order_max_gross_pallet_weight" placeholder="Max Gross Weight per Pallet">
+                          <input disabled min="1" max="99999999999" type="number" class="form-control" name="work_order_max_gross_pallet_weight" placeholder="Max Gross Weight per Pallet">
                         </div>
 
                         <?php
@@ -1000,7 +1000,7 @@ $WorkOrderRepPub =  $getWo[0];
 
                         <div class="form-group col-12 col-sm-6 col-lg-6 col-xl-2">
                           <label>Carton Thickness</label>
-                          <input name="work_order_cart_thick" type="number" min="3" max="7" class="form-control" value="3" placeholder="Ply">
+                          <input disabled name="work_order_cart_thick" type="number" min="3" max="7" class="form-control" value="3" placeholder="Ply">
                         </div>
                       </div>
 
@@ -1015,7 +1015,7 @@ $WorkOrderRepPub =  $getWo[0];
                               foreach ($getSlitCustomrs as $SingularOP) {
                                 echo '
                                 <label class="selectgroup-item">
-                                  <input type="checkbox" name="work_order_3_docs[]" 
+                                  <input disabled  type="checkbox" name="work_order_3_docs[]" 
                                   value="' . $SingularOP['shipment_id'] . '" 
                                   class="selectgroup-input" ' . ($SingularOP['shipment_id'] == 1 ? 'checked' : '') . '>
                                   <span class="selectgroup-button">' . $SingularOP['shipment_value'] . '</span>
@@ -1036,22 +1036,22 @@ $WorkOrderRepPub =  $getWo[0];
                       <div class="row">
                         <div class="form-group col-12">
                           <label>Overall Remarks</label>
-                            <table class="table table-striped table-bordered">
-                              <tr>
-                                <th width="20%">User </th>
-                                <th width="70%">Remark</th>
-                                <th width="10%">Time</th>
-                              </tr>
-                              <?php
-                              $getOverallRem = mysqlSelect("SELECT r.*,m.lum_code,m.lum_name FROM `remarks_wo` r
+                          <table class="table table-striped table-bordered">
+                            <tr>
+                              <th width="20%">User </th>
+                              <th width="70%">Remark</th>
+                              <th width="10%">Time</th>
+                            </tr>
+                            <?php
+                            $getOverallRem = mysqlSelect("SELECT r.*,m.lum_code,m.lum_name FROM `remarks_wo` r
                               left join user_main m on remark_lum_id = m.lum_id
                               where remark_status = 1
                               and remark_type = 1
                               and remark_master_wo_id = " . $_GET['techID']);
 
-                              if (is_array($getOverallRem)) {
-                                foreach ($getOverallRem as $OverallRem) {
-                                  echo '
+                            if (is_array($getOverallRem)) {
+                              foreach ($getOverallRem as $OverallRem) {
+                                echo '
                                   <tr>
                                       <td>' . $OverallRem['lum_code'] . ' - ' . $OverallRem['lum_name'] . '</td>
                                       <td>' . $OverallRem['remark_text'] . '</td>
@@ -1059,11 +1059,11 @@ $WorkOrderRepPub =  $getWo[0];
                                   </tr>
                                   
                                   ';
-                                }
                               }
+                            }
 
-                              ?>
-                            </table>
+                            ?>
+                          </table>
                           <textarea name="work_order_remarks_overall" class="remarksEdit form-control" placeholder="Remarks" style="height:200px"></textarea>
                         </div>
                       </div>
@@ -1108,62 +1108,64 @@ $WorkOrderRepPub =  $getWo[0];
   <script type="text/javascript" src="assets/bootstrap-wysihtml5/bootstrap-wysihtml5.js"></script>
 
 
+
   <?php
-    if (is_array($WorkOrderRepPub)) {
+  if (is_array($WorkOrderRepPub)) {
   ?>
-      <script>
-        $(document).ready(function(e) {
-          <?php
-          foreach ($WOstraightArrays as $k => $v) {
-            if (!is_null($WorkOrderRepPub[$v])) {
-              if ($k == 'work_order_delivery_date' || $k == "work_order_po_date") {
-                echo '$(\'input[name="' . $k . '"]\').val("' . date('d-m-Y', $WorkOrderRepPub[$v]) . '");
+    <script>
+      $(document).ready(function(e) {
+        <?php
+        foreach ($WOstraightArrays as $k => $v) {
+          if (!is_null($WorkOrderRepPub[$v])) {
+            if ($k == 'work_order_delivery_date' || $k == "work_order_po_date") {
+              echo '$(\'input[name="' . $k . '"]\').val("' . date('d-m-Y', $WorkOrderRepPub[$v]) . '");
 						';
-              } else {
-                echo '$(\'input[name="' . $k . '"]\').val("' . $WorkOrderRepPub[$v] . '");
+            } else {
+              echo '$(\'input[name="' . $k . '"]\').val("' . $WorkOrderRepPub[$v] . '");
 						';
-              }
             }
           }
-          ?>
+        }
+        ?>
 
-          <?php
-          foreach ($WOcheckboxArrays as $k => $v) {
+        <?php
+        foreach ($WOcheckboxArrays as $k => $v) {
 
-            echo '$(\'input[name="' . $k . '[]"]\').each(function() {
+          echo '$(\'input[name="' . $k . '[]"]\').each(function() {
 						this.checked = false;
 					});
 					';
-            if ($WorkOrderRepPub[$v] != '') {
-              $s = explode(',', $WorkOrderRepPub[$v]);
-              foreach ($s as $val) {
-                echo '$(\'input:checkbox[name="' . $k . '[]"]\').filter("[value=\'' . $val . '\']").prop(\'checked\', true);
+          if ($WorkOrderRepPub[$v] != '') {
+            $s = explode(',', $WorkOrderRepPub[$v]);
+            foreach ($s as $val) {
+              echo '$(\'input:checkbox[name="' . $k . '[]"]\').filter("[value=\'' . $val . '\']").prop(\'checked\', true);
 							';
-              }
             }
           }
-          ?>
+        }
+        ?>
 
-          <?php
-          foreach ($WOselectArrays as $k => $v) {
-            if (!is_null($WorkOrderRepPub[$v])) {
-              echo '$(\'select[name="' . $k . '"]\').val("' . $WorkOrderRepPub[$v] . '").change();
+        <?php
+        foreach ($WOselectArrays as $k => $v) {
+          if (!is_null($WorkOrderRepPub[$v])) {
+            echo '$(\'select[name="' . $k . '"]\').val("' . $WorkOrderRepPub[$v] . '").change();
           ';
-            }
           }
-          ?>
+        }
+        ?>
 
 
 
 
-        });
-      </script>
+      });
+    </script>
 
   <?php
-    }
-  
+  }
+
 
   ?>
+
 
   <script>
     $(document).ready(function() {
@@ -1178,10 +1180,12 @@ $WorkOrderRepPub =  $getWo[0];
       getDif();
       setUpPouchImage();
       setUpBagImage();
+      setUpRollImage();
       setCustName();
       setUpMaxPouch();
       setUpPrintingOption();
       setLamGSM();
+      // setCartonPly();
       $(".remarksEdit").wysihtml5();
 
       //Listeners	
@@ -1260,6 +1264,10 @@ $WorkOrderRepPub =  $getWo[0];
         setUpBagImage();
       });
 
+      $("select[name=work_order_2_wind_dir]").change(function(e) {
+        setUpRollImage();
+      });
+
       $("#pouchPerBundle").change(function(e) {
         setUpMaxPouch();
       });
@@ -1274,6 +1282,25 @@ $WorkOrderRepPub =  $getWo[0];
 
       $("#formLoading").hide();
     });
+
+    // function setCartonPly() {
+    //   let struct = $('select[name=work_order_2_structure]').find(':selected').val();
+    //   let bagPouchCont = $('select[name=work_order_2_roll_pack_ins]').find(':selected').val();
+    //   let rollCont = $('select[name=work_order_2_carton_pack_ins]').find(':selected').val();
+
+    //   if (struct == 1 || struct == 2) {
+    //     //Bag/Pouch
+    //     $("#cartonPly").show();
+    //   } else {
+    //     //ROll
+
+    //     if (bagPouchCont == ) {
+    //       $("#cartonPly").hide();
+    //     } else {
+    //       $("#cartonPly").show();
+    //     }
+    //   }
+    // }
 
     function setLamGSM() {
 
@@ -1479,27 +1506,33 @@ $WorkOrderRepPub =  $getWo[0];
       $("#bagSwHolder").html('<img class="img-thumbnail" src="' + $("#bag_switcher").find(':selected').data('id') + '" />');
 
     }
+
+    function setUpRollImage() {
+      $("#imgRollPut").html('<img class="img-thumbnail" src="assets/slitting/' + $("select[name=work_order_2_wind_dir]").find(':selected').data('id') + '.jpg" />');
+
+    }
   </script>
 
-<script>
+  <script>
     $(document).ready(function(e) {
       <?php
-      
-        if (is_array($WorkOrderRepPub)) {
-          if (is_numeric($WorkOrderRepPub['master_wo_ply'])) {
 
-            for ($counterL = 1; $counterL <= $WorkOrderRepPub['master_wo_ply']; $counterL++) {
-              echo '$(\'input[name="work_order_layer_' . $counterL . '_micron"]\').val("' . $WorkOrderRepPub['master_wo_layer_' . $counterL . '_micron'] . '");';
-              echo '$(\'select[name="work_order_5_layer_' . $counterL . '_material"]\').val("' . $WorkOrderRepPub['master_wo_layer_' . $counterL . '_structure'] . '").change();';
-            }
+      if (is_array($WorkOrderRepPub)) {
+        if (is_numeric($WorkOrderRepPub['master_wo_ply'])) {
+
+          for ($counterL = 1; $counterL <= $WorkOrderRepPub['master_wo_ply']; $counterL++) {
+            echo '$(\'input[name="work_order_layer_' . $counterL . '_micron"]\').val("' . $WorkOrderRepPub['master_wo_layer_' . $counterL . '_micron'] . '");';
+            echo '$(\'select[name="work_order_5_layer_' . $counterL . '_material"]\').val("' . $WorkOrderRepPub['master_wo_layer_' . $counterL . '_structure'] . '").change();';
           }
         }
-      
+      }
+
       ?>
 
 
     });
   </script>
+
   <script>
     $(document).ready(function(e) {
 

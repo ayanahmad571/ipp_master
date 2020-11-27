@@ -3,33 +3,32 @@ require_once("SessionHandler.php");
 require_once("PostDataHeadChecker.php");
 //user type_check only sales and MD people can make this WO
 if (!in_array($USER_ARRAY['user_type_id'], array(1, 2, 4, 10, 16))) {
-    die('User Not Authorized');
+	die('User Not Authorized');
 }
-
-if (isset($_POST['work_order_repeat_publish_id'])) {
-    if (is_numeric($_POST['work_order_repeat_publish_id'])) {
-        $getWO = mysqlSelect($UpdatedStatusQuery . "
+$getDraftWork = [];
+if (isset($_POST['work_order_edit_id'])) {
+	if (is_numeric($_POST['work_order_edit_id'])) {
+		$getDraftWork = mysqlSelect($UpdatedStatusQuery . "
        
         
 		left join clients_main on master_wo_2_client_id = client_id
 		left join master_work_order_main_identitiy on master_wo_status = mwoid_id
 		
-        where master_wo_status = 7 and master_wo_ref= " . $_POST['work_order_repeat_publish_id'] . " 
+        where master_wo_status in (6,5,8) and master_wo_ref= " . $_POST['work_order_edit_id'] . " 
 		" . $inColsWO . "
 		order by master_wo_id desc
-        ");
+    ");
 
-        if (!is_array($getWO)) {
-            die("Editing Sales Order Not Found.");
-        }
-        $getWO = $getWO[0];
-    } else {
-        die("Work Order ID Invalid");
-    }
-} else {
-    die("Expected a Last Work Order ID, got nothing.");
+		if (!is_array($getDraftWork)) {
+			die("Editing Work Order Not Found.");
+		}
+		$getDraftWork = $getDraftWork[0];
+	} else {
+		die("Editing Work Order Invalid ID.");
+	}
+}else{
+	die("Work Order ID Incomplete");
 }
-
 //NOT COMPLETE DONT USER
 $toCheck = array(
 	"work_order_2_client_id", "work_order_customer_design_name", "work_order_customer_item_code", "work_order_customer_po", "work_order_po_date", "work_order_delivery_date",
@@ -49,13 +48,15 @@ $toCheck = array(
 	"work_order_2_foil_print_side", "work_order_2_printing_method", "work_order_2_printing_shade_card_needed", "work_order_2_printing_color_ref_type", "work_order_2_printing_approvalby",
 	"work_order_2_roll_pack_ins", "work_order_2_carton_pack_ins", "work_order_2_pallet_mark_ins", "work_order_pouch_per_bund", "work_order_bund_per_box",
 	"work_order_2_pallet_type", "work_order_2_cont_stuff", "work_order_max_gross_pallet_weight", "work_order_2_pallet_dim", "work_order_2_freight_type",
-	"work_order_cart_thick", "work_order_3_docs", "work_order_remarks_overall", "work_order_ccr_no", "work_order_ncr_no","work_order_3_changes"
+	"work_order_cart_thick", "work_order_3_docs", "work_order_remarks_overall"
 );
 
 
 
 checkPost($toCheck);
 
+	$toCheck2 = array('work_order_ccr_no', 'work_order_ncr_no');
+	checkPost($toCheck2);
 $plyNumber = $_POST["work_order_ply"];
 $foilPrint = false;
 $RemarksMain = array();
@@ -241,8 +242,6 @@ $WorkOrderMaster["master_wo_total_gsm_tolerance"] = $_POST["work_order_total_gsm
 
 $WorkOrderMaster["master_wo_cart_thick"] = $_POST["work_order_cart_thick"];
 $WorkOrderMaster["master_wo_max_gross_pallet_weight"] = $_POST["work_order_max_gross_pallet_weight"];
-$getWO["master_wo_extra_ncr"] = $_POST["work_order_ncr_no"];
-$getWO["master_wo_extra_ccr"] = $_POST["work_order_ccr_no"];
 
 
 
@@ -279,20 +278,6 @@ if (isset($_POST['work_order_3_docs'])) {
 		);
 	}
 	$WorkOrderMaster['master_wo_3_docs'] = implode(',', $_POST['work_order_3_docs']);
-}
-
-//Check if the posted options are valid work_order_3_customer_loc$WorkOrderType
-$WorkOrderType = "";
-if (isset($_POST['work_order_3_changes'])) {
-	foreach ($_POST['work_order_3_changes'] as $exP) {
-		//check Antistatic
-		selectChecker(
-			"SELECT * FROM `work_order_ui_repeat_types` where rept_show = 1  and rept_id = " . $exP,
-			'Repeat Type Option Value at ID= ' . $exP . ' Not Found',
-			'mysqlSelect'
-		);
-	}
-	$WorkOrderType = implode(',', $_POST['work_order_3_changes']);
 }
 
 
@@ -418,21 +403,13 @@ if ($structureMaster == 1) {
 	$WorkOrderMaster["master_wo_max_joints"] = $_POST["work_order_max_joints"];
 }
 
-$insertReference = mysqlInsertData("INSERT INTO `master_work_order_reference_number` 
-(`mwo_dnt`, `mwo_gen_on_behalf_lum_id`, `mwo_gen_lum_id`, `mwo_type`, `mwo_repeat_wo_id`,`mwo_repeat_wo_type`) VALUES (
-        '" . time() . "',
-        '" . $getWO['master_wo_2_sales_id'] . "',
-        '" . $USER_ARRAY['lum_id'] . "',
-        '3' , 
-        '" . $_POST["work_order_repeat_publish_id"] . "',
-        '".$WorkOrderType."')", true);
 
 
-	if (!is_numeric($insertReference)) {
-		die("503: Internal Error, Could not insert WORK ORDER REFERENCE");
-	}
 	$statusNo = 1;
-
+	$insertReference = $getDraftWork['master_wo_ref'];
+	if ($getDraftWork['master_wo_status'] == 3) {
+		$statusNo = 3;
+	}
 
 if (($_POST["work_order_remarks_overall"] != '')) {
 	$RemarksMain[] = "(
@@ -472,7 +449,10 @@ $WorkOrderMaster['master_wo_gen_dnt'] = time();
 $WorkOrderMaster['master_wo_gen_lum_id'] = $USER_ARRAY['lum_id'];
 $WorkOrderMaster['master_wo_status'] = $statusNo;
 
-
+if ($getDraftWork['mwo_type'] != 1) {
+	$WorkOrderMaster['master_wo_extra_ccr'] = $_POST["work_order_ccr_no"];
+	$WorkOrderMaster['master_wo_extra_ncr'] = $_POST["work_order_ncr_no"];
+}
 
 //Insert  Query Content Builder
 foreach ($WorkOrderMaster as $a => $b) {
