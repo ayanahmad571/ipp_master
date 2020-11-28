@@ -168,13 +168,40 @@ getHead("WO Accounts");
                               ?>
                             </td>
                             <td><?php echo date('d-m-Y @ h:i:s a', $Draft['master_wo_gen_dnt']); ?></td>
-                            <td>
-                              <button class="publishDraft btn btn-success mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Release</button>
-                              <button class="publishConditionalDraft btn btn-warning mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Conditional Release</button>
-                              <a target="_blank" href="work_order_print?id=<?php echo $Draft['master_wo_ref'] ?>">
-                                <button class="btn btn-primary mt-1">View</button>
-                              </a>
-                            </td>
+                            <?php
+                            $getCondRel = mysqlSelect("SELECT * FROM `conditional_release_wo` where
+                            crw_wo_ref = " . $Draft['master_wo_ref'] . " order by crw_id desc limit 1");
+
+                            if (!is_array($getCondRel)) {
+                            ?>
+                              <td>
+                                <button class="publishDraft btn btn-success mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Release</button>
+                                <button class="publishConditionalDraft btn btn-warning mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Conditional Release</button>
+                                <a target="_blank" href="work_order_print?id=<?php echo $Draft['master_wo_ref'] ?>">
+                                  <button class="btn btn-primary mt-1">View</button>
+                                </a>
+                              </td>
+                            <?php
+                            }else if($getCondRel[0]['crw_status'] == 1){
+                              echo '<td>Requested Conditional Release</td>';
+                            }else if($getCondRel[0]['crw_status'] == 3){
+                              //Rejected
+                              ?>
+                              <td>
+                                <?php echo "<strong>Release Rejected</strong>" ?>
+                                <br>
+                                <?php echo $getCondRel[0]['crw_rej_reason'] ?>
+                                <hr>
+                                <button class="publishDraft btn btn-success mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Release</button>
+                                <button class="publishConditionalDraft btn btn-warning mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Conditional Release</button>
+                                <a target="_blank" href="work_order_print?id=<?php echo $Draft['master_wo_ref'] ?>">
+                                  <button class="btn btn-primary mt-1">View</button>
+                                </a>
+                              </td>
+                            <?php
+                            }
+                            ?>
+
                           </tr>
                       <?php
                         }
@@ -346,8 +373,6 @@ getHead("WO Accounts");
 
       }); /* .pubslishDraft Click*/
     }); /*Doc Ready*/
-
-
   </script>
 </body>
 
