@@ -57,6 +57,8 @@ if (isset($_POST['work_order_3_pr_end_ops'])) {
 		);
 	}
 	$WorkOrderMaster['master_wo_extra_print_end_ops'] = implode(',', $_POST['work_order_3_pr_end_ops']);
+}else{
+	$WorkOrderMaster['master_wo_extra_print_end_ops'] = null;	
 }
 
 
