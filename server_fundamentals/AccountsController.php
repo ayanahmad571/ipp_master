@@ -45,9 +45,9 @@ if (isset($_POST['wo_id']) && isset($_POST['WorkOrderRelReasonID']) && isset($_P
 	}
 
 	$getCondRel = mysqlSelect("SELECT * FROM `conditional_release_wo` where
-	crw_wo_ref = ".$getRecieved[0]['master_wo_ref']." order by crw_id desc limit 1");
+	crw_wo_ref = " . $getRecieved[0]['master_wo_ref'] . " order by crw_id desc limit 1");
 
-	if(is_array($getCondRel) && $getCondRel[0]['crw_status'] ==1){
+	if (is_array($getCondRel) && $getCondRel[0]['crw_status'] == 1) {
 		die("<p style='color:red'>Release Already Requested</p>");
 	}
 
@@ -64,7 +64,7 @@ if (isset($_POST['wo_id']) && isset($_POST['WorkOrderRelReasonID']) && isset($_P
 
 	if (!is_numeric($insert)) {
 		die("<p style='color:red'>Not Released Conditionally</p>");
-	}else{
+	} else {
 		die("<p style='color:green'>Successfully Requested Work Order Release</p>");
 	}
 } else if (isset($_POST['WorkOrderGetDetails'])) {
@@ -87,9 +87,9 @@ if (isset($_POST['wo_id']) && isset($_POST['WorkOrderRelReasonID']) && isset($_P
 	}
 
 	$getCondRel = mysqlSelect("SELECT * FROM `conditional_release_wo` where
-	crw_wo_ref = ".$getRecieved[0]['master_wo_ref']." order by crw_id desc limit 1");
+	crw_wo_ref = " . $getRecieved[0]['master_wo_ref'] . " order by crw_id desc limit 1");
 
-	if(is_array($getCondRel) && $getCondRel[0]['crw_status'] == 1){
+	if (is_array($getCondRel) && $getCondRel[0]['crw_status'] == 1) {
 		die("<p style='color:red'>Release Already Requested</p>");
 	}
 
@@ -98,7 +98,7 @@ if (isset($_POST['wo_id']) && isset($_POST['WorkOrderRelReasonID']) && isset($_P
 	echo '<p>PO: <strong>' . $getRecieved[0]['master_wo_customer_po'] . '</strong></p><br>';
 
 
-?>
+	?>
 	<hr>
 	<p id="ret"></p>
 	<input id="a" type="hidden" value="<?php echo $_POST['WorkOrderGetDetails'] ?>" />
@@ -164,6 +164,31 @@ if (isset($_POST['wo_id']) && isset($_POST['WorkOrderRelReasonID']) && isset($_P
 		}); /*Doc Ready*/
 	</script> -->
 <?php
+}
+else if(isset($_POST['AccountsCondToTechnicalRejectCond']) && isset($_POST['rejCond'])){
+	if(trim($_POST['rejCond']) == ""){
+		die("Invalid Rejection Condition");
+	}
+
+	
+	$insert = mysqlInsertData("INSERT INTO `conditional_release_wo`
+	(crw_wo_ref, crw_crr_id, crw_reason, crw_ncr, crw_lum_id, crw_dnt) 
+	VALUES (
+		" . $_POST['AccountsCondToTechnicalRejectCond'] . ",
+		NULL,
+		'" . $_POST['rejCond'] . "',
+		'-',
+		" . $USER_ARRAY['lum_id'] . ",
+		'" . time() . "',
+		2
+	)", true);
+
+	if (!is_numeric($insert)) {
+		die("<p style='color:red'>Error Updating records</p>");
+	} else {
+		die("<p style='color:green'>Successfully Registered Request</p>");
+	}
+
 }
 
 

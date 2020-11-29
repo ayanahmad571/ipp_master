@@ -21,7 +21,7 @@ getHead("Conditional Release");
       <div class="main-content">
         <section class="section">
           <div class="section-header">
-            <h1>Work Order Conditional Release Manager</h1>
+            <h1>Work Order Conditional Release Manager <?php echo (isset($_GET['id']) ? "#" . $_GET['id'] : ""); ?></h1>
           </div>
 
           <div class="row">
@@ -72,22 +72,41 @@ getHead("Conditional Release");
                               <td><?php echo $Draft['crd_text']; ?></td>
                               <td><?php echo date('d-m-Y @ h:i:s a', $Draft['crw_dnt']) ?></td>
                             </tr>
-                          <?php
-                            $x++;
-                          }
-                          if ($toAcc) {
-                          ?>
-
-                            <tr>
-                              <td colspan="5">Accept it</td>
-                            </tr>
                         <?php
+                            $x++;
                           }
                         }
                         ?>
                       </tbody>
 
                     </table>
+
+                    <?php
+                    if ($toAcc) {
+                    ?>
+                      <div class="row">
+                        <div align="center" class="col-sm-6">
+                          <br>
+                          <form id="CompSub" action="server_fundamentals/MainWorkOrderSubmit" method="POST">
+                            <input name="AccountsCondToTechnical" type="hidden" value="<?php echo $_GET['id']; ?>" />
+                            <button type="submit" class="btn btn-success">Accept</button>
+
+                          </form>
+                        </div>
+                        <div class="col-sm-6">
+                          <form id="CompSub2" action="server_fundamentals/AccountsController" method="POST">
+                            <input name="AccountsCondToTechnicalRejectCond" type="hidden" value="<?php echo $_GET['id'] ?>" />
+                            <input name="rejCond" type="text" class="form-control" /><br>
+                            <button type="submit" class="btn btn-danger">Reject</button>
+
+                          </form>
+                        </div>
+                      </div>
+
+
+                    <?php
+                    }
+                    ?>
                   <?php
                   } else {
 
@@ -163,9 +182,42 @@ getHead("Conditional Release");
 
         e.preventDefault();
 
-        bootbox.confirm("Are you sure you want to add this Complaint ?", function(result) {
+        bootbox.confirm("Are you sure you Approve this Work Order?", function(result) {
           if (result) {
             $('#CompSub').fadeOut();
+            var formData = new FormData(formCont);
+            $.ajax({
+              type: 'POST',
+              url: $(formCont).attr('action'),
+              data: formData,
+              cache: false,
+              contentType: false,
+              processData: false,
+              success: function(data) {
+                bootbox.alert(data);
+              },
+              error: function(data) {
+                alert("Contact Admin.");
+              }
+            });
+
+          }
+        });
+
+
+      }));
+
+    });
+
+    $(document).ready(function(e) {
+      $('#CompSub2').on('submit', (function(e) {
+        var formCont = $(this)[0];
+
+        e.preventDefault();
+
+        bootbox.confirm("Are you sure you Reject this conditional request?", function(result) {
+          if (result) {
+            $('#CompSub2').fadeOut();
             var formData = new FormData(formCont);
             $.ajax({
               type: 'POST',

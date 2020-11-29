@@ -190,7 +190,7 @@ getHead("WO Accounts");
                               <td>
                                 <?php echo "<strong>Release Rejected</strong>" ?>
                                 <br>
-                                <?php echo $getCondRel[0]['crw_rej_reason'] ?>
+                                <?php echo $getCondRel[0]['crw_reason'] ?>
                                 <hr>
                                 <button class="publishDraft btn btn-success mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Release</button>
                                 <button class="publishConditionalDraft btn btn-warning mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Conditional Release</button>
