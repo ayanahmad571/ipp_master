@@ -88,7 +88,7 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
                   <form id="formContainer" action="server_fundamentals/WorkOrderControllerEdit" method="post">
                   <input type="hidden" name="work_order_repeat_publish_id" value="<?php echo $_GET['techID'] ?>" />
 
-                    <div class="row">
+                  <div class="row">
                       <div class="form-group col-sm-12 ">
                         <label>Change Type</label>
 
@@ -98,10 +98,12 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
                           if (is_array($getSlitCustomrs)) {
                             foreach ($getSlitCustomrs as $SingularOP) {
                               echo '
-                          <label class="selectgroup-item">
-                            <input disabled type="checkbox" name="work_order_3_changes[]" value="' . $SingularOP['rept_id'] . '" class="selectgroup-input" ' . ($SingularOP['rept_id'] == 1 ? 'checked' : '') . ' />
-                            <span class="selectgroup-button">' . $SingularOP['rept_value'] . '</span>
-                          </label>';
+                              <label class="selectgroup-item">
+                                <input type="checkbox" name="work_order_3_changes[]" 
+                                value="' . $SingularOP['rept_id'] . '" 
+                                class="selectgroup-input" ' . ($SingularOP['rept_id'] == 1 ? 'checked' : '') . ' />
+                                <span class="selectgroup-button">' . $SingularOP['rept_value'] . '</span>
+                              </label>';
                             }
                           }
                           ?>
@@ -109,12 +111,10 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
                         </div>
                       </div>
                     </div>
-                    <?php 
-                    if($typeWO == 2 || $typeWO == 3){ ?>
                     <div class="row">
                       <div class="form-group col-sm-12 col-md-6 col-xl-4 ">
                         <label>LWO</label>
-                        <input disabled type="text" class="form-control" disabled placeholder="LWO" value="#<?php echo $WorkOrderRepPub['mwo_repeat_wo_id'] ?>">
+                        <input type="text" class="form-control" disabled value="# <?php echo $WorkOrderRepPub['mwo_repeat_wo_id'] ?>">
                       </div>
 
                       <div class="form-group col-sm-12 col-md-6 col-xl-4 ">
@@ -128,15 +128,29 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
                       </div>
 
                     </div>
-                    <?php
-                    }
-                    ?>
+                    <hr>
 
                     <div class="row">
+                      <div class="form-group col-12 col-md-6 col-lg-3 col-xl-2">
+                        <label>IPP Sales Person Code</label>
+                        <select class="form-control select_a" required name="work_order_2_sales_id">
+                          <?php
+                          $getDrafts = mysqlSelect($getAttachedTreeSql);
+
+                          if (is_array($getDrafts)) {
+                            foreach ($getDrafts as $Draft) {
+                              echo '<option value="' . $Draft['lum_id'] . '">' . $Draft['lum_code'] . ' - ' . $Draft['lum_name'] . '</option>';
+                            }
+                          }
+                          ?>
+                        </select>
+
+
+                      </div>
 
                       <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-1">
-                        <label>Customer Code</label>
-                        <select disabled class="form-control select_a"  name="work_order_2_client_id">
+                        <label>Cust Code</label>
+                        <select class="form-control select_a" required name="work_order_2_client_id">
                           <?php
                           $getClients = mysqlSelect("SELECT * FROM `clients_main` where `client_show` = 1 order by client_name asc ");
                           if (is_array($getClients)) {
@@ -152,35 +166,35 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
 
                       <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-3">
                         <label>Customer Name</label>
-                        <input disabled type="text" disabled class="form-control" id="custNameGetter" placeholder="">
+                        <input type="text" disabled class="form-control" id="custNameGetter" placeholder="">
                       </div>
 
                       <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
                         <label>Customer's Design Name</label>
-                        <input disabled type="text" class="form-control" name="work_order_customer_design_name" placeholder="Customer Design Name">
+                        <input type="text" class="form-control" name="work_order_customer_design_name" placeholder="Customer Design Name">
                       </div>
                       <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
                         <label>Customer's Item Code</label>
-                        <input disabled type="text" class="form-control" name="work_order_customer_item_code" placeholder="Customer Item Code">
+                        <input type="text" class="form-control" name="work_order_customer_item_code" placeholder="Customer Item Code">
                       </div>
 
                       <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
                         <label>Customer P.O#</label>
-                        <input disabled type="text" class="form-control" name="work_order_customer_po" placeholder="Customer P.O#">
+                        <input type="text" class="form-control" name="work_order_customer_po" placeholder="Customer P.O#">
                       </div>
                       <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
                         <label>Customer P.O Date</label>
-                        <input disabled onchange="getDif()" type="text" class="form-control" name="work_order_po_date" placeholder="DD-MM-YYYY">
+                        <input onchange="getDif()" type="text" class="form-control" name="work_order_po_date" placeholder="DD-MM-YYYY">
                       </div>
 
                       <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
                         <label>Required Delivery Date</label>
-                        <input disabled onchange="getDif()" type="text" class="form-control" name="work_order_delivery_date" placeholder="DD-MM-YYYY">
+                        <input onchange="getDif()" type="text" class="form-control" name="work_order_delivery_date" placeholder="DD-MM-YYYY">
                       </div>
 
                       <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
                         <label>Delivery Required In</label>
-                        <input disabled id="numberOfDays" type="text" disabled class="form-control" name="">
+                        <input id="numberOfDays" type="text" disabled class="form-control" name="">
                       </div>
 
                       <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
@@ -192,56 +206,44 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
                           if (is_array($getSlitCustomrs)) {
                             foreach ($getSlitCustomrs as $SingularOP) {
                               echo '
-<label class="selectgroup-item">
-  <input disabled type="checkbox" name="work_order_3_customer_loc[]" value="' . $SingularOP['customer_location_id'] . '" class="selectgroup-input" ' . ($SingularOP['customer_location_id'] == 1 ? 'checked' : '') . '>
-  <span class="selectgroup-button">' . $SingularOP['customer_location_value'] . '</span>
-</label>';
+                        <label class="selectgroup-item">
+                          <input type="checkbox" name="work_order_3_customer_loc[]" value="' . $SingularOP['customer_location_id'] . '" class="selectgroup-input" ' . ($SingularOP['customer_location_id'] == 1 ? 'checked' : '') . '>
+                          <span class="selectgroup-button">' . $SingularOP['customer_location_value'] . '</span>
+                        </label>';
                             }
                           }
                           ?>
 
                         </div>
                       </div>
-                      <div class="form-group col-sm-12 col-md-6">
-                          <label>Printing End Options</label>
 
-                          <div class="selectgroup selectgroup-pills">
-                            <?php
-                            $getSlitCustomrs = mysqlSelect("SELECT * FROM `work_order_ui_print_end_options` where print_end_opts_show = 1 ");
-                            if (is_array($getSlitCustomrs)) {
-                              foreach ($getSlitCustomrs as $SingularOP) {
-                                echo '
-                              <label class="selectgroup-item">
-                                <input type="checkbox" name="work_order_3_pr_end_ops[]" 
-                                value="' . $SingularOP['print_end_opts_id'] . '" 
-                                class="selectgroup-input" ' . ($SingularOP['print_end_opts_id'] == 1 ? 'checked' : '') . ' />
-                                <span class="selectgroup-button">' . $SingularOP['print_end_opts_value'] . '</span>
-                              </label>';
-                              }
-                            }
-                            ?>
-
-                          </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="form-group col-12 col-md-6 col-lg-3 col-xl-2">
-                        <label>IPP Sales Person Code</label>
-                        <select disabled class="form-control select_a"  name="work_order_2_sales_id">
-                          <?php
-                          $getDrafts = mysqlSelect($getAttachedTreeSql);
-
-                          if (is_array($getDrafts)) {
-                            foreach ($getDrafts as $Draft) {
-                              echo '<option value="' . $Draft['lum_id'] . '">' . $Draft['lum_code'] . ' - ' . $Draft['lum_name'] . '</option>';
-                            }
-                          }
-                          ?>
-                        </select>
-
-
+                      <div class="form-group col-sm-12 col-lg-6 col-xl-2">
+                        <label>Approved Sample WO No.</label>
+                        <input type="text" class="form-control" name="work_order_approved_sample_wo_no" placeholder="Approved Sample WO NO">
                       </div>
+                      <div class="form-group col-8 col-xl-2">
+                        <label>Order Qty</label>
+                        <input placeholder="Order Quantity" name="work_order_quantity" type="number" step="0.01" class="form-control" min="0.10">
+                      </div>
+
+
+                      <?php
+                      getSelectBox(
+                        "form-group col-4 col-xl-1",
+                        "Qty Unit",
+                        "work_order_2_units",
+                        "SELECT * FROM `work_order_qty_units` where unit_show =1",
+                        'unit_id',
+                        'unit_value'
+                      );
+                      ?>
+
+                      <div class="form-group col-4 col-xl-2">
+                        <label>Tolerance % +/-</label>
+                        <input placeholder="Tolerance +/-" name="work_order_quantity_tolerance" type="number" step="0.01" class="form-control" />
+                      </div>
+
+
                       <?php
                       getSelectBox(
                         "form-group col-12 col-md-6 col-lg-3 col-xl-2",
@@ -252,38 +254,7 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
                         'structure_value'
                       );
                       ?>
-                      <?php
-                      getSelectBox(
-                        "form-group col-12 col-md-6 col-lg-3 col-xl-2",
-                        "_ ",
-                        "work_order_2_type_printed",
-                        "SELECT * FROM `work_order_product_type_printed` where ptp_show = 1 order by ptp_value asc ",
-                        'ptp_id',
-                        'ptp_value'
-                      );
-                      ?>
-                      <div id="whenPrintedClickedGO" class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
-                        <label>Ink GSM as per PRE-COSTING</label>
-                        <input disabled type="text" class="form-control" name="work_order_ink_gsm_pre_c" placeholder="Ink GSM">
-                      </div>
 
-                      <div class="col-12 col-md-6 col-xl-4">
-                        <div class="row">
-                          <div class="form-group col-sm-12 col-md-9">
-                            <label>IPP Design ID</label>
-                            <input disabled type="text" class="form-control" name="work_order_design_id" placeholder="IPP Design ID">
-                          </div>
-                          <div class="form-group col-sm-12 col-md-3">
-                            <label>Rev No</label>
-                            <input disabled type="number" min="0" value="0" class="form-control" name="work_order_rev_no" placeholder="Rev">
-                          </div>
-                        </div>
-                      </div>
-
-
-                    </div>
-                    <hr>
-                    <div class="row">
                       <?php
                       getSelectBox(
                         "form-group col-sm-12 col-xl-2",
@@ -294,6 +265,156 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
                         'application_value'
                       );
                       ?>
+                      <div class="classPouchRoll col-sm-12 col-xl-2">
+
+                        <?php
+                        getSelectBox(
+                          "form-group",
+                          "Laser Configuration",
+                          "work_order_2_laser_config",
+                          "SELECT * FROM `work_order_ui_slitting_laser_config` where laser_show =1 order by laser_value asc ",
+                          'laser_id',
+                          'laser_value'
+                        );
+                        ?>
+                      </div>
+                      <div class="form-group  col-12 col-md-6 col-xl-3">
+                        <label>Customer Specified Total Laminate GSM</label>
+                        <input placeholder="Customer Specified Total Laminate GSM" name="work_order_total_gsm" type="number" step="0.01" class="form-control" min="0.10">
+                      </div>
+
+                      <div class="form-group  col-12 col-md-6 col-xl-2">
+                        <label>Laminate GSM Tolerance % +/-</label>
+                        <input placeholder="Tolerance +/-" name="work_order_total_gsm_tolerance" type="number" step="0.01" class="form-control" min="0">
+                      </div>
+
+
+                    </div>
+
+                    <hr>
+                    
+                    <div class="row">
+                      <?php
+                      getSelectBox(
+                        "form-group col-12 col-md-6 col-lg-3 col-xl-2",
+                        "Select P or U",
+                        "work_order_2_type_printed",
+                        "SELECT * FROM `work_order_product_type_printed` where ptp_show = 1 order by ptp_value asc ",
+                        'ptp_id',
+                        'ptp_value'
+                      );
+                      ?>
+
+
+
+                      <?php
+                      getSelectBox(
+                        "form-group col-12 col-lg-6 col-xl-2 whenPrintedClickedGO",
+                        "Printing Method",
+                        "work_order_2_printing_method",
+                        "SELECT * FROM `work_order_ui_print_surfrev` where surfrev_show = 1 ",
+                        'surfrev_id',
+                        'surfrev_value'
+                      );
+                      ?>
+
+                      <?php
+                      getSelectBox(
+                        "form-group col-12 col-lg-6 col-xl-2 whenPrintedClickedGO",
+                        "Shade Card Required",
+                        "work_order_2_printing_shade_card_needed",
+                        "SELECT * FROM `work_order_ui_print_shadecardreq` where shadecardreq_show = 1 ",
+                        'shadecardreq_id',
+                        'shadecardreq_value'
+                      );
+                      ?>
+                      <?php
+                      getSelectBox(
+                        "form-group col-12 col-lg-6 col-xl-2 whenPrintedClickedGO",
+                        "Color Reference Type",
+                        "work_order_2_printing_color_ref_type",
+                        "SELECT * FROM `work_order_ui_print_shadecard_ref_type` where shadecard_ref_type_show = 1 and  shadecard_ref_type_id not in (1,5)",
+                        'shadecard_ref_type_id',
+                        'shadecard_ref_type_value'
+                      );
+                      ?>
+
+                      <?php
+                      getSelectBox(
+                        "form-group col-12 col-lg-6 col-xl-2 whenPrintedClickedGO",
+                        "Print Approval by",
+                        "work_order_2_printing_approvalby",
+                        "SELECT * FROM `work_order_ui_print_options` where print_options_show = 1  ",
+                        'print_options_id',
+                        'print_options_value'
+                      );
+                      ?>
+
+                      <div class="whenPrintedClickedGO form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
+                        <label>Ink GSM as per PRE-COSTING</label>
+                        <input type="text" class="form-control" name="work_order_ink_gsm_pre_c" placeholder="Ink GSM">
+                      </div>
+
+                      <div class="col-12 col-md-6 col-xl-3 whenPrintedClickedGO">
+                        <div class="row">
+                          <div class="form-group col-sm-12 col-md-8">
+                            <label>IPP Design ID</label>
+                            <input type="text" class="form-control" name="work_order_design_id" placeholder="IPP Design ID">
+                          </div>
+                          <div class="form-group col-sm-12 col-md-4">
+                            <label>Rev No</label>
+                            <input type="number" min="0" value="0" class="form-control" name="work_order_rev_no" placeholder="Rev">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group col-sm-12 col-md-6 whenPrintedClickedGO">	
+	                          <label>Printing End Options</label>	
+		
+	                          <div class="selectgroup selectgroup-pills">	
+	                            <?php	
+	                            $getSlitCustomrs = mysqlSelect("SELECT * FROM `work_order_ui_print_end_options` where print_end_opts_show = 1 ");	
+	                            if (is_array($getSlitCustomrs)) {	
+	                              foreach ($getSlitCustomrs as $SingularOP) {	
+	                                echo '	
+	                              <label class="selectgroup-item">	
+	                                <input type="checkbox" name="work_order_3_pr_end_ops[]" 	
+	                                value="' . $SingularOP['print_end_opts_id'] . '" 	
+	                                class="selectgroup-input" ' . ($SingularOP['print_end_opts_id'] == 1 ? 'checked' : '') . ' />	
+	                                <span class="selectgroup-button">' . $SingularOP['print_end_opts_value'] . '</span>	
+	                              </label>';	
+	                              }	
+	                            }	
+	                            ?>	
+		
+	                          </div>	
+	                        </div>	
+	                    </div>
+
+                    </div>
+
+                    <hr>
+                    
+                    <div class="row">
+                      <?php
+                      getSelectBox(
+                        "form-group col-sm-12 col-xl-2",
+                        "Coating Type",
+                        "work_order_2_coating_options",
+                        "SELECT * FROM `work_order_ui_lam_options` where lamo_show =1 order by lamo_value asc ",
+                        'lamo_id',
+                        'lamo_value'
+                      );
+                      ?>
+                      <div class="form-group col-sm-12 col-md-6 col-lg-2">
+                        <label>Coating GSM</label>
+                        <input type="text" class="form-control" name="work_order_coating_gsm" placeholder="Coating GSM">
+                      </div>
+
+                    </div>
+
+                    <HR>
+                    <div class="row">
+
                       <?php
                       getSelectBox(
                         "form-group col-sm-12 col-xl-2 classOnlyRoll",
@@ -307,7 +428,7 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
                       <?php
                       getSelectBox(
                         "form-group col-sm-12 col-xl-2 classBagPouch",
-                        "Bag/Pouch Filling Options Temperature",
+                        "Filling Method",
                         "work_order_2_pouchbag_fillops",
                         "SELECT * FROM `work_order_ui_pouch_bag_fill_opts` where pbfo_show =1 order by pbfo_value asc ",
                         'pbfo_id',
@@ -318,42 +439,42 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
                       <?php
                       getSelectBox(
                         "form-group col-sm-12 col-xl-2",
-                        "Customer Filling Machine Details",
+                        "Product Filling Temperature Type",
                         "work_order_2_fill_temp",
                         "SELECT * FROM `work_order_ui_filling_temp` where filling_temp_show =1 order by filling_temp_value asc ",
                         'filling_temp_id',
                         'filling_temp_value'
                       );
                       ?>
-                      <div class="form-group col-sm-12 col-md-6 col-lg-2">
-                        <label>Filling Time Duration</label>
-                        <input disabled type="text" class="form-control" name="work_order_fill_duration" placeholder="Time Duration">
-                      </div>
-                      <div class="form-group col-sm-12 col-md-6 col-lg-2">
+                      <div class="form-group col-sm-12 col-md-6 col-lg-2 nonPastRetShow">
                         <label>Filling Temperature</label>
-                        <input disabled type="text" class="form-control" name="work_order_fill_temp" placeholder="Temperature">
+                        <input type="text" class="form-control" name="work_order_fill_temp" placeholder="Filling Temperature">
+                      </div>
+                      <div class="form-group col-sm-12 col-md-6 col-lg-2 pastRetShow">
+                        <label>Submersion Temperature</label>
+                        <input type="text" class="form-control" name="work_order_submersion_temp" placeholder="Submersion Temperature">
+                      </div>
+                      <div class="form-group col-sm-12 col-md-6 col-lg-2 pastRetShow">
+                        <label>Submersion Duration</label>
+                        <input type="text" class="form-control" name="work_order_submersion_duration" placeholder="Submersion Duration">
                       </div>
 
+
                       <div class="form-group col-sm-12 col-md-6 col-lg-2">
-                        <label>Line Speed Time Duration</label>
-                        <input disabled type="text" class="form-control" name="work_order_line_speed" placeholder="Time Duration">
+                        <label>Line Speed</label>
+                        <input type="text" class="form-control" name="work_order_line_speed" placeholder="Line Speed">
                       </div>
                       <div class="form-group col-sm-12 col-md-6 col-lg-2">
                         <label>Dwell Time</label>
-                        <input disabled type="text" class="form-control" name="work_order_dwell_time" placeholder="Temperature">
+                        <input type="text" class="form-control" name="work_order_dwell_time" placeholder="Dwell Time">
                       </div>
                       <div class="form-group col-sm-12 col-md-6 col-lg-2">
                         <label>Seal Temperature</label>
-                        <input disabled type="text" class="form-control" name="work_order_seal_temp" placeholder="Time Duration">
+                        <input type="text" class="form-control" name="work_order_seal_temp" placeholder="Seal Temperature">
                       </div>
-                      <div class="form-group col-sm-12 col-lg-6 col-xl-2">
-                        <label>Pack Size </label>
-                        <input disabled type="number" min="1" max="999999" step="0.01" class="form-control" name="work_order_pack_size" placeholder="Pack Size ">
-                      </div>
-
                       <div class="form-group col-sm-12 col-lg-6 col-xl-2">
                         <label>Pack Weight </label>
-                        <input disabled type="number" min="1" max="999999" step="0.01" class="form-control" name="work_order_pack_weight" placeholder="Pack Weight ">
+                        <input type="number" min="1" max="999999" step="0.01" class="form-control" name="work_order_pack_weight" placeholder="Pack Weight ">
                       </div>
 
 
@@ -369,96 +490,59 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
                       );
                       ?>
 
+                      <div class="form-group col-sm-12 col-lg-6 col-xl-2">
+                        <label>Cust Specified COF</label>
+                        <input type="text" class="form-control" name="work_order_cof_val" placeholder="COF">
+                      </div>
 
                     </div>
                     <hr>
 
                     <div class="row">
-
-
-
-                      <?php if($typeWO == 1){ ?>
-                      <div class="form-group col-sm-12 col-lg-6 col-xl-3">
-                        <label>Approved Sample WO No.</label>
-                        <input disabled type="text" class="form-control" name="work_order_approved_sample_wo_no" placeholder="Approved Sample WO NO">
+                      <div class="form-group col-sm-12 col-lg-6 col-xl-2">
+                        <label>Number of Layers</label>
+                        <input id="plyValueInput" type="number" min="1" max="5" class="form-control" name="work_order_ply" value="2" placeholder="Ply">
                       </div>
-                      <?php } ?>
-
-
-                      <div class="form-group col-8 col-xl-2">
-                        <label>Order Qty</label>
-                        <input disabled placeholder="Order Quantity" name="work_order_quantity" type="number" step="0.01" class="form-control" min="0.10">
-                      </div>
-
-                      <?php
-                      getSelectBox(
-                        "form-group col-4 col-xl-2",
-                        "Qty Unit",
-                        "work_order_2_units",
-                        "SELECT * FROM `work_order_qty_units` where unit_show =1",
-                        'unit_id',
-                        'unit_value'
-                      );
-                      ?>
-
-                      <div class="form-group col-4 col-xl-2">
-                        <label>Tolerance % +/-</label>
-                        <input disabled placeholder="Tolerance +/-" name="work_order_quantity_tolerance" type="number" step="0.01" class="form-control" />
+                      <div class="form-group col-sm-12 col-lg-6 col-xl-10">
+                        <div class="row">
+                          <div class="form-group  col-12 col-md-6 col-xl-3">
+                            <label>Combined Film GSM</label>
+                            <input id="calcLamGSM" value="0" disabled class="form-control">
+                          </div>
+                          <div class="form-group  col-12 col-md-6 col-xl-3">
+                            <label>INK GSM</label>
+                            <input id="calcInkGSM" value="0" disabled class="form-control">
+                          </div>
+                          <div class="form-group  col-12 col-md-6 col-xl-3">
+                            <label>Total Adhesive GSM</label>
+                            <input id="calcAdhGSM" value="0" disabled class="form-control">
+                          </div>
+                          <div class="form-group  col-12 col-md-6 col-xl-3">
+                            <label>Total Laminate GSM</label>
+                            <input id="calcTotGSM" disabled class="form-control">
+                          </div>
+                        </div>
                       </div>
 
+                    </div>
 
-                      <div class="classPouchRoll col-sm-12 col-xl-3">
+                    <div id="containerLaminateLayers" class="row">
+                    </div>
+                    <div class="row" id="adhesiveSection">
+                    </div>
 
+                    <div class="row">
+                      <div class="form-group col-12 col-lg-6 col-xl-3" id="workOrderFoilPrint">
                         <?php
                         getSelectBox(
                           "form-group",
-                          "Laser Configuration",
-                          "work_order_2_laser_config",
-                          "SELECT * FROM `work_order_ui_slitting_laser_config` where laser_show =1 order by laser_value asc ",
-                          'laser_id',
-                          'laser_value'
+                          "Foil Finish Towards Printing Substrate",
+                          "work_order_2_foil_print_side",
+                          "SELECT * FROM `work_order_ui_foil_print_side` where foil_print_side_show = 1 order by foil_print_side_value asc ",
+                          'foil_print_side_id',
+                          'foil_print_side_value'
                         );
                         ?>
-                      </div>
-
-                    </div>
-
-                    <hr>
-
-
-                    <div class="row">
-                      <div class="form-group col-sm-12 col-lg-6 col-xl-2 ">
-                        <label>Number of Layers</label>
-                        <input disabled id="plyValueInput" type="number" min="1" max="5" class="form-control" name="work_order_ply" value="2" placeholder="Ply">
-                      </div>
-                      <?php
-                      getSelectBox(
-                        "form-group col-sm-12 col-lg-6 col-xl-2 ",
-                        "C.O.F",
-                        "work_order_2_extrusion_cof",
-                        "SELECT * FROM `work_order_ui_ext_cof` where cof_show = 1 ",
-                        'cof_id',
-                        'cof_value'
-                      );
-                      ?>
-                    </div>
-
-                    <div id="containerLaminateLayers">
-                    </div>
-
-                    <div class="row">
-                      <div class="form-group  col-12 col-md-6 col-xl-4">
-                        <label>Customer Specified Total Laminate GSM</label>
-                        <input disabled placeholder="Customer Specified Total Laminate GSM" name="work_order_total_gsm" type="number" step="0.01" class="form-control" min="0.10">
-                      </div>
-
-                      <div class="form-group  col-12 col-md-6 col-xl-4">
-                        <label>&nbsp;</label>
-                        <input disabled placeholder="Tolerance +/-" name="work_order_total_gsm_tolerance" type="number" step="0.01" class="form-control" min="0">
-                      </div>
-                      <div class="form-group  col-12 col-md-6 col-xl-4">
-                        <label>Calculated Laminate GSM</label>
-                        <input disabled id="calcLamGSM" disabled class="form-control" min="0.10">
                       </div>
                     </div>
 
@@ -480,7 +564,7 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
                           <div class="row">
                             <div class="form-group col-12 col-lg-3">
                               <label>Wind DIR</label>
-                              <select disabled class="form-control select_a" name="work_order_2_wind_dir">
+                              <select class="form-control select_a" required name="work_order_2_wind_dir">
                                 <?php
                                 $getWinds = mysqlSelect("SELECT * FROM `work_order_wind_dir` where wind_show =1 order by wind_value asc");
                                 if (is_array($getWinds)) {
@@ -495,31 +579,31 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
 
                             <div class="form-group col-12 col-lg-3">
                               <label>Customer Roll OD(mm)</label>
-                              <input disabled type="number" min="1" max="999999999" step="0.01" class="form-control" name="work_order_roll_od" placeholder="Customer Roll OD">
+                              <input type="number" min="1" max="999999999" step="0.01" class="form-control" name="work_order_roll_od" placeholder="Customer Roll OD">
                             </div>
                             <div class="form-group col-12 col-md-6 col-lg-3 col-xl-3">
                               <label>Roll Width</label>
-                              <input disabled type="text" class="form-control" name="work_order_roll_width" placeholder="Roll Width">
+                              <input type="text" class="form-control" name="work_order_roll_width" placeholder="Roll Width">
                             </div>
 
                             <div class="form-group col-12 col-md-6 col-lg-3 col-xl-3">
                               <label>Roll Cut Off Length</label>
-                              <input disabled type="text" class="form-control" name="work_order_roll_cutoff_len" placeholder="Roll Cut Off Length">
+                              <input type="text" class="form-control" name="work_order_roll_cutoff_len" placeholder="Roll Cut Off Length">
                             </div>
 
 
 
                             <div class="form-group col-12 col-lg-4">
                               <label>Max Weight per Roll</label>
-                              <input disabled type="number" min="1" max="999999999" step="0.01" class="form-control" name="work_order_max_w_p_r" placeholder="Max Weight per Roll">
+                              <input type="number" min="1" max="999999999" step="0.01" class="form-control" name="work_order_max_w_p_r" placeholder="Max Weight per Roll">
                             </div>
                             <div class="form-group col-12 col-lg-4">
                               <label>Max L.MTR per Roll</label>
-                              <input disabled type="number" min="1" max="999999999" step="0.01" class="form-control" name="work_order_max_lmtr_p_r" placeholder="Max L.MTR per Roll">
+                              <input type="number" min="1" max="999999999" step="0.01" class="form-control" name="work_order_max_lmtr_p_r" placeholder="Max L.MTR per Roll">
                             </div>
                             <div class="form-group col-12 col-lg-4">
                               <label>Max IMPs per Roll</label>
-                              <input disabled type="number" min="1" max="999999999" step="0.01" class="form-control" name="work_order_max_imps_p_r" placeholder="Max IMPs per Roll">
+                              <input type="number" min="1" max="999999999" step="0.01" class="form-control" name="work_order_max_imps_p_r" placeholder="Max IMPs per Roll">
                             </div>
 
                             <?php
@@ -571,7 +655,7 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
 
                             <div class="form-group col-12 col-lg-4">
                               <label>Max No of Joints per Roll</label>
-                              <input disabled type="number" min="0" max="3" class="form-control" name="work_order_max_joints" placeholder="Max Joints/Roll">
+                              <input type="number" min="0" max="3" class="form-control" name="work_order_max_joints" placeholder="Max Joints/Roll">
                             </div>
 
 
@@ -583,11 +667,11 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
 
 
                       </div>
-
                       <br>
                       <div class="row">
                         <div class="form-group col-12">
                           <label>Roll Remarks</label>
+
                           <textarea name="work_order_remarks_roll" class="form-control remarksEdit" placeholder="Remarks" style="height:200px"></textarea>
                         </div>
                       </div>
@@ -600,7 +684,7 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
                         </div>
                         <div class="form-group col-4">
                           <label>Pouch Type</label>
-                          <select disabled id="pouch_switcher" class="form-control select_a"  name="work_order_pouch_type">
+                          <select id="pouch_switcher" class="form-control select_a" required name="work_order_pouch_type">
                             <?php
                             $getWinds = mysqlSelect("SELECT * FROM `work_order_digital_master` where dm_type =1 order by dm_header asc");
                             if (is_array($getWinds)) {
@@ -614,35 +698,35 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
                           <div class="row">
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>A </label>
-                              <input disabled type="text" class="form-control" name="work_order_pouch_val_a" placeholder="A">
+                              <input type="text" class="form-control" name="work_order_pouch_val_a" placeholder="A">
                             </div>
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>B </label>
-                              <input disabled type="text" class="form-control" name="work_order_pouch_val_b" placeholder="B">
+                              <input type="text" class="form-control" name="work_order_pouch_val_b" placeholder="B">
                             </div>
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>C </label>
-                              <input disabled type="text" class="form-control" name="work_order_pouch_val_c" placeholder="C">
+                              <input type="text" class="form-control" name="work_order_pouch_val_c" placeholder="C">
                             </div>
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>D </label>
-                              <input disabled type="text" class="form-control" name="work_order_pouch_val_d" placeholder="D">
+                              <input type="text" class="form-control" name="work_order_pouch_val_d" placeholder="D">
                             </div>
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>E </label>
-                              <input disabled type="text" class="form-control" name="work_order_pouch_val_e" placeholder="E">
+                              <input type="text" class="form-control" name="work_order_pouch_val_e" placeholder="E">
                             </div>
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>F </label>
-                              <input disabled type="text" class="form-control" name="work_order_pouch_val_f" placeholder="F">
+                              <input type="text" class="form-control" name="work_order_pouch_val_f" placeholder="F">
                             </div>
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>G</label>
-                              <input disabled type="text" class="form-control" name="work_order_pouch_val_g" placeholder="G">
+                              <input type="text" class="form-control" name="work_order_pouch_val_g" placeholder="G">
                             </div>
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>H</label>
-                              <input disabled type="text" class="form-control" name="work_order_pouch_val_h" placeholder="H">
+                              <input type="text" class="form-control" name="work_order_pouch_val_h" placeholder="H">
                             </div>
 
                             <div class="form-group col-12">
@@ -653,10 +737,10 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
                                 if (is_array($getExtOp1)) {
                                   foreach ($getExtOp1 as $ExtOp1) {
                                     echo '
-      <label class="selectgroup-item">
-              <input disabled type="checkbox" name="work_order_3_pouch_lap_fin[]" value="' . $ExtOp1['lap_fin_id'] . '" class="selectgroup-input" ' . ($ExtOp1['lap_fin_id'] == 1 ? 'checked' : '') . '>
-              <span class="selectgroup-button">' . $ExtOp1['lap_fin_value'] . '</span>
-            </label>';
+                              <label class="selectgroup-item">
+                                      <input type="checkbox" name="work_order_3_pouch_lap_fin[]" value="' . $ExtOp1['lap_fin_id'] . '" class="selectgroup-input" ' . ($ExtOp1['lap_fin_id'] == 1 ? 'checked' : '') . '>
+                                      <span class="selectgroup-button">' . $ExtOp1['lap_fin_value'] . '</span>
+                                    </label>';
                                   }
                                 }
                                 ?>
@@ -688,7 +772,7 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
                         </div>
                         <div class="form-group col-4">
                           <label>Bag Type</label>
-                          <select disabled id="bag_switcher" class="form-control select_a"  name="work_order_bag_type">
+                          <select id="bag_switcher" class="form-control select_a" required name="work_order_bag_type">
                             <?php
                             $getWinds = mysqlSelect("SELECT * FROM `work_order_digital_master` where dm_type =2 order by dm_header asc");
                             if (is_array($getWinds)) {
@@ -702,35 +786,35 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
                           <div class="row">
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>A </label>
-                              <input disabled type="text" class="form-control" name="work_order_bags_val_a" placeholder="A">
+                              <input type="text" class="form-control" name="work_order_bags_val_a" placeholder="A">
                             </div>
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>B </label>
-                              <input disabled type="text" class="form-control" name="work_order_bags_val_b" placeholder="B">
+                              <input type="text" class="form-control" name="work_order_bags_val_b" placeholder="B">
                             </div>
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>C </label>
-                              <input disabled type="text" class="form-control" name="work_order_bags_val_c" placeholder="C">
+                              <input type="text" class="form-control" name="work_order_bags_val_c" placeholder="C">
                             </div>
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>D </label>
-                              <input disabled type="text" class="form-control" name="work_order_bags_val_d" placeholder="D">
+                              <input type="text" class="form-control" name="work_order_bags_val_d" placeholder="D">
                             </div>
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>E </label>
-                              <input disabled type="text" class="form-control" name="work_order_bags_val_e" placeholder="E">
+                              <input type="text" class="form-control" name="work_order_bags_val_e" placeholder="E">
                             </div>
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>F </label>
-                              <input disabled type="text" class="form-control" name="work_order_bags_val_f" placeholder="F">
+                              <input type="text" class="form-control" name="work_order_bags_val_f" placeholder="F">
                             </div>
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>G</label>
-                              <input disabled type="text" class="form-control" name="work_order_bags_val_g" placeholder="G">
+                              <input type="text" class="form-control" name="work_order_bags_val_g" placeholder="G">
                             </div>
                             <div class="form-group col-sm-6 col-xl-4">
                               <label>H</label>
-                              <input disabled type="text" class="form-control" name="work_order_bags_val_h" placeholder="H">
+                              <input type="text" class="form-control" name="work_order_bags_val_h" placeholder="H">
                             </div>
                           </div>
 
@@ -741,7 +825,6 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
                       <div class="row">
                         <div class="form-group col-12">
                           <label>Bags Remarks</label>
-
                           <textarea name="work_order_remarks_bags" class="form-control remarksEdit" placeholder="Remarks" style="height:200px"></textarea>
                         </div>
                       </div>
@@ -749,68 +832,6 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
                     </div>
 
                     <hr>
-
-                    <div class="row">
-                      <div class="form-group col-12 col-lg-6 col-xl-3" id="workOrderFoilPrint">
-                        <?php
-                        getSelectBox(
-                          "form-group",
-                          "Foil Finish Towards Printing Substrate",
-                          "work_order_2_foil_print_side",
-                          "SELECT * FROM `work_order_ui_foil_print_side` where foil_print_side_show = 1 order by foil_print_side_value asc ",
-                          'foil_print_side_id',
-                          'foil_print_side_value'
-                        );
-                        ?>
-                      </div>
-
-
-                      <?php
-                      getSelectBox(
-                        "form-group col-12 col-lg-6 col-xl-2",
-                        "Printing Method",
-                        "work_order_2_printing_method",
-                        "SELECT * FROM `work_order_ui_print_surfrev` where surfrev_show = 1 ",
-                        'surfrev_id',
-                        'surfrev_value'
-                      );
-                      ?>
-
-                      <?php
-                      getSelectBox(
-                        "form-group col-12 col-lg-6 col-xl-2",
-                        "Shade Card Required",
-                        "work_order_2_printing_shade_card_needed",
-                        "SELECT * FROM `work_order_ui_print_shadecardreq` where shadecardreq_show = 1 ",
-                        'shadecardreq_id',
-                        'shadecardreq_value'
-                      );
-                      ?>
-                      <?php
-                      getSelectBox(
-                        "form-group col-12 col-lg-6 col-xl-2",
-                        "Color Reference Type",
-                        "work_order_2_printing_color_ref_type",
-                        "SELECT * FROM `work_order_ui_print_shadecard_ref_type` where shadecard_ref_type_show = 1 and  shadecard_ref_type_id not in (1,5)",
-                        'shadecard_ref_type_id',
-                        'shadecard_ref_type_value'
-                      );
-                      ?>
-
-                      <?php
-                      getSelectBox(
-                        "form-group col-12 col-lg-6 col-xl-2",
-                        "Print Approval by",
-                        "work_order_2_printing_approvalby",
-                        "SELECT * FROM `work_order_ui_print_options` where print_options_show = 1  ",
-                        'print_options_id',
-                        'print_options_value'
-                      );
-                      ?>
-
-                    </div>
-
-                    <HR>
 
                     <div id="workOrderSlitProcess">
 
@@ -853,16 +874,16 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
 
                         <div class="classBagPouch form-group col-12 col-sm-6 col-lg-6 col-xl-2">
                           <label>No. Pouches per Bundle</label>
-                          <input disabled id="pouchPerBundle" min="1" max="99999999999" type="number" class="form-control" name="work_order_pouch_per_bund" placeholder="Pouches per Bundle">
+                          <input id="pouchPerBundle" min="1" max="99999999999" type="number" class="form-control" name="work_order_pouch_per_bund" placeholder="Pouches per Bundle">
                         </div>
 
                         <div class="classBagPouch form-group col-12 col-sm-6 col-lg-6 col-xl-2">
                           <label>No. Bundles per Box</label>
-                          <input disabled id="bundlePerBox" min="1" max="99999999999" type="number" class="form-control" name="work_order_bund_per_box" placeholder="Bundles per Box">
+                          <input id="bundlePerBox" min="1" max="99999999999" type="number" class="form-control" name="work_order_bund_per_box" placeholder="Bundles per Box">
                         </div>
                         <div class="classBagPouch form-group col-12 col-sm-6 col-lg-6 col-xl-2">
                           <label>Max Pouches in a BOX</label>
-                          <input disabled type="text" class="form-control" id="piecePerBox" placeholder="" disabled>
+                          <input type="text" class="form-control" id="piecePerBox" placeholder="" disabled>
                         </div>
 
                       </div>
@@ -891,7 +912,7 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
 
                         <div class="form-group col-12 col-sm-6 col-lg-6 col-xl-2">
                           <label>Max Gross Weight per Pallet (KG)</label>
-                          <input disabled min="1" max="99999999999" type="number" class="form-control" name="work_order_max_gross_pallet_weight" placeholder="Max Gross Weight per Pallet">
+                          <input min="1" max="99999999999" type="number" class="form-control" name="work_order_max_gross_pallet_weight" placeholder="Max Gross Weight per Pallet">
                         </div>
 
                         <?php
@@ -916,9 +937,9 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
                         );
                         ?>
 
-                        <div class="form-group col-12 col-sm-6 col-lg-6 col-xl-2">
+                        <div id="cartonPly" class="form-group col-12 col-sm-6 col-lg-6 col-xl-2">
                           <label>Carton Thickness</label>
-                          <input disabled name="work_order_cart_thick" type="number" min="3" max="7" class="form-control" value="3" placeholder="Ply">
+                          <input name="work_order_cart_thick" type="number" min="3" max="7" class="form-control" value="3" placeholder="Ply">
                         </div>
                       </div>
 
@@ -932,10 +953,10 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
                             if (is_array($getSlitCustomrs)) {
                               foreach ($getSlitCustomrs as $SingularOP) {
                                 echo '
-<label class="selectgroup-item">
-  <input disabled type="checkbox" name="work_order_3_docs[]" value="' . $SingularOP['shipment_id'] . '" class="selectgroup-input" ' . ($SingularOP['shipment_id'] == 1 ? 'checked' : '') . '>
-  <span class="selectgroup-button">' . $SingularOP['shipment_value'] . '</span>
-</label>';
+                        <label class="selectgroup-item">
+                          <input type="checkbox" name="work_order_3_docs[]" value="' . $SingularOP['shipment_id'] . '" class="selectgroup-input" ' . ($SingularOP['shipment_id'] == 4 ? 'checked' : '') . '>
+                          <span class="selectgroup-button">' . $SingularOP['shipment_value'] . '</span>
+                        </label>';
                               }
                             }
                             ?>
@@ -1072,7 +1093,9 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
       setUpMaxPouch();
       setUpPrintingOption();
       setLamGSM();
-      // setCartonPly();
+      setUpInkGsmCalc();
+      setPastRet()
+      setCartonPly();
       $(".remarksEdit").wysihtml5();
 
       //Listeners	
@@ -1095,6 +1118,7 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
       //Trigger Functions for Structure
       $("select[name=work_order_2_structure]").change(function(e) {
         setBagPouchSetup();
+        setCartonPly();
       });
 
 
@@ -1120,6 +1144,15 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
         });
 
       }
+      for (l = 1; l < ($('#plyValueInput').val()); l++) {
+
+        $('input[name="work_order_adh' + l + '"]').change(function(e) {
+          setAdhesiveGsm();
+        });
+
+      }
+
+
 
 
       $('#plyValueInput').change(function(e) {
@@ -1134,6 +1167,15 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
             $('select[name="work_order_5_layer_' + l + '_material"]').change(function(e) {
               setUpFilmToLaminate();
               setLamGSM();
+
+            });
+
+          }
+          for (l2 = 1; l2 < ($('#plyValueInput').val()); l2++) {
+
+            $('input[name="work_order_adh' + l2 + '"]').change(function(e) {
+              setAdhesiveGsm();
+
             });
 
           }
@@ -1167,27 +1209,61 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
         setUpPrintingOption();
       });
 
+      $('input[name="work_order_ink_gsm_pre_c"]').change(function(e) {
+        setUpInkGsmCalc();
+      });
+
+      $("select[name=work_order_2_fill_temp]").change(function(e) {
+        setPastRet();
+      });
+
+      $("select[name=work_order_2_roll_pack_ins]").change(function(e) {
+        setCartonPly();
+      });
+
       $("#formLoading").hide();
     });
 
-    // function setCartonPly() {
-    //   let struct = $('select[name=work_order_2_structure]').find(':selected').val();
-    //   let bagPouchCont = $('select[name=work_order_2_roll_pack_ins]').find(':selected').val();
-    //   let rollCont = $('select[name=work_order_2_carton_pack_ins]').find(':selected').val();
+    function setCartonPly() {
+      let struct = $('select[name=work_order_2_structure]').find(':selected').val();
+      let bagPouchCont = $('select[name=work_order_2_roll_pack_ins]').find(':selected').val();
+      let rollCont = $('select[name=work_order_2_carton_pack_ins]').find(':selected').val();
 
-    //   if (struct == 1 || struct == 2) {
-    //     //Bag/Pouch
-    //     $("#cartonPly").show();
-    //   } else {
-    //     //ROll
+      if (struct == 1 || struct == 2) {
+        //Bag/Pouch
+        $("#cartonPly").show();
+      } else {
+        //ROll
 
-    //     if (bagPouchCont == ) {
-    //       $("#cartonPly").hide();
-    //     } else {
-    //       $("#cartonPly").show();
-    //     }
-    //   }
-    // }
+        if (bagPouchCont == 1) {
+          $("#cartonPly").hide();
+        } else {
+          $("#cartonPly").show();
+        }
+      }
+    }
+
+    function setPastRet() {
+      var selectedItem = $("select[name=work_order_2_fill_temp] :selected").val();
+      if (selectedItem == 4 || selectedItem == 5) {
+        $(".pastRetShow").show();
+        $(".nonPastRetShow").hide();
+      } else {
+        $(".pastRetShow").hide();
+        $(".nonPastRetShow").show();
+      }
+    }
+
+    function setUpInkGsmCalc() {
+      let vals = $('input[name="work_order_ink_gsm_pre_c"]').val();
+      if (vals === '') {
+        $("#calcInkGSM").val(0);
+      } else {
+        $("#calcInkGSM").val(vals);
+      }
+      totalGSM();
+
+    }
 
     function setLamGSM() {
 
@@ -1200,15 +1276,44 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
         var gsm = $('input[name=work_order_layer_' + l + '_micron]').val();
         c += den * gsm;
       }
+
       $("#calcLamGSM").val(c);
+      totalGSM();
+
+    }
+
+    function setAdhesiveGsm() {
+      var layers = $('#plyValueInput').val();
+      var l = 1;
+      var c = 0;
+
+
+      for (l; l < (layers); l++) {
+        var adh = new Number($('input[name=work_order_adh' + l + ']').val());
+        if ((adh) == '') {
+          adh = 0;
+        }
+        c += (adh);
+      }
+      $("#calcAdhGSM").val(c);
+      totalGSM();
+
+    }
+
+    function totalGSM() {
+      var a = new Number($('#calcLamGSM').val());
+      var b = new Number($('#calcInkGSM').val());
+      var c = new Number($('#calcAdhGSM').val());
+
+      $("#calcTotGSM").val(a + b + c);
     }
 
     function setUpPrintingOption() {
       var a = $("select[name=work_order_2_type_printed] :selected").val();
       if (a == 1) {
-        $('#whenPrintedClickedGO').show();
+        $('.whenPrintedClickedGO').show();
       } else {
-        $('#whenPrintedClickedGO').hide();
+        $('.whenPrintedClickedGO').hide();
       }
 
 
@@ -1285,7 +1390,7 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
     }
 
     function setUpSelect2s() {
-      // $('.select_a').select2();
+      $('.select_a').select2();
     }
 
     function getDif() {
@@ -1321,11 +1426,22 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
       var lamPrefix = 'laminateRowId';
       var stringOutput = "";
       var l;
+      var colW = 12;
 
+      if (layers == 2) {
+        colW = 6;
+      } else if (layers == 3) {
+        colW = 4;
+      } else if (layers == 4) {
+        colW = 6;
+      } else if (layers == 5) {
+        colW = 6;
+      }
       for (l = 1; l <= (layers); l++) {
+
         stringOutput = stringOutput.concat("",
-          "<div id=\"laminateRowId" + l + "\" class=\"row\">",
-          "    <div class=\"col-12\">",
+          "<div id=\"laminateRowId" + l + "\" class=\"col-12 col-lg-6 col-xl-" + colW + "\">",
+          "    <div>",
           "        <div class=\"row\">",
           "           <div class=\"col-12\">",
           "               <p align=\"left\" style=\"margin-left:10px\">Film/Laminate Layer " + l + "</p>",
@@ -1334,11 +1450,11 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
           "       <div class=\"row\">",
           "           <div class=\"form-group col-6\">",
           "            <label>Micron</label>",
-          "             <input disabled type=\"number\" class=\"form-control\" min='0' step='0.01'  name=\"work_order_layer_" + l + "_micron\" placeholder=\"Film Micron\">",
+          "             <input type=\"number\" class=\"form-control\" min='0' step='0.01' required name=\"work_order_layer_" + l + "_micron\" placeholder=\"Film Micron\">",
           "           </div>",
           "           <div class=\"form-group col-6\">",
           "             <label>Film</label>",
-          "             <select disabled class=\"form-control select_a\"  name=\"work_order_5_layer_" + l + "_material\">",
+          "             <select class=\"form-control select_a\" required name=\"work_order_5_layer_" + l + "_material\">",
           <?php
           $getMaterials = mysqlSelect("SELECT * FROM `materials_main` order by material_value asc");
           if (is_array($getMaterials)) {
@@ -1352,9 +1468,21 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
           "   </div>",
           "</div>");
       }
-
       containerLayer.html(stringOutput);
       stringOutput = "";
+      var adhesiveSection = $('#adhesiveSection');
+      varOutString = "";
+
+      for (l2 = 1; l2 <= (layers - 1); l2++) {
+        varOutString = varOutString.concat("",
+          '<div class="form-group  col-12 col-md-6 col-xl-3">',
+          "<label>Adhesive Pass " + l2 + " GSM</label>",
+          '<input type="number" class="form-control" name="work_order_adh' + l2 + '" placeholder="Adhesive ' + l2 + ' GSM">',
+          "</div>");
+
+      }
+      adhesiveSection.html(varOutString);
+      varOutString = "";
       setLamGSM();
 
     }
@@ -1403,17 +1531,18 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
   <script>
     $(document).ready(function(e) {
       <?php
+        if (is_array($WorkOrderRepPub)) {
+          if (is_numeric($WorkOrderRepPub['master_wo_ply'])) {
 
-      if (is_array($WorkOrderRepPub)) {
-        if (is_numeric($WorkOrderRepPub['master_wo_ply'])) {
-
-          for ($counterL = 1; $counterL <= $WorkOrderRepPub['master_wo_ply']; $counterL++) {
-            echo '$(\'input[name="work_order_layer_' . $counterL . '_micron"]\').val("' . $WorkOrderRepPub['master_wo_layer_' . $counterL . '_micron'] . '");';
-            echo '$(\'select[name="work_order_5_layer_' . $counterL . '_material"]\').val("' . $WorkOrderRepPub['master_wo_layer_' . $counterL . '_structure'] . '").change();';
+            for ($counterL = 1; $counterL <= $WorkOrderRepPub['master_wo_ply']; $counterL++) {
+              echo '$(\'input[name="work_order_layer_' . $counterL . '_micron"]\').val("' . $WorkOrderRepPub['master_wo_layer_' . $counterL . '_micron'] . '");';
+              echo '$(\'select[name="work_order_5_layer_' . $counterL . '_material"]\').val("' . $WorkOrderRepPub['master_wo_layer_' . $counterL . '_structure'] . '").change();';
+            }
+            for ($counterL = 1; $counterL < $WorkOrderRepPub['master_wo_ply']; $counterL++) {
+              echo '$(\'input[name="work_order_adh' . $counterL . '"]\').val("' . $WorkOrderRepPub['master_wo_adh' . $counterL] . '");';
+            }
           }
         }
-      }
-
       ?>
 
 

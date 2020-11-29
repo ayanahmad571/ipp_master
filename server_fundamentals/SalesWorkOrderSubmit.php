@@ -32,15 +32,15 @@ if (isset($_POST['work_order_edit_id'])) {
 //NOT COMPLETE DONT USER
 $toCheck = array(
 	"work_order_2_client_id", "work_order_customer_design_name", "work_order_customer_item_code", "work_order_customer_po", "work_order_po_date", "work_order_delivery_date",
-	"work_order_3_customer_loc", "work_order_contact_person_name", "work_order_contact_person_mob_no", "work_order_contact_person_email", "work_order_2_sales_id",
+	"work_order_3_customer_loc", "work_order_2_sales_id",
 	"work_order_2_structure", "work_order_2_type_printed", "work_order_ink_gsm_pre_c", "work_order_2_application", "work_order_2_roll_fill_opts",
-	"work_order_2_pouchbag_fillops", "work_order_2_fill_temp", "work_order_fill_duration", "work_order_fill_temp", "work_order_line_speed",
+	"work_order_2_pouchbag_fillops", "work_order_2_fill_temp", "work_order_fill_temp", "work_order_line_speed",
 	"work_order_dwell_time", "work_order_seal_temp", "work_order_design_id", "work_order_rev_no", "work_order_approved_sample_wo_no",
-	"work_order_pack_size", "work_order_pack_weight", "work_order_2_pack_weight_unit", "work_order_quantity", "work_order_2_units",
-	"work_order_quantity_tolerance", "work_order_2_laser_config", "work_order_ply", "work_order_2_extrusion_cof", "work_order_total_gsm", "work_order_total_gsm_tolerance",
+	"work_order_pack_weight", "work_order_2_pack_weight_unit", "work_order_quantity", "work_order_2_units",
+	"work_order_quantity_tolerance", "work_order_2_laser_config", "work_order_ply", "work_order_total_gsm", "work_order_total_gsm_tolerance",
 	"work_order_2_wind_dir", "work_order_roll_od", "work_order_roll_width", "work_order_roll_cutoff_len", "work_order_max_w_p_r",
 	"work_order_max_lmtr_p_r", "work_order_max_imps_p_r", "work_order_2_slitting_core_id", "work_order_2_slitting_core_material", "work_order_2_slitting_core_plugs",
-	"work_order_2_slitting_qc_ins", "work_order_max_joints", "work_order_remarks_roll", "_wysihtml5_mode", "work_order_pouch_type",
+	"work_order_2_slitting_qc_ins", "work_order_max_joints", "work_order_remarks_roll", "work_order_pouch_type",
 	"work_order_pouch_val_a", "work_order_pouch_val_b", "work_order_pouch_val_c", "work_order_pouch_val_d", "work_order_pouch_val_e",
 	"work_order_pouch_val_f", "work_order_pouch_val_g", "work_order_pouch_val_h", "work_order_remarks_pouch",
 	"work_order_bag_type", "work_order_bags_val_a", "work_order_bags_val_b", "work_order_bags_val_c", "work_order_bags_val_d",
@@ -48,9 +48,23 @@ $toCheck = array(
 	"work_order_2_foil_print_side", "work_order_2_printing_method", "work_order_2_printing_shade_card_needed", "work_order_2_printing_color_ref_type", "work_order_2_printing_approvalby",
 	"work_order_2_roll_pack_ins", "work_order_2_carton_pack_ins", "work_order_2_pallet_mark_ins", "work_order_pouch_per_bund", "work_order_bund_per_box",
 	"work_order_2_pallet_type", "work_order_2_cont_stuff", "work_order_max_gross_pallet_weight", "work_order_2_pallet_dim", "work_order_2_freight_type",
-	"work_order_cart_thick", "work_order_3_docs", "work_order_remarks_overall"
+	"work_order_cart_thick", "work_order_3_docs", "work_order_remarks_overall",
+	"work_order_2_coating_options", "work_order_coating_gsm", "work_order_cof_val", "work_order_submersion_temp", "work_order_submersion_duration"
 );
 
+//pack size.
+//cof big val.
+//contact name.
+//contact mobno.
+//contact email.
+//filling duration.
+
+
+//adhesive 1-4
+//coating options,
+//coating vals,
+//Submersion temp.
+//Submersion duration.
 
 
 checkPost($toCheck);
@@ -69,10 +83,10 @@ if ($plyNumber > 5 || $plyNumber < 1) {
 	die("PLY Value not in range [1,5]");
 }
 
+$adhesiveNos = $plyNumber - 1;
 
 #check for the Layers in essentials since they are not included in the Essential Checkers
 for ($counter1 = 1; $counter1 <= $plyNumber; $counter1++) {
-
 	if (!isset($_POST['work_order_layer_' . $counter1 . '_micron'])) {
 		die('Missing Value of Layer ' . $counter1 . ' Micron ');
 	}
@@ -80,7 +94,6 @@ for ($counter1 = 1; $counter1 <= $plyNumber; $counter1++) {
 		die('Missing Value of Layer ' . $counter1 . ' Structure ');
 	}
 }
-
 
 for ($counter1 = 1; $counter1 <= $plyNumber; $counter1++) {
 
@@ -92,6 +105,19 @@ for ($counter1 = 1; $counter1 <= $plyNumber; $counter1++) {
 		die('Invalid Value of Layer ' . $counter1 . ' Material ');
 	}
 }
+
+for ($counter2 = 1; $counter2 <= $adhesiveNos; $counter2++) {
+	if (!isset($_POST['work_order_adh' . $counter2])) {
+		die('Missing Value of Adhesive ' . $counter2 . ' GSM ');
+	}
+}
+
+for ($counter2 = 1; $counter2 <= $adhesiveNos; $counter2++) {
+	if (!is_numeric($_POST['work_order_adh' . $counter2])) {
+		die('Invalid Value of Adhesive ' . $counter2 . ' GSM ');
+	}
+}
+
 
 for ($counter1 = 1; $counter1 <= $plyNumber; $counter1++) {
 	//checkLayerStructure
@@ -107,7 +133,6 @@ for ($counter1 = 1; $counter1 <= $plyNumber; $counter1++) {
 
 
 
-
 //check dates x2
 $date_created = date_create_from_format("d-m-Y @ H:i:s", $_POST['work_order_po_date'] . ' @ 12:10:00');
 if (!empty($date_created)) {
@@ -117,9 +142,9 @@ if (!empty($date_created)) {
 }
 
 $checkCustPoDate = strtotime($obj['date']);
-if ($checkCustPoDate < time()) {
-	die("Invalid Customer PO Date, Date Must be in the Future");
-}
+// if ($checkCustPoDate < time()) {
+// 	die("Invalid Customer PO Date, Date Must be in the Future");
+// }
 
 $date_created2 = date_create_from_format("d-m-Y @ H:i:s", $_POST['work_order_delivery_date'] . ' @ 12:10:00');
 if (!empty($date_created2)) {
@@ -167,8 +192,8 @@ $WorkOrderMaster["master_wo_2_fill_temp"] = $_POST["work_order_2_fill_temp"];
 selectChecker("SELECT * FROM `work_order_pack_size_unit` where psu_show = 1 and psu_id = " . $_POST['work_order_2_pack_weight_unit'], 'Pack Weight Unit Not Found', 'mysqlSelect');
 $WorkOrderMaster["master_wo_2_pack_weight_unit"] = $_POST["work_order_2_pack_weight_unit"];
 
-selectChecker("SELECT * FROM `work_order_ui_ext_cof` where cof_show = 1 and cof_id = " . $_POST['work_order_2_extrusion_cof'], 'COF Type Not Found', 'mysqlSelect');
-$WorkOrderMaster["master_wo_2_extrusion_cof"] = $_POST["work_order_2_extrusion_cof"];
+selectChecker("SELECT * FROM `work_order_ui_lam_options` where lamo_show =1 and lamo_id = " . $_POST['work_order_2_coating_options'], 'Coating Options Value Not Found', 'mysqlSelect');
+$WorkOrderMaster["master_wo_2_coating_options"] = $_POST["work_order_2_coating_options"];
 
 selectChecker("SELECT * FROM `work_order_ui_print_surfrev` where surfrev_show = 1 and surfrev_id = " . $_POST['work_order_2_printing_method'], 'Printing Method Not Found', 'mysqlSelect');
 $WorkOrderMaster["master_wo_2_printing_method"] = $_POST["work_order_2_printing_method"];
@@ -217,15 +242,17 @@ $WorkOrderMaster["master_wo_customer_po"] = $_POST["work_order_customer_po"];
 $WorkOrderMaster["master_wo_po_date"] = $checkCustPoDate;
 $WorkOrderMaster["master_wo_delivery_date"] = $checkDeliveryDate;
 
-$WorkOrderMaster["master_wo_contact_person_name"] = $_POST["work_order_contact_person_name"];
-$WorkOrderMaster["master_wo_contact_person_mob_no"] = $_POST["work_order_contact_person_mob_no"];
-$WorkOrderMaster["master_wo_contact_person_email"] = $_POST["work_order_contact_person_email"];
-
 if ($_POST['work_order_2_type_printed'] == 1) {
 	$WorkOrderMaster["master_wo_ink_gsm_pre_c"] = $_POST["work_order_ink_gsm_pre_c"];
 }
 
-$WorkOrderMaster["master_wo_fill_duration"] = $_POST["work_order_fill_duration"];
+if ($_POST['work_order_2_fill_temp'] == 4 || $_POST['work_order_2_fill_temp'] == 5) {
+	$WorkOrderMaster["master_wo_submersion_temp"] = $_POST["work_order_submersion_temp"];
+	$WorkOrderMaster["master_wo_submersion_duration"] = $_POST["work_order_submersion_duration"];
+} else {
+	$WorkOrderMaster["master_wo_fill_temp"] = $_POST["work_order_fill_temp"];
+}
+
 $WorkOrderMaster["master_wo_fill_temp"] = $_POST["work_order_fill_temp"];
 $WorkOrderMaster["master_wo_line_speed"] = $_POST["work_order_line_speed"];
 $WorkOrderMaster["master_wo_dwell_time"] = $_POST["work_order_dwell_time"];
@@ -233,7 +260,7 @@ $WorkOrderMaster["master_wo_seal_temp"] = $_POST["work_order_seal_temp"];
 $WorkOrderMaster["master_wo_design_id"] = $_POST["work_order_design_id"];
 $WorkOrderMaster["master_wo_rev_no"] = $_POST["work_order_rev_no"];
 $WorkOrderMaster["master_wo_approved_sample_wo_no"] = $_POST["work_order_approved_sample_wo_no"];
-$WorkOrderMaster["master_wo_pack_size"] = $_POST["work_order_pack_size"];
+$WorkOrderMaster["master_wo_coating_gsm"] = $_POST["work_order_coating_gsm"];
 $WorkOrderMaster["master_wo_pack_weight"] = $_POST["work_order_pack_weight"];
 $WorkOrderMaster["master_wo_quantity"] = $_POST["work_order_quantity"];
 $WorkOrderMaster["master_wo_quantity_tolerance"] = $_POST["work_order_quantity_tolerance"];
@@ -245,6 +272,7 @@ $WorkOrderMaster["master_wo_total_gsm_tolerance"] = $_POST["work_order_total_gsm
 $WorkOrderMaster["master_wo_cart_thick"] = $_POST["work_order_cart_thick"];
 $WorkOrderMaster["master_wo_max_gross_pallet_weight"] = $_POST["work_order_max_gross_pallet_weight"];
 
+$WorkOrderMaster["master_wo_cof_val"] = $_POST["work_order_cof_val"];
 
 
 for ($counter1 = 1; $counter1 <= $plyNumber; $counter1++) {
@@ -253,6 +281,10 @@ for ($counter1 = 1; $counter1 <= $plyNumber; $counter1++) {
 	$WorkOrderMaster['master_wo_layer_' . $counter1 . '_structure'] = $_POST['work_order_5_layer_' . $counter1 . '_material'];
 }
 
+for ($counter1 = 1; $counter1 < $plyNumber; $counter1++) {
+	//checkLayerStructure
+	$WorkOrderMaster['master_wo_adh' . $counter1] = $_POST['work_order_adh' . $counter1];
+}
 
 
 //Check if the posted options are valid work_order_3_customer_loc
@@ -469,6 +501,7 @@ if ($itIsEdit && $getDraftWork['mwo_type'] != 1) {
 	$WorkOrderMaster['master_wo_extra_ncr'] = $_POST["work_order_ncr_no"];
 }
 
+
 //Insert  Query Content Builder
 foreach ($WorkOrderMaster as $a => $b) {
 	$QueryCols[] = '`' . $a . '`';
@@ -558,4 +591,3 @@ if (is_array($RemarksMain)) {
 // 		"mysqlInsertData"
 // 	);
 // }
-?>
