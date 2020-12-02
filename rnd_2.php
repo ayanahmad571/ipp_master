@@ -1,4 +1,20 @@
 <?php
+  $c = 1;
+  foreach ($getWO as $key => $value) {
+	echo 'getTableTD("'.$key.' - ".$getWO["'.$key.'"]);
+	<br>';
+
+	if($c%4 ==0){
+	  echo '
+	  ?&gt;
+	  <br>
+	  &lt;/tr&gt;
+	  &lt;tr&gt;
+	  &lt;?php <br>';
+	}
+
+	$c++;
+  }
 die();
 include("server_fundamentals/DatabaseConnection.php");
 include("server_fundamentals/FunctionsController.php");

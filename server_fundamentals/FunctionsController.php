@@ -398,7 +398,7 @@ function groupConcatGetVal($table, $starting, $vals, $func)
 	if (trim($v) == "") {
 		$v = 'NULL';
 	}
-	$sql = 'SELECT GROUP_CONCAT(' . $starting . '_value SEPARATOR ",")  as opts
+	$sql = 'SELECT GROUP_CONCAT(' . $starting . '_value SEPARATOR ", ")  as opts
   FROM ' . $table . ' 
   WHERE ' . $starting . '_id in (' . $v . ');';
 
@@ -486,18 +486,30 @@ function getSelectBox($masterclass, $nameIn, $postIn, $sql, $id, $val)
 
 function getTableTH($val1, $val2 = "")
 {
-		echo '<th style="font-weight:bold">' . $val1 . ' - ' . $val2 . '</th>';
+	echo '<th class="question" style="font-weight:bold">' . $val1 . ' - ' . $val2 . '</th>';
 }
 
-function getTableTD($val1,  $val2 ="", $rowcol = 3)
+function getTableTD($val1,  $val2 = "", $rowcol = 3)
 {
-	$outputleft = '<strong class="titleMan">' . $val1 . '</strong> -';
-	if(empty(trim($val1))){
+	$outputleft = '<strong  class="">' . $val1 . '</strong> -';
+	if (empty(trim($val1))) {
 		$outputleft = "";
 	}
 	if (!empty(trim($val2)) || true) {
-		echo '<td colspan="' . ($rowcol != 3 ? $rowcol : 3) . '">'.$outputleft.' ' . $val2 . '</td>';
+		echo '<td class="titleMan" colspan="' . ($rowcol != 3 ? $rowcol : 3) . '">' . $outputleft . ' ' . $val2 . '</td>';
 	}
 }
 
+function getSectionSep( $val1, $rem = false, $rowcol = 12)
+{
+	$str = "background-color:black; color:antiquewhite; ";
+	if($rem){
+		$str = "background-color:grey; color:white; ";
+	}
+?>
+	<td style="<?php echo $str; ?> text-align: center;" colspan="<?php echo $rowcol ?>">
+		<h4 style="margin: 0;"><?php echo $val1 ?></h4>
+	</td>
+<?php
+}
 ?>
