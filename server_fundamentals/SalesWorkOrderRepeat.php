@@ -2,9 +2,9 @@
 require_once("SessionHandler.php");
 require_once("PostDataHeadChecker.php");
 //user type_check only sales and MD people can make this WO
-if (!in_array($USER_ARRAY['user_type_id'], array(1, 2, 4, 10, 16))) {
-    die('User Not Authorized');
-}
+// if (!in_array($USER_ARRAY['user_type_id'], array(1, 2, 4, 10, 16))) {
+//     die('User Not Authorized');
+// }
 
 if (isset($_POST['work_order_repeat_publish_id'])) {
     if (is_numeric($_POST['work_order_repeat_publish_id'])) {
@@ -44,9 +44,9 @@ if (!empty($date_created)) {
 }
 
 $checkCustPoDate = strtotime($obj['date']);
-if ($checkCustPoDate < time()) {
-	die("Invalid Customer PO Date, Date Must be in the Future");
-}
+// if ($checkCustPoDate < time()) {
+// 	die("Invalid Customer PO Date, Date Must be in the Future");
+// }
 
 $date_created2 = date_create_from_format("d-m-Y @ H:i:s", $_POST['work_order_delivery_date'] . ' @ 12:10:00');
 if (!empty($date_created2)) {

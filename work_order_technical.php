@@ -187,7 +187,7 @@ getHead("WO Technical");
                               }
                               ?>
 
-                              <a target="_blank" href="work_order_print?id=<?php echo $Draft['master_wo_ref'] ?>">
+                              <a target="_blank" href="work_order_view_print?id=<?php echo $Draft['master_wo_ref'] ?>">
                                 <button class="btn btn-primary mt-1">Print</button>
                               </a>
                             </td>

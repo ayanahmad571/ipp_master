@@ -177,7 +177,7 @@ getHead("WO Accounts");
                               <td>
                                 <button class="publishDraft btn btn-success mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Release</button>
                                 <button class="publishConditionalDraft btn btn-warning mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Conditional Release</button>
-                                <a target="_blank" href="work_order_print?id=<?php echo $Draft['master_wo_ref'] ?>">
+                                <a target="_blank" href="work_order_view_print?id=<?php echo $Draft['master_wo_ref'] ?>">
                                   <button class="btn btn-primary mt-1">View</button>
                                 </a>
                               </td>
@@ -194,7 +194,7 @@ getHead("WO Accounts");
                                 <hr>
                                 <button class="publishDraft btn btn-success mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Release</button>
                                 <button class="publishConditionalDraft btn btn-warning mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Conditional Release</button>
-                                <a target="_blank" href="work_order_print?id=<?php echo $Draft['master_wo_ref'] ?>">
+                                <a target="_blank" href="work_order_view_print?id=<?php echo $Draft['master_wo_ref'] ?>">
                                   <button class="btn btn-primary mt-1">View</button>
                                 </a>
                               </td>

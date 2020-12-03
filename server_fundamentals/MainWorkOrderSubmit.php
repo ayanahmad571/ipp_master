@@ -82,9 +82,9 @@ if (isset($_POST['draftToMain'])) {
 
 
 //user type_check only sales and MD people can make this WO
-if (!in_array($USER_ARRAY['user_type_id'], array(1, 2, 4, 10, 16))) {
-	die('User Not Authorized');
-}
+// if (!in_array($USER_ARRAY['user_type_id'], array(1, 2, 4, 10, 16))) {
+// 	die('User Not Authorized');
+// }
 
 if (isset($_POST[$PAGE_ESSENTIALS[0]])) {
 	if (is_numeric($_POST[$PAGE_ESSENTIALS[0]])) {

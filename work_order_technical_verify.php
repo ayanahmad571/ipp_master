@@ -172,7 +172,7 @@ getHead("WO Technical");
                             </td>
                             <td><?php echo date('d-m-Y @ h:i:s a', $Draft['master_wo_gen_dnt']); ?></td>
                             <td>
-                              <a target="_blank" href="work_order_print?id=<?php echo $Draft['master_wo_ref'] ?>">
+                              <a target="_blank" href="work_order_view_print?id=<?php echo $Draft['master_wo_ref'] ?>">
                                 <button class="btn btn-warning mt-1">View</button>
                               </a>
                                 <button class="publishDraft btn btn-success mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Publish</button>
