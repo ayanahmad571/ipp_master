@@ -119,7 +119,7 @@ array("work_order_ui_slitting_sticker","work_order_ui_slitting_sticker","slittin
 			}
 		}
 		?>
-        <form id="ClientAddForm" action="server_fundamentals/FormManagerController.php" method="post">
+        <form id="ClientAddForm" action="server_fundamentals/FormManagerController" method="post">
             <tr>
             	<td></td>
                 <td><input id="clientCode" required type="text" class="form-control" name="client_code" placeholder="Client Code" /></td>
