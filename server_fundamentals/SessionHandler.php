@@ -3,6 +3,7 @@ require_once("Settings.php");
 require_once("CookieController.php");
 require_once("DatabaseConnection.php");
 require_once("FunctionsController.php");
+require_once("ControllingFunctions.php");
 
 sec_session_start();
 /* 

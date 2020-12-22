@@ -22,99 +22,13 @@ getHead("WO Technical");
       <!-- Main Content -->
       <div class="main-content">
         <section class="section">
-          <div class="section-header">
-            <h1>Work Order - Technical Verify</h1>
-          </div>
+        <?php getPageTitle("Work Order - Technical Verify"); ?>
           <!-- TOP CONTENT BLOCKS -->
           <div class="row">
-            <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-              <div class="card card-statistic-1">
-                <div class="card-icon bg-primary">
-                  <i class="far fa-user"></i>
-                </div>
-                <div class="card-wrap">
-                  <div class="card-header">
-                    <h4>Total</h4>
-                  </div>
-                  <div class="card-body">
-                    <?php
-                    $getD = mysqlSelect("SELECT count(mwo_ref_id) as ccc FROM `master_work_order_reference_number`");
-                    echo $getD[0]['ccc'];
-                    ?>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-              <div class="card card-statistic-1">
-                <div class="card-icon bg-danger">
-                  <i class="far fa-newspaper"></i>
-                </div>
-                <div class="card-wrap">
-                  <div class="card-header">
-                    <h4>Discards</h4>
-                  </div>
-                  <div class="card-body">
-                    <?php
-                    //                 $getDs = mysqlSelect("SELECT count(s_wo_id) as ccc FROM `sales_work_order_main` 
-                    // left join clients_main on s_wo_client_id = client_id
-                    // where s_wo_status = 2 order by s_wo_id desc");
-                    //                 echo $getDs[0]['ccc'];
-                    ?>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-              <div class="card card-statistic-1">
-                <div class="card-icon bg-warning">
-                  <i class="far fa-money-bill-alt"></i>
-                </div>
-                <div class="card-wrap">
-                  <div class="card-header">
-                    <h4>Published</h4>
-                  </div>
-                  <div class="card-body">
-                    <?php
-                    //                 $getPs = mysqlSelect($UpdatedStatusQuery . "
-
-
-                    // left join clients_main on master_wo_client_id = client_id
-                    // left join master_work_order_main_identitiy on master_wo_status = mwoid_id
-
-                    //     where master_wo_status not in (2) order by master_wo_id desc
-                    // ");
-                    //                 echo (!is_array($getPs) ? "0" : count($getPs));
-                    ?>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-              <div class="card card-statistic-1">
-                <div class="card-icon bg-success">
-                  <i class="fas fa-calendar-week"></i>
-                </div>
-                <div class="card-wrap">
-                  <div class="card-header">
-                    <h4>Returned</h4>
-                  </div>
-                  <div class="card-body">
-                    <?php
-                    //                 $getrets = mysqlSelect($UpdatedStatusQuery . "
-
-
-                    // left join clients_main on master_wo_client_id = client_id
-                    // left join master_work_order_main_identitiy on master_wo_status = mwoid_id
-
-                    //     where master_wo_status = 2 order by master_wo_id desc
-                    // ");
-                    //                 echo (!is_array($getrets) ? "0" : count($getrets));
-                    ?>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <?php getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000") ?>
+            <?php getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000") ?>
+            <?php getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000") ?>
+            <?php getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000") ?>
           </div>
 
 
@@ -143,16 +57,7 @@ getHead("WO Technical");
 
                     <tbody>
                       <?php
-                      $getDrafts = mysqlSelect($UpdatedStatusQuery . "
-       
-        
-                      left join clients_main on master_wo_2_client_id = client_id
-                      left join master_work_order_main_identitiy on master_wo_status = mwoid_id
-                      
-                          where master_wo_status = 7 
-                      " . $inColsWO . "
-                      order by master_wo_id desc
-                      ");
+                      $getDrafts = mysqlSelect(workOrderPagesQuery("7"));
 
                       if (is_array($getDrafts)) {
                         foreach ($getDrafts as $Draft) {
@@ -167,7 +72,7 @@ getHead("WO Technical");
                               $getBy = mysqlSelect("select * from user_main where lum_id = " . $Draft['master_wo_gen_lum_id'] . " and lum_valid =1");
                               $getFor = mysqlSelect("select * from user_main where lum_id = " . $Draft['master_wo_2_sales_id'] . " and lum_valid =1");
 
-                              echo (is_array($getBy) ? $getBy[0]['lum_code'] . "-" . $getBy[0]['lum_name'] : " - ") . ' for ' . (is_array($getFor) ? $getFor[0]['lum_code'] . "-" . $getFor[0]['lum_name'] : " - ");
+                              echo getByForFromWO($getBy,$getFor);
                               ?>
                             </td>
                             <td><?php echo date('d-m-Y @ h:i:s a', $Draft['master_wo_gen_dnt']); ?></td>
@@ -198,7 +103,7 @@ getHead("WO Technical");
             <div class="col-12 ">
               <div class="card card-warning">
                 <div class="card-header">
-                  <h4>Sent Back </h4>
+                  <h4>Sent Back</h4>
                 </div>
                 <div class="card-body text-justify">
                   <table class="table table-striped table-bordered " id="ReturnedContainerTable">
@@ -216,16 +121,7 @@ getHead("WO Technical");
 
                     <tbody>
                       <?php
-                      $getDiscards = mysqlSelect($UpdatedStatusQuery . "
-       
-        
-                      left join clients_main on master_wo_2_client_id = client_id
-                      left join master_work_order_main_identitiy on master_wo_status = mwoid_id
-                      
-                          where master_wo_status = 8
-                      " . $inColsWO . "
-                      order by master_wo_id desc
-                      ");
+                      $getDiscards = mysqlSelect(workOrderPagesQuery("8"));
 
                       if (is_array($getDiscards)) {
                         foreach ($getDiscards as $Discard) {
@@ -239,7 +135,7 @@ getHead("WO Technical");
                               $getBy = mysqlSelect("select * from user_main where lum_id = " . $Discard['mwo_gen_lum_id'] . " and lum_valid =1");
                               $getFor = mysqlSelect("select * from user_main where lum_id = " . $Discard['mwo_gen_on_behalf_lum_id'] . " and lum_valid =1");
 
-                              echo (is_array($getBy) ? $getBy[0]['lum_code'] . "-" . $getBy[0]['lum_name'] : " - ") . ' for ' . (is_array($getFor) ? $getFor[0]['lum_code'] . "-" . $getFor[0]['lum_name'] : " - ");
+                              echo getByForFromWO($getBy,$getFor);
                               ?>
                             </td>
                             <td><?php echo date('d-m-Y @ h:i:s a', $Discard['master_wo_gen_dnt']); ?></td>
@@ -285,16 +181,7 @@ getHead("WO Technical");
 
                     <tbody>
                       <?php
-                      $getDiscards = mysqlSelect($UpdatedStatusQuery . "
-       
-        
-                      left join clients_main on master_wo_2_client_id = client_id
-                      left join master_work_order_main_identitiy on master_wo_status = mwoid_id
-                      
-                          where master_wo_status = 9
-                      " . $inColsWO . "
-                      order by master_wo_id desc
-                      ");
+                      $getDiscards = mysqlSelect(workOrderPagesQuery("9"));
 
                       if (is_array($getDiscards)) {
                         foreach ($getDiscards as $Discard) {
@@ -308,7 +195,7 @@ getHead("WO Technical");
                               $getBy = mysqlSelect("select * from user_main where lum_id = " . $Discard['mwo_gen_lum_id'] . " and lum_valid =1");
                               $getFor = mysqlSelect("select * from user_main where lum_id = " . $Discard['mwo_gen_on_behalf_lum_id'] . " and lum_valid =1");
 
-                              echo (is_array($getBy) ? $getBy[0]['lum_code'] . "-" . $getBy[0]['lum_name'] : " - ") . ' for ' . (is_array($getFor) ? $getFor[0]['lum_code'] . "-" . $getFor[0]['lum_name'] : " - ");
+                              echo getByForFromWO($getBy,$getFor);
                               ?>
                             </td>
                             <td><?php echo date('d-m-Y @ h:i:s a', $Discard['master_wo_gen_dnt']); ?></td>
