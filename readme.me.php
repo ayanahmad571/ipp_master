@@ -16,17 +16,13 @@ Take all the radios and Checkboxes to the database.
 Db Control of those values.
 
 NUmeric State is not currently in Strict Mode
-TRUNCATE `complaints_main`;
+TRUNCATE `conditional_release_wo`;
 TRUNCATE `logcat_main`;
 TRUNCATE `master_work_order_main`;
 TRUNCATE `master_work_order_reference_number`;
 TRUNCATE `remarks_wo`;
-TRUNCATE `sales_work_order_main`;
 TRUNCATE `session_tracker`;
 TRUNCATE `users_pending`;
-TRUNCATE `user_main`;
-TRUNCATE `user_sales_attach`;
-
 
 
 ippcontrols.com
