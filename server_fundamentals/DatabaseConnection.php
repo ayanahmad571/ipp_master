@@ -31,7 +31,9 @@ foreach($_POST as $key=>$v){
 	}
 	else if (is_array($_POST[$key])){
 		foreach($_POST[$key] as $ke=>$vv){
-		 $_POST[$key][$ke] = trim(strip_tags($conn->escape_string($vv)));
+			if(!is_array($_POST[$key][$ke])){
+				$_POST[$key][$ke] = trim(strip_tags($conn->escape_string($vv)));
+			}
 		}
 	}else{
 		die('INCL#ERR1');
@@ -47,7 +49,9 @@ foreach($_GET as $key=>$v){
 	}
 	else if (is_array($_GET[$key])){
 		foreach($_GET[$key] as $ke=>$vv){
-		 $_GET[$key][$ke] = trim(strip_tags($conn->escape_string($vv)));
+			if(!is_array($_GET[$key][$ke])){
+				$_GET[$key][$ke] = trim(strip_tags($conn->escape_string($vv)));
+			}
 		}
 	}else{
 		die('INCL#ERR1');
