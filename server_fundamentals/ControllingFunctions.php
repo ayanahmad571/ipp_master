@@ -49,4 +49,8 @@ function getByForFromWO($gen, $sales_person){
     return (is_array($gen) ? $gen[0]['lum_code'] . "-" . $gen[0]['lum_name'] : " - ") . ' for ' . (is_array($sales_person) ? $sales_person[0]['lum_code'] . "-" . $sales_person[0]['lum_name'] : " - ");
 }
 
+function wrapInput($value){
+
+}
+
 ?>
