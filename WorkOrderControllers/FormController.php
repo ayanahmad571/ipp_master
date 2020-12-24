@@ -61,7 +61,7 @@ function getRow($getAttachedTreeSqlIn)
             <label>IPP Sales Person Code</label>
             <select class="form-control select_a" required name="work_order_2_sales_id">
                 <?php
-                $getDrafts = mysqlSelect($getAttachedTreeSqlIn);
+                $getDrafts = mysqlSelect($getAttachedTreeSqlIn." order by lum_code asc");
 
                 if (is_array($getDrafts)) {
                     foreach ($getDrafts as $Draft) {

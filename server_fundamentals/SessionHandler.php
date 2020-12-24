@@ -61,7 +61,7 @@ if(!is_array($pageViewChecker)){
 	die("Access Denied");
 }
 
-$getAttachedTreeSql = "select * from user_main where lum_user_type in (2,4,10,16) order by lum_code asc";
+$getAttachedTreeSql = "select * from user_main where lum_user_type in (2,4,10,16) ";
 /*
 $getAttachedTreeSql = "SELECT * FROM `user_sales_attach` 
 		left join user_main on attach_child_lum = lum_id
