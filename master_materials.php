@@ -43,7 +43,7 @@ getHead("Master Materials");
 
                                         <tbody>
                                             <?php
-                                            $getMats = mysqlSelect("SELECT * FROM `materials_main` order by material_position,material_id asc");
+                                            $getMats = mysqlSelect("SELECT * FROM `materials_main` order by material_position,material_value asc");
                                             if (is_array($getMats)) {
                                                 $c = 1;
                                                 foreach ($getMats as $Mat) {

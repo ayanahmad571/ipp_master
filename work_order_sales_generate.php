@@ -23,9 +23,11 @@ if (isset($_GET['editId']) && is_numeric($_GET['editId'])) {
     die('Invalid Work Order Supplied');
   }
   $itisEdit = true;
+  $edit_id = $_GET['editId'];
   # code...
 } else {
   $itisEdit = false;
+  $edit_id = 0;
 }
 getHead("Sales Order - " . ($itisEdit ? "Edit Sales Order" : "Make New Sales Order"));
 
@@ -103,13 +105,13 @@ getHead("Sales Order - " . ($itisEdit ? "Edit Sales Order" : "Make New Sales Ord
 
                     getLayer();
 
-                    getRoll($itisEdit,$_GET['editId']);
+                    getRoll($itisEdit,$edit_id);
 
-                    getPouch($itisEdit,$_GET['editId']);
+                    getPouch($itisEdit,$edit_id);
 
-                    getBag($itisEdit,$_GET['editId']);
+                    getBag($itisEdit,$edit_id);
 
-                    getSlit($itisEdit,$_GET['editId']);
+                    getSlit($itisEdit,$edit_id);
                     ?>
 
 

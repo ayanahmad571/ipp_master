@@ -70,7 +70,7 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
             <div class="col-12 ">
               <div class="card card-warning">
                 <div class="card-header">
-                  <h4>Repeat with Change</h4>
+                  <h4><?php echo ($WorkOrderRepPub['mwo_type'] == 1 ? "New Work Order" : ($WorkOrderRepPub['mwo_type'] == 2 ? "Repeat Work Order":"Repeat with Change Work Order")) ?></h4>
                 </div>
 
                 <div class="card-body text-justify">
@@ -89,9 +89,11 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
                     <input type="hidden" name="work_order_repeat_publish_id" value="<?php echo $_GET['techID'] ?>" />
 
                     <?php
-                    getChangeTypePills();
+                    if ($WorkOrderRepPub['mwo_type'] != 1) {
+                      getChangeTypePills();
 
-                    getFormRepHead($WorkOrderRepPub['mwo_repeat_wo_id']);
+                      getFormRepHead($WorkOrderRepPub['mwo_repeat_wo_id']);
+                    }
 
                     getRow($getAttachedTreeSql);
 

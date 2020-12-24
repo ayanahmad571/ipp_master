@@ -1552,7 +1552,7 @@ function getScriptFunctionalSetup()
                     "             <label>Film</label>",
                     "             <select class=\"form-control select_a\" required name=\"work_order_5_layer_" + l + "_material\">",
                     <?php
-                    $getMaterials = mysqlSelect("SELECT * FROM `materials_main` order by material_value asc");
+                    $getMaterials = mysqlSelect("SELECT * FROM `materials_main` order by material_position,material_value asc ");
                     if (is_array($getMaterials)) {
                         foreach ($getMaterials as $Material) {
                             echo '"<option data-density=\"' . $Material['material_density'] . '\" value=\"' . $Material['material_id'] . '\">' . $Material['material_value'] . '</option>",';
