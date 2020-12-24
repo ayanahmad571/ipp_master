@@ -172,7 +172,7 @@ else if(isset($_POST['AccountsCondToTechnicalRejectCond']) && isset($_POST['rejC
 
 	
 	$insert = mysqlInsertData("INSERT INTO `conditional_release_wo`
-	(crw_wo_ref, crw_crr_id, crw_reason, crw_ncr, crw_lum_id, crw_dnt) 
+	(crw_wo_ref, crw_crr_id, crw_reason, crw_ncr, crw_lum_id, crw_dnt, crw_status) 
 	VALUES (
 		" . $_POST['AccountsCondToTechnicalRejectCond'] . ",
 		NULL,
@@ -180,7 +180,7 @@ else if(isset($_POST['AccountsCondToTechnicalRejectCond']) && isset($_POST['rejC
 		'-',
 		" . $USER_ARRAY['lum_id'] . ",
 		'" . time() . "',
-		2
+		3
 	)", true);
 
 	if (!is_numeric($insert)) {

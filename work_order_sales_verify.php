@@ -137,8 +137,8 @@ getHead("WO Sales Verification");
                             <td><?php echo date('d-m-Y @ h:i:s a', $Discard['master_wo_gen_dnt']); ?></td>
                             <td><?php echo $Discard['mwoid_desc2'] ?></td>
                             <td>
-                              <a href="work_order_sales_generate?editId=<?php echo $Discard['master_wo_ref'] ?>" target="_blank">
-                                <button class="btn btn-warning mt-1">View/Edit</button>
+                              <a target="_blank" href="work_order_view_print?id=<?php echo $Discard['master_wo_ref'] ?>">
+                                <button class="btn btn-primary mt-1">View</button>
                               </a>
                             </td>
                           </tr>
