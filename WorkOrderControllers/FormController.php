@@ -61,7 +61,7 @@ function getRow($getAttachedTreeSqlIn)
             <label>IPP Sales Person Code</label>
             <select class="form-control select_a" required name="work_order_2_sales_id">
                 <?php
-                $getDrafts = mysqlSelect($getAttachedTreeSqlIn." order by lum_code asc");
+                $getDrafts = mysqlSelect($getAttachedTreeSqlIn . " order by lum_code asc");
 
                 if (is_array($getDrafts)) {
                     foreach ($getDrafts as $Draft) {
@@ -222,7 +222,7 @@ function getRow($getAttachedTreeSqlIn)
 }
 
 
-function getPrintedSection($isTechnical=false)
+function getPrintedSection($isTechnical = false)
 {
 ?>
     <div class="row">
@@ -509,7 +509,7 @@ function getLayer()
 }
 
 
-function getRoll($itisEdit, $woid =0)
+function getRoll($itisEdit, $woid = 0)
 {
     # $itisEdit = Show Remarks Box with Usernames and Text
 ?>
@@ -674,80 +674,156 @@ function getRoll($itisEdit, $woid =0)
 }
 
 
-function getPouch($itisEdit, $woid =0)
+function getPouch($itisEdit, $woid = 0)
 {
 ?>
     <div class="classOnlyPouch">
         <div class="row">
-            <div class="col-8" id="pouchSwHolder">
-
+            <div class="col-8" id="pouchImageHolder">
+                Loading Image...
             </div>
             <div class="form-group col-4">
                 <label>Pouch Type</label>
-                <select id="pouch_switcher" class="form-control select_a" required name="work_order_pouch_type">
+                <select id="pouch_switcher" class="form-control select_a" required name="work_order_2_pouch_master">
                     <?php
-                    $getWinds = mysqlSelect("SELECT * FROM `work_order_digital_master` where dm_type =1 order by dm_header asc");
-                    if (is_array($getWinds)) {
-                        foreach ($getWinds  as $Wind) {
-                            echo '<option data-id="' . $Wind['dm_img_url'] . '" value="' . $Wind['dm_id'] . '">' . $Wind['dm_header'] . '</option>';
+                    $getPouches = mysqlSelect("SELECT * FROM `pouch_digital_master` where pdm_valid =1 order by pdm_name asc");
+                    if (is_array($getPouches)) {
+                        foreach ($getPouches as $Pouch) {
+                            $getPouchSub = mysqlSelect("SELECT * FROM `pouch_digital_sub` where pds_valid =1 and pds_pdm_id = ".$Pouch['pdm_id']." order by pds_name asc");
+                            echo '<optgroup label="'.$Pouch['pdm_name'].'">';
+                            foreach ($getPouchSub  as $PouchSub) {
+                                echo '<option value="' . $PouchSub['pds_id'] . '">' . $PouchSub['pds_name'] . '</option>';
+                            }
+                            echo '</optgroup>';
                         }
                     }
                     ?>
                 </select>
+
                 <hr>
+
+                <div class="row" id="pouchFormHolder">
+                    <div class="col-12">Awaiting Type Selection...</div>
+                </div>
+
+                <hr>
+
+                <h6>Extra Options - Punch</h6>
                 <div class="row">
-                    <div class="form-group col-sm-6 col-xl-4">
-                        <label>A </label>
-                        <input type="text" class="form-control" name="work_order_pouch_val_a" placeholder="A">
-                    </div>
-                    <div class="form-group col-sm-6 col-xl-4">
-                        <label>B </label>
-                        <input type="text" class="form-control" name="work_order_pouch_val_b" placeholder="B">
-                    </div>
-                    <div class="form-group col-sm-6 col-xl-4">
-                        <label>C </label>
-                        <input type="text" class="form-control" name="work_order_pouch_val_c" placeholder="C">
-                    </div>
-                    <div class="form-group col-sm-6 col-xl-4">
-                        <label>D </label>
-                        <input type="text" class="form-control" name="work_order_pouch_val_d" placeholder="D">
-                    </div>
-                    <div class="form-group col-sm-6 col-xl-4">
-                        <label>E </label>
-                        <input type="text" class="form-control" name="work_order_pouch_val_e" placeholder="E">
-                    </div>
-                    <div class="form-group col-sm-6 col-xl-4">
-                        <label>F </label>
-                        <input type="text" class="form-control" name="work_order_pouch_val_f" placeholder="F">
-                    </div>
-                    <div class="form-group col-sm-6 col-xl-4">
-                        <label>G</label>
-                        <input type="text" class="form-control" name="work_order_pouch_val_g" placeholder="G">
-                    </div>
-                    <div class="form-group col-sm-6 col-xl-4">
-                        <label>H</label>
-                        <input type="text" class="form-control" name="work_order_pouch_val_h" placeholder="H">
-                    </div>
+                    <?php
+                    getSelectBox(
+                        "form-group col-xs-12 col-sm-6",
+                        "Punch Type",
+                        "work_order_2_pouch_punch_type",
+                        "SELECT * FROM `work_order_ui_pouch_punch_type` where punch_show =1 order by punch_value asc ",
+                        'punch_id',
+                        'punch_value'
+                    );
+                    ?>
+                    <!-- Only If Punch Type is Euro punch, or ID is 10 -->
+                    <?php
+                    getSelectBox(
+                        "euroPunchPouch form-group col-xs-12 col-sm-6",
+                        "Euro Punch",
+                        "work_order_2_pouch_euro_punch",
+                        "SELECT * FROM `work_order_ui_pouch_euro_punch` where euro_show =1 ",
+                        'euro_id',
+                        'euro_value'
+                    );
+                    ?>
+                </div>
+                <hr>
+                <h6>Extra Options - Corner</h6>
+                <div class="row">
+                    <?php
+                    getSelectBox(
+                        "form-group col-xs-12 col-sm-6",
+                        "Round Corner",
+                        "work_order_2_pouch_round_corner",
+                        "SELECT * FROM `work_order_ui_pouch_round_corner` where round_corner_show =1 order by round_corner_value asc ",
+                        'round_corner_id',
+                        'round_corner_value'
+                    );
+                    ?>
+                    
+                </div>
+                <hr>
+                <h6>Extra Options - Zipper</h6>
+                <div class="row">
+                    
+                    <?php
+                    getSelectBox(
+                        "form-group col-xs-12 col-sm-6",
+                        "Zipper",
+                        "work_order_2_pouch_zipper",
+                        "SELECT * FROM `work_order_ui_pouch_zipper` where zipper_show =1 order by zipper_value asc ",
+                        'zipper_id',
+                        'zipper_value'
+                    );
+                    ?>
+                    <?php
+                    getSelectBox(
+                        "zipperYes form-group col-xs-12 col-sm-6",
+                        "Open/Close?",
+                        "work_order_2_pouch_zipper_opc",
+                        "SELECT * FROM `work_order_ui_pouch_zipper_opc` where zipopc_show =1 order by zipopc_value asc ",
+                        'zipopc_id',
+                        'zipopc_value'
+                    );
+                    ?>
+                    <?php
+                    getSelectBox(
+                        "zipperYes peStrip form-group col-xs-12 col-sm-6",
+                        "PE Strip",
+                        "work_order_2_pouch_pestrip",
+                        "SELECT * FROM `work_order_ui_pouch_pe_strip` where pestrip_show =1 order by pestrip_value asc ",
+                        'pestrip_id',
+                        'pestrip_value'
+                    );
+                    ?>
 
-                    <div class="form-group col-12">
-                        <label class="form-label">Options</label>
-                        <div class="selectgroup selectgroup-pills">
-                            <?php
-                            $getExtOp1 = mysqlSelect("SELECT * FROM `work_order_ui_pouch_lap_fin` where lap_fin_show = 1 ");
-                            if (is_array($getExtOp1)) {
-                                foreach ($getExtOp1 as $ExtOp1) {
-                                    echo '
-                              <label class="selectgroup-item">
-                                      <input type="checkbox" name="work_order_3_pouch_lap_fin[]" value="' . $ExtOp1['lap_fin_id'] . '" class="selectgroup-input" ' . ($ExtOp1['lap_fin_id'] == 1 ? 'checked' : '') . '>
-                                      <span class="selectgroup-button">' . $ExtOp1['lap_fin_value'] . '</span>
-                                    </label>';
-                                }
-                            }
-                            ?>
-
-                        </div>
-
+                    <div class="zipperYes form-group col-xs-12 col-sm-6">
+                        <label>Distance From Top</label>
+                        <input type="text" class="form-control" name="work_order_pouch_top_dist" placeholder="Distance From Top">
                     </div>
+                    
+                </div>
+                <hr>
+                <h6>Extra Options - Notch</h6>
+                <div class="row">
+
+
+                    <?php
+                    getSelectBox(
+                        "form-group col-xs-12 col-sm-6",
+                        "Tear Notch",
+                        "work_order_2_pouch_tear_notch",
+                        "SELECT * FROM `work_order_ui_pouch_tear_notch` where tear_notch_show =1 order by tear_notch_value asc ",
+                        'tear_notch_id',
+                        'tear_notch_value'
+                    );
+                    ?>
+                    <?php
+                    getSelectBox(
+                        "tearNotch form-group col-xs-12 col-sm-6",
+                        "Tear Notch Number of Sides",
+                        "work_order_2_pouch_tear_notch_qty",
+                        "SELECT * FROM `work_order_ui_pouch_tear_notch_qty` where tear_notch_qty_show =1 order by tear_notch_qty_value asc ",
+                        'tear_notch_qty_id',
+                        'tear_notch_qty_value'
+                    );
+                    ?>
+                    <?php
+                    getSelectBox(
+                        "tearNotch form-group col-xs-12 col-sm-6",
+                        "Tear Notch Side",
+                        "work_order_2_pouch_tear_notch_side",
+                        "SELECT * FROM `work_order_ui_pouch_tear_notch_side` where tear_notch_side_show =1 order by tear_notch_side_value asc ",
+                        'tear_notch_side_id',
+                        'tear_notch_side_value'
+                    );
+                    ?>
+
 
 
                 </div>
@@ -797,60 +873,55 @@ function getPouch($itisEdit, $woid =0)
 }
 
 
-function getBag($itisEdit, $woid =0)
+function getBag($itisEdit, $woid = 0)
 {
 ?>
     <div class="classOnlyBag">
 
         <div class="row">
-            <div class="col-8" id="bagSwHolder">
-
+            <div class="col-8" id="bagImageHolder">
+                <div class="col-12">Loading Options...</div>
             </div>
             <div class="form-group col-4">
                 <label>Bag Type</label>
                 <select id="bag_switcher" class="form-control select_a" required name="work_order_bag_type">
                     <?php
-                    $getWinds = mysqlSelect("SELECT * FROM `work_order_digital_master` where dm_type =2 order by dm_header asc");
-                    if (is_array($getWinds)) {
-                        foreach ($getWinds  as $Wind) {
-                            echo '<option data-id="' . $Wind['dm_img_url'] . '" value="' . $Wind['dm_id'] . '">' . $Wind['dm_header'] . '</option>';
+                    $getBags = mysqlSelect("SELECT * FROM `bag_digital_master` where bdm_valid =1");
+                    if (is_array($getBags)) {
+                        foreach ($getBags  as $Bag) {
+                            echo '<option value="' . $Bag['bdm_id'] . '">' . $Bag['bdm_name'] . '</option>';
                         }
                     }
                     ?>
                 </select>
                 <hr>
+                <div class="row" id="bagFormHolder">
+                    <div class="col-12">Loading Options...</div>
+                </div>
+                <hr>
+                <h6>Extra Options</h6>
                 <div class="row">
-                    <div class="form-group col-sm-6 col-xl-4">
-                        <label>A </label>
-                        <input type="text" class="form-control" name="work_order_bags_val_a" placeholder="A">
+                    <?php
+                    getSelectBox(
+                        "form-group col-xs-12 col-sm-6",
+                        "Handle",
+                        "work_order_2_bags_handle",
+                        "SELECT * FROM `work_order_ui_bag_handle` where bag_handle_show =1 order by bag_handle_value asc ",
+                        'bag_handle_id',
+                        'bag_handle_value'
+                    );
+                    ?>
+                    <div class="form-group col-xs-12 col-sm-6">
+                        <label>Top Fold</label>
+                        <input type="text" class="form-control" name="work_order_bags_top_fold" placeholder="Top Fold">
                     </div>
-                    <div class="form-group col-sm-6 col-xl-4">
-                        <label>B </label>
-                        <input type="text" class="form-control" name="work_order_bags_val_b" placeholder="B">
+                    <div class="form-group col-xs-12 col-sm-6">
+                        <label>Flap</label>
+                        <input type="text" class="form-control" name="work_order_bags_flap" placeholder="Flap">
                     </div>
-                    <div class="form-group col-sm-6 col-xl-4">
-                        <label>C </label>
-                        <input type="text" class="form-control" name="work_order_bags_val_c" placeholder="C">
-                    </div>
-                    <div class="form-group col-sm-6 col-xl-4">
-                        <label>D </label>
-                        <input type="text" class="form-control" name="work_order_bags_val_d" placeholder="D">
-                    </div>
-                    <div class="form-group col-sm-6 col-xl-4">
-                        <label>E </label>
-                        <input type="text" class="form-control" name="work_order_bags_val_e" placeholder="E">
-                    </div>
-                    <div class="form-group col-sm-6 col-xl-4">
-                        <label>F </label>
-                        <input type="text" class="form-control" name="work_order_bags_val_f" placeholder="F">
-                    </div>
-                    <div class="form-group col-sm-6 col-xl-4">
-                        <label>G</label>
-                        <input type="text" class="form-control" name="work_order_bags_val_g" placeholder="G">
-                    </div>
-                    <div class="form-group col-sm-6 col-xl-4">
-                        <label>H</label>
-                        <input type="text" class="form-control" name="work_order_bags_val_h" placeholder="H">
+                    <div class="form-group col-xs-12 col-sm-6">
+                        <label>Lip</label>
+                        <input type="text" class="form-control" name="work_order_bags_Lip" placeholder="Lip">
                     </div>
                 </div>
 
@@ -901,7 +972,7 @@ function getBag($itisEdit, $woid =0)
 }
 
 
-function getSlit($itisEdit, $woid =0)
+function getSlit($itisEdit, $woid = 0)
 {
 ?>
     <div id="workOrderSlitProcess">
@@ -1164,6 +1235,10 @@ function getScriptInitializer()
             setUpFilmToLaminate();
             getDif();
             setUpPouchImage();
+            setUpPouchEuroPunch();
+            setUpPouchZipper();
+            setUpPouchZipperYesNo();
+            setUpPouchTearNotch();
             setUpBagImage();
             setUpRollImage();
             setCustName();
@@ -1211,6 +1286,22 @@ function getScriptTriggers()
 
             $("select[name=work_order_2_client_id]").change(function(e) {
                 setCustName();
+            });
+
+            $("select[name=work_order_2_pouch_punch_type]").change(function(e) {
+                setUpPouchEuroPunch();
+            });
+
+            $("select[name=work_order_2_pouch_master]").change(function(e) {
+                setUpPouchZipper();
+            });
+
+            $("select[name=work_order_2_pouch_zipper]").change(function(e) {
+                setUpPouchZipperYesNo();
+            });
+
+            $("select[name=work_order_2_pouch_tear_notch]").change(function(e) {
+                setUpPouchTearNotch();
             });
 
 
@@ -1617,12 +1708,36 @@ function getScriptFunctionalSetup()
         }
 
         function setUpPouchImage() {
-            $("#pouchSwHolder").html('<img class="img-thumbnail" src="' + $("#pouch_switcher").find(':selected').data('id') + '" />');
+            // $("#pouchImageHolder").html('<img class="img-thumbnail" src="' + $("#pouch_switcher").find(':selected').data('id') + '" />');
+            var pouchId = $("#pouch_switcher").find(':selected').val();
+
+            $.post("WorkOrderControllers/FormAllDynController", {
+                pouch_sub_id: pouchId
+            },
+            function(data, status) {
+                var obj = JSON.parse(data); 
+                console.log(obj);
+                $("#pouchImageHolder").html(obj[0]);
+                $("#pouchFormHolder").html(obj[1]);
+            });
 
         }
 
         function setUpBagImage() {
-            $("#bagSwHolder").html('<img class="img-thumbnail" src="' + $("#bag_switcher").find(':selected').data('id') + '" />');
+            var bagId = $("#bag_switcher").find(':selected').val();
+
+            $.post("WorkOrderControllers/FormAllDynController", {
+                bag_id: bagId
+            },
+            function(data, status) {
+                var obj = JSON.parse(data); 
+                console.log(obj);
+                $("#bagImageHolder").html(obj[0]);
+                $("#bagFormHolder").html(obj[1]);
+            });
+            
+            // $("#bagFormHolder")
+            
 
         }
 
@@ -1630,7 +1745,57 @@ function getScriptFunctionalSetup()
             $("#imgRollPut").html('<img class="img-thumbnail" src="assets/slitting/' + $("select[name=work_order_2_wind_dir]").find(':selected').data('id') + '.jpg" />');
 
         }
+
+        function setUpPouchEuroPunch() {
+            var punchId = $("select[name=work_order_2_pouch_punch_type]").find(':selected').val();
+            
+            if(punchId != 10){
+                $(".euroPunchPouch").hide();
+            }else {
+                $(".euroPunchPouch").show();
+            }
+        }
+
+        function setUpPouchZipper() {
+            var pouchId = $("select[name=work_order_2_pouch_master]").find(':selected').val();
+
+            if(pouchId == 9 || pouchId == 10){
+                $("select[name=work_order_2_pouch_zipper]").val(1).change();
+            }else{
+                $("select[name=work_order_2_pouch_zipper]").val(2).change();
+            }
+        }
+
+        function setUpPouchZipperYesNo() {
+            var yesNo = $("select[name=work_order_2_pouch_zipper]").find(':selected').val();
+            var pouchId = $("select[name=work_order_2_pouch_master]").find(':selected').val();
+
+            if(yesNo == 1){
+                $(".zipperYes").show();
+            }else {
+                $(".zipperYes").hide();
+            }
+
+            if(pouchId == 9 || pouchId == 10){
+                $(".peStrip").show();
+            }else {
+                $(".peStrip").hide();
+            }
+        }
+
+        function setUpPouchTearNotch() {
+            var yesNo = $("select[name=work_order_2_pouch_tear_notch]").find(':selected').val();
+
+            if(yesNo == 1){
+                $(".tearNotch").show();
+            }else {
+                $(".tearNotch").hide();
+            }
+
+        }
     </script>
 <?php
 }
+
+
 ?>
