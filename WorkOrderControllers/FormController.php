@@ -689,8 +689,8 @@ function getPouch($itisEdit, $woid = 0)
                     $getPouches = mysqlSelect("SELECT * FROM `pouch_digital_master` where pdm_valid =1 order by pdm_name asc");
                     if (is_array($getPouches)) {
                         foreach ($getPouches as $Pouch) {
-                            $getPouchSub = mysqlSelect("SELECT * FROM `pouch_digital_sub` where pds_valid =1 and pds_pdm_id = ".$Pouch['pdm_id']." order by pds_name asc");
-                            echo '<optgroup label="'.$Pouch['pdm_name'].'">';
+                            $getPouchSub = mysqlSelect("SELECT * FROM `pouch_digital_sub` where pds_valid =1 and pds_pdm_id = " . $Pouch['pdm_id'] . " order by pds_name asc");
+                            echo '<optgroup label="' . $Pouch['pdm_name'] . '">';
                             foreach ($getPouchSub  as $PouchSub) {
                                 echo '<option value="' . $PouchSub['pds_id'] . '">' . $PouchSub['pds_name'] . '</option>';
                             }
@@ -745,12 +745,12 @@ function getPouch($itisEdit, $woid = 0)
                         'round_corner_value'
                     );
                     ?>
-                    
+
                 </div>
                 <hr>
                 <h6>Extra Options - Zipper</h6>
                 <div class="row">
-                    
+
                     <?php
                     getSelectBox(
                         "form-group col-xs-12 col-sm-6",
@@ -786,7 +786,7 @@ function getPouch($itisEdit, $woid = 0)
                         <label>Distance From Top</label>
                         <input type="text" class="form-control" name="work_order_pouch_top_dist" placeholder="Distance From Top">
                     </div>
-                    
+
                 </div>
                 <hr>
                 <h6>Extra Options - Notch</h6>
@@ -884,7 +884,7 @@ function getBag($itisEdit, $woid = 0)
             </div>
             <div class="form-group col-4">
                 <label>Bag Type</label>
-                <select id="bag_switcher" class="form-control select_a" required name="work_order_bag_type">
+                <select id="bag_switcher" class="form-control select_a" required name="work_order_2_bag_type">
                     <?php
                     $getBags = mysqlSelect("SELECT * FROM `bag_digital_master` where bdm_valid =1");
                     if (is_array($getBags)) {
@@ -921,7 +921,7 @@ function getBag($itisEdit, $woid = 0)
                     </div>
                     <div class="form-group col-xs-12 col-sm-6">
                         <label>Lip</label>
-                        <input type="text" class="form-control" name="work_order_bags_Lip" placeholder="Lip">
+                        <input type="text" class="form-control" name="work_order_bags_lip" placeholder="Lip">
                     </div>
                 </div>
 
@@ -1712,14 +1712,14 @@ function getScriptFunctionalSetup()
             var pouchId = $("#pouch_switcher").find(':selected').val();
 
             $.post("WorkOrderControllers/FormAllDynController", {
-                pouch_sub_id: pouchId
-            },
-            function(data, status) {
-                var obj = JSON.parse(data); 
-                console.log(obj);
-                $("#pouchImageHolder").html(obj[0]);
-                $("#pouchFormHolder").html(obj[1]);
-            });
+                    pouch_sub_id: pouchId
+                },
+                function(data, status) {
+                    var obj = JSON.parse(data);
+                    console.log(obj);
+                    $("#pouchImageHolder").html(obj[0]);
+                    $("#pouchFormHolder").html(obj[1]);
+                });
 
         }
 
@@ -1727,17 +1727,17 @@ function getScriptFunctionalSetup()
             var bagId = $("#bag_switcher").find(':selected').val();
 
             $.post("WorkOrderControllers/FormAllDynController", {
-                bag_id: bagId
-            },
-            function(data, status) {
-                var obj = JSON.parse(data); 
-                console.log(obj);
-                $("#bagImageHolder").html(obj[0]);
-                $("#bagFormHolder").html(obj[1]);
-            });
-            
+                    bag_id: bagId
+                },
+                function(data, status) {
+                    var obj = JSON.parse(data);
+                    console.log(obj);
+                    $("#bagImageHolder").html(obj[0]);
+                    $("#bagFormHolder").html(obj[1]);
+                });
+
             // $("#bagFormHolder")
-            
+
 
         }
 
@@ -1748,10 +1748,10 @@ function getScriptFunctionalSetup()
 
         function setUpPouchEuroPunch() {
             var punchId = $("select[name=work_order_2_pouch_punch_type]").find(':selected').val();
-            
-            if(punchId != 10){
+
+            if (punchId != 10) {
                 $(".euroPunchPouch").hide();
-            }else {
+            } else {
                 $(".euroPunchPouch").show();
             }
         }
@@ -1759,9 +1759,9 @@ function getScriptFunctionalSetup()
         function setUpPouchZipper() {
             var pouchId = $("select[name=work_order_2_pouch_master]").find(':selected').val();
 
-            if(pouchId == 9 || pouchId == 10){
+            if (pouchId == 9 || pouchId == 10) {
                 $("select[name=work_order_2_pouch_zipper]").val(1).change();
-            }else{
+            } else {
                 $("select[name=work_order_2_pouch_zipper]").val(2).change();
             }
         }
@@ -1770,15 +1770,15 @@ function getScriptFunctionalSetup()
             var yesNo = $("select[name=work_order_2_pouch_zipper]").find(':selected').val();
             var pouchId = $("select[name=work_order_2_pouch_master]").find(':selected').val();
 
-            if(yesNo == 1){
+            if (yesNo == 1) {
                 $(".zipperYes").show();
-            }else {
+            } else {
                 $(".zipperYes").hide();
             }
 
-            if(pouchId == 9 || pouchId == 10){
+            if (pouchId == 9 || pouchId == 10) {
                 $(".peStrip").show();
-            }else {
+            } else {
                 $(".peStrip").hide();
             }
         }
@@ -1786,9 +1786,9 @@ function getScriptFunctionalSetup()
         function setUpPouchTearNotch() {
             var yesNo = $("select[name=work_order_2_pouch_tear_notch]").find(':selected').val();
 
-            if(yesNo == 1){
+            if (yesNo == 1) {
                 $(".tearNotch").show();
-            }else {
+            } else {
                 $(".tearNotch").hide();
             }
 

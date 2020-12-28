@@ -1,4 +1,13 @@
+
+<form method="post" action="PostDumper">
+<input type="text" name="bags[asf]" /><hr>
+<input type="text" name="bags[2]" /><hr>
+<input type="text" name="bags[3]" /><hr>
+<input type="text" name="bags[4]" /><hr>
+<button type="submit">A</button>
+</form>
 <?php
+die();
 include("server_fundamentals/FunctionsController.php");
 
 
