@@ -1197,6 +1197,7 @@ function getEditTrueBody($WorkOrderMain, $WOstraightArraysIn, $WOcheckboxArraysI
                         ';
                     }
                 }
+
                 ?>
 
             });
@@ -1211,11 +1212,14 @@ function getEditTrueLayers($WorkOrderMain)
         if (is_numeric($WorkOrderMain['master_wo_ply'])) {
 
             for ($counterL = 1; $counterL <= $WorkOrderMain['master_wo_ply']; $counterL++) {
-                echo '$(\'input[name="work_order_layer_' . $counterL . '_micron"]\').val("' . $WorkOrderMain['master_wo_layer_' . $counterL . '_micron'] . '");';
-                echo '$(\'select[name="work_order_5_layer_' . $counterL . '_material"]\').val("' . $WorkOrderMain['master_wo_layer_' . $counterL . '_structure'] . '").change();';
+                echo '$(\'input[name="work_order_layer_' . $counterL . '_micron"]\').val("' . $WorkOrderMain['master_wo_layer_' . $counterL . '_micron'] . '");
+                ';
+                echo '$(\'select[name="work_order_5_layer_' . $counterL . '_material"]\').val("' . $WorkOrderMain['master_wo_layer_' . $counterL . '_structure'] . '").change();
+                ';
             }
             for ($counterL = 1; $counterL < $WorkOrderMain['master_wo_ply']; $counterL++) {
-                echo '$(\'input[name="work_order_adh' . $counterL . '"]\').val("' . $WorkOrderMain['master_wo_adh' . $counterL] . '");';
+                echo '$(\'input[name="work_order_adh' . $counterL . '"]\').val("' . $WorkOrderMain['master_wo_adh' . $counterL] . '");
+                ';
             }
         }
     }
@@ -1707,33 +1711,33 @@ function getScriptFunctionalSetup()
 
         }
 
-        function setUpPouchImage() {
+        async function setUpPouchImage() {
             // $("#pouchImageHolder").html('<img class="img-thumbnail" src="' + $("#pouch_switcher").find(':selected').data('id') + '" />');
             var pouchId = $("#pouch_switcher").find(':selected').val();
 
-            $.post("WorkOrderControllers/FormAllDynController", {
+            await $.post("WorkOrderControllers/FormAllDynController", {
                     pouch_sub_id: pouchId
                 },
-                function(data, status) {
+                async function(data, status) {
                     var obj = JSON.parse(data);
                     console.log(obj);
                     $("#pouchImageHolder").html(obj[0]);
-                    $("#pouchFormHolder").html(obj[1]);
+                    await $("#pouchFormHolder").html(obj[1]);
                 });
 
         }
 
-        function setUpBagImage() {
+        async function setUpBagImage() {
             var bagId = $("#bag_switcher").find(':selected').val();
 
-            $.post("WorkOrderControllers/FormAllDynController", {
+            await $.post("WorkOrderControllers/FormAllDynController", {
                     bag_id: bagId
                 },
-                function(data, status) {
+                async function(data, status) {
                     var obj = JSON.parse(data);
                     console.log(obj);
                     $("#bagImageHolder").html(obj[0]);
-                    $("#bagFormHolder").html(obj[1]);
+                    await $("#bagFormHolder").html(obj[1]);
                 });
 
             // $("#bagFormHolder")
@@ -1797,5 +1801,40 @@ function getScriptFunctionalSetup()
 <?php
 }
 
+function getEditBagPouchScript($WorkOrderMain)
+{
+    if (is_array($WorkOrderMain)) {
+        echo "console.log('Requesting Clearance ');
+        await setUpPouchImage();
+        await setUpBagImage();
+        ";
+
+        if ($WorkOrderMain['master_wo_2_structure'] == 1) {
+            #Bag
+            $ParamsDatabase = json_decode($WorkOrderMain['master_wo_bags_values']);
+            $getParams = mysqlSelect("SELECT * FROM `bag_digital_params` where bdp_bdm_id =" . $WorkOrderMain['master_wo_2_bag_type']);
+            if (is_array($getParams)) {
+                foreach ($getParams as $Param) {
+                    if (isset($ParamsDatabase->{$Param['bdp_id']})) {
+                        echo '$(\'input[name="bags[' .  $Param['bdp_id'] . ']"]\').val("' . $ParamsDatabase->{$Param['bdp_id']} . '");
+                        ';
+                    }
+                }
+            }
+        } else if ($WorkOrderMain['master_wo_2_structure'] == 2) {
+            #Pouch
+            $ParamsDatabase = json_decode($WorkOrderMain['master_wo_pouch_values']);
+            $getParams = mysqlSelect("SELECT * FROM `pouch_digital_params` where pdp_pds_id =" . $WorkOrderMain['master_wo_2_pouch_master']);
+            if (is_array($getParams)) {
+                foreach ($getParams as $Param) {
+                    if (isset($ParamsDatabase->{$Param['pdp_id']})) {
+                        echo '$(\'input[name="pouch[' .  $Param['pdp_id'] . ']"]\').val("' . $ParamsDatabase->{$Param['pdp_id']} . '");
+                        ';
+                    }
+                }
+            }
+        }
+    }
+}
 
 ?>

@@ -167,10 +167,11 @@ getHead("Sales Order - " . ($itisEdit ? "Edit Sales Order" : "Make New Sales Ord
   <?php getScriptFunctionalSetup(); ?>
   
   <script>
-    $(document).ready(function(e) {
+    $(document).ready(async function(e) {
       <?php
       if (isset($_GET['editId'])) {
         getEditTrueLayers($WorkOrderMain);
+        getEditBagPouchScript($WorkOrderMain);
       }
       ?>
 

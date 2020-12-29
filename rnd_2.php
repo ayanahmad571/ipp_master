@@ -1,12 +1,13 @@
 
-<form method="post" action="PostDumper">
-<input type="text" name="bags[asf]" /><hr>
-<input type="text" name="bags[2]" /><hr>
-<input type="text" name="bags[3]" /><hr>
-<input type="text" name="bags[4]" /><hr>
-<button type="submit">A</button>
-</form>
 <?php
+$str = '{"45":"7","46":"8","47":"9","48":"10","49":"11","50":"12","51":"13","52":"14"}';
+$js = json_decode($str);
+var_dump(($js->{45}));
+$result = array_values(json_decode($str, true));
+var_dump(($result));
+
+
+$js[45];
 die();
 include("server_fundamentals/FunctionsController.php");
 

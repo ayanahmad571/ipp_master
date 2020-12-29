@@ -33,6 +33,18 @@ if (isset($_GET['id'])) {
   left join work_order_ui_slitting_freight_ins on master_wo_2_freight_type = freight_id
   left join work_order_ui_slitting_pallet_instructions on  master_wo_2_pallet_mark_ins  = pallet_instructions_id
 
+  left join work_order_ui_bag_handle on master_wo_2_bags_handle = bag_handle_id
+
+  left join work_order_ui_pouch_punch_type on master_wo_2_pouch_punch_type = punch_id
+  left join work_order_ui_pouch_euro_punch on master_wo_2_pouch_euro_punch = euro_id
+  left join work_order_ui_pouch_round_corner on master_wo_2_pouch_round_corner = round_corner_id
+  left join work_order_ui_pouch_zipper on master_wo_2_pouch_zipper = zipper_id
+  left join work_order_ui_pouch_zipper_opc on master_wo_2_pouch_zipper_opc = zipopc_id
+  left join work_order_ui_pouch_pe_strip on master_wo_2_pouch_pestrip = pestrip_id
+  left join work_order_ui_pouch_tear_notch on master_wo_2_pouch_tear_notch = tear_notch_id
+  left join work_order_ui_pouch_tear_notch_qty on master_wo_2_pouch_tear_notch_qty = tear_notch_qty_id
+  left join work_order_ui_pouch_tear_notch_side on master_wo_2_pouch_tear_notch_side = tear_notch_side_id
+
       where master_wo_ref= " . $_GET['id'] . " 
   " . $inColsWO . "
   order by master_wo_id desc
@@ -59,7 +71,7 @@ $repeat = $getWO['mwo_type'] != 1;
 
 <head>
   <title>
-    Work Order <?php echo $_GET['id'] ?> Print 
+    Work Order <?php echo $_GET['id'] ?> Print
   </title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
@@ -84,16 +96,16 @@ $repeat = $getWO['mwo_type'] != 1;
       position: fixed;
       bottom: 0;
       width: 100%;
-      background-color:blue;
-      color:white;
+      background-color: blue;
+      color: white;
     }
 
     .page-header {
       position: fixed;
       top: 0mm;
       width: 100%;
-      background-color:blue;
-      color:white;
+      background-color: blue;
+      color: white;
     }
 
     .page {
@@ -455,7 +467,12 @@ $repeat = $getWO['mwo_type'] != 1;
                     (is_array($getVal) ? $getVal[0]['rollopts_value'] : "-")
                   );
                 } else {
-                  $getVal = mysqlSelect("SELECT * FROM `work_order_ui_pouch_bag_fill_opts` where pbfo_id= " . $getWO['master_wo_2_pouchbag_fillops']);
+                  var_dump($getWO['master_wo_2_pouchbag_fillops']);
+                  if(is_null($getWO['master_wo_2_pouchbag_fillops'])){
+                    $getVal = null;
+                  }else{
+                    $getVal = mysqlSelect("SELECT * FROM `work_order_ui_pouch_bag_fill_opts` where pbfo_id= " . $getWO['master_wo_2_pouchbag_fillops']);
+                  }
                   getTableTD(
                     "Pouch/Bag Filling Options",
                     (is_array($getVal) ? $getVal[0]['pbfo_value'] : "-")
@@ -584,38 +601,71 @@ $repeat = $getWO['mwo_type'] != 1;
               ?>
                 <tr><?php getSectionSep("Pouch Section"); ?></tr>
                 <tr>
-                  <?
+                  <?php
 
-                    $getDigitalType = mysqlSelect("SELECT * FROM `work_order_digital_master` where dm_id =" . $getWO['master_wo_pouch_type']);
-                    if (!is_array($getDigitalType)) {
-                      $getDigitalType['dm_img_url'] = '';
-                      $getDigitalType['dm_header'] = "NOT FOUND";
+                  $getDigitalType = mysqlSelect("SELECT * FROM `pouch_digital_sub` where 
+                    pds_id =" . $getWO['master_wo_2_pouch_master']);
+                  if (!is_array($getDigitalType)) {
+                    $getDigitalType['pds_url'] = '';
+                    $getDigitalType['pds_name'] = "NOT FOUND";
+                  }
+                  $getDigitalType = $getDigitalType[0];
+
+                  $col1Out = "<strong>" . $getDigitalType["pds_name"] . "</strong><br><hr>";
+                  $getParams = mysqlSelect("SELECT * FROM `pouch_digital_params` where pdp_pds_id =" . $getWO['master_wo_2_pouch_master']);
+                  $ParamsDatabase = json_decode($getWO['master_wo_pouch_values']);
+                  if (is_array($getParams)) {
+                    foreach ($getParams as $Param) {
+                      if (isset($ParamsDatabase->{$Param['pdp_id']})) {
+                        $col1Out .= "<strong>" . $Param['pdp_title'] . "</strong> - 
+                          " .  $ParamsDatabase->{$Param['pdp_id']} . "<br>";
+                      }
                     }
-                    $getDigitalType = $getDigitalType[0];
+                  }
+                  $col1Out .= "<hr>Extra Options - Punch<br><br>";
+                  $col1Out .= "<strong>Punch Type</strong> - " . $getWO["punch_value"] . "<br>";
 
-                    $col1Out = "<strong>" . $getDigitalType["dm_header"] . "</strong><br><hr>";
-                    $col1Out .= "<strong>A</strong> - " . $getWO["master_wo_pouch_val_a"] . "<br>";
-                    $col1Out .= "<strong>B</strong> - " . $getWO["master_wo_pouch_val_b"] . "<br>";
-                    $col1Out .= "<strong>C</strong> - " . $getWO["master_wo_pouch_val_c"] . "<br>";
-                    $col1Out .= "<strong>D</strong> - " . $getWO["master_wo_pouch_val_d"] . "<br>";
+                  if ($getWO["master_wo_2_pouch_punch_type"] == 10) {
+                    $col1Out .= "<strong>Euro Punch</strong> - " . $getWO["euro_value"] . "<br>";
+                  }
 
-                    $col1Out .= "<strong>E</strong> - " . $getWO["master_wo_pouch_val_e"] . "<br>";
-                    $col1Out .= "<strong>F</strong> - " . $getWO["master_wo_pouch_val_f"] . "<br>";
-                    $col1Out .= "<strong>G</strong> - " . $getWO["master_wo_pouch_val_g"] . "<br>";
-                    $col1Out .= "<strong>H</strong> - " . $getWO["master_wo_pouch_val_h"] . "<br>";
-                    $col1Out .= "<strong>Options</strong> - " . groupConcatGetVal("work_order_ui_pouch_lap_fin", "lap_fin", $getWO['master_wo_3_pouch_lap_fin'], 'mysqlSelect');
+                  $col1Out .= "<hr>Extra Options - Corner<br><br>";
 
-                    getTableTD(
-                      "",
-                      "<img src ='" . $getDigitalType['dm_img_url'] . "' width='600px' />",
-                      6
-                    );
-                    getTableTD(
-                      "",
-                      $col1Out,
-                      6
-                    );
-                    ?>
+                  $col1Out .= "<strong>Round Corner</strong> - " . $getWO["round_corner_value"] . "<br>";
+
+                  $col1Out .= "<hr>Extra Options - Zipper<br><br>";
+
+                  if ($getWO['master_wo_2_pouch_zipper'] == 1) {
+                    $col1Out .= "<strong>Zipper Open Close?</strong> - " . $getWO["zipopc_value"] . "<br>";
+                    $col1Out .= "<strong>Distance From Top</strong> - " . $getWO["master_wo_pouch_top_dist"] . "<br>";
+                    
+                    if ($getWO['master_wo_2_pouch_master'] == 9 || $getWO['master_wo_2_pouch_master'] == 10) {
+                      $col1Out .= "<strong>PE Strip</strong> - " . $getWO["pestrip_value"] . "<br>";
+                    }
+                  }else{
+                    $col1Out .= "<strong>Zipper</strong> - No<br>";
+                  }
+
+                  $col1Out .= "<hr>Extra Options - Notch<br><br>";
+                  if ($getWO["master_wo_2_pouch_tear_notch"] == 1) {
+                    $col1Out .= "<strong>Tear Notch Number of Sides</strong> - " . $getWO["tear_notch_qty_value"] . "<br>";
+                    $col1Out .= "<strong>Tear Notch Side</strong> - " . $getWO["tear_notch_side_value"] . "<br>";
+                  }else{
+                    $col1Out .= "<strong>Tear Notch</strong> - No<br>";
+                  }
+                  // $col1Out .= "<strong>Options</strong> - " . groupConcatGetVal("work_order_ui_pouch_lap_fin", "lap_fin", $getWO['master_wo_3_pouch_lap_fin'], 'mysqlSelect');
+
+                  getTableTD(
+                    "",
+                    "<img src ='" . $getDigitalType['pds_url'] . "' width='600px' />",
+                    6
+                  );
+                  getTableTD(
+                    "",
+                    $col1Out,
+                    6
+                  );
+                  ?>
                 </tr>
                 <tr>
                   <?php echo getSectionSep("Pouch Remarks", true) ?>
@@ -661,27 +711,35 @@ $repeat = $getWO['mwo_type'] != 1;
                 <tr>
                   <?php
                   //bag
-                  $getDigitalType = mysqlSelect("SELECT * FROM `work_order_digital_master` where dm_id =" . $getWO['master_wo_bag_type']);
+                  $getDigitalType = mysqlSelect("SELECT * FROM `bag_digital_master` 
+                  where bdm_id =" . $getWO['master_wo_2_bag_type']);
                   if (!is_array($getDigitalType)) {
-                    $getDigitalType['dm_img_url'] = '';
-                    $getDigitalType['dm_header'] = "NOT FOUND";
+                    $getDigitalType['bdm_url'] = '';
+                    $getDigitalType['bdm_name'] = "NOT FOUND";
                   }
                   $getDigitalType = $getDigitalType[0];
 
-                  $col1Out = "<strong>" . $getDigitalType["dm_header"] . "</strong><br><hr>";
-                  $col1Out .= "<strong>A</strong> - " . $getWO["master_wo_bags_val_a"] . "<br>";
-                  $col1Out .= "<strong>B</strong> - " . $getWO["master_wo_bags_val_b"] . "<br>";
-                  $col1Out .= "<strong>C</strong> - " . $getWO["master_wo_bags_val_c"] . "<br>";
-                  $col1Out .= "<strong>D</strong> - " . $getWO["master_wo_bags_val_d"] . "<br>";
+                  $col1Out = "<strong>" . $getDigitalType["bdm_name"] . "</strong><br><hr>";
+                  $getParams = mysqlSelect("SELECT * FROM `bag_digital_params` where bdp_bdm_id =" . $getWO['master_wo_2_bag_type']);
+                  $ParamsDatabase = json_decode($getWO['master_wo_bags_values']);
+                  if (is_array($getParams)) {
+                    foreach ($getParams as $Param) {
+                      if (isset($ParamsDatabase->{$Param['bdp_id']})) {
+                        $col1Out .= "<strong>" . $Param['bdp_title'] . "</strong> - " .  $ParamsDatabase->{$Param['bdp_id']} . "<br>";
+                      }
+                    }
+                  }
+                  $col1Out .= "<hr><strong>Extra Options</strong><br>";
+                  $col1Out .= "<strong>Handle</strong> - " . $getWO["bag_handle_value"] . "<br>";
+                  $col1Out .= "<strong>Top Fold</strong> - " . $getWO["master_wo_bags_top_fold"] . "<br>";
+                  $col1Out .= "<strong>Flap</strong> - " . $getWO["master_wo_bags_flap"] . "<br>";
+                  $col1Out .= "<strong>Lip</strong> - " . $getWO["master_wo_bags_lip"] . "<br>";
 
-                  $col1Out .= "<strong>E</strong> - " . $getWO["master_wo_bags_val_e"] . "<br>";
-                  $col1Out .= "<strong>F</strong> - " . $getWO["master_wo_bags_val_f"] . "<br>";
-                  $col1Out .= "<strong>G</strong> - " . $getWO["master_wo_bags_val_g"] . "<br>";
-                  $col1Out .= "<strong>H</strong> - " . $getWO["master_wo_bags_val_h"] . "<br>";
+
 
                   getTableTD(
                     "",
-                    "<img src ='" . $getDigitalType['dm_img_url'] . "' width='400px' />",
+                    "<img src ='" . $getDigitalType['bdm_url'] . "' width='400px' />",
                     6
                   );
                   getTableTD(
@@ -868,11 +926,18 @@ $repeat = $getWO['mwo_type'] != 1;
             7
           );
         } else {
-          //FIX
-          $getVal = mysqlSelect("SELECT * FROM `work_order_ui_pouch_pack_ins` where pouch_pack_ins_id= " . $getWO['master_wo_2_carton_pack_ins']);
+          // FIX
+          // var_dump($getWO['master_wo_2_carton_pack_ins']);
+          if(is_null($getWO['master_wo_2_carton_pack_ins'])){
+            $getVal23 = null;
+          }else{
+            $getVal23 = mysqlSelect("SELECT * FROM `work_order_ui_pouch_pack_ins` 
+            where pouch_pack_ins_id= " . $getWO['master_wo_2_carton_pack_ins']);
+          }
+          
           getTableTD(
             "Carton Packing Instructions",
-            (is_array($getVal) ? $getVal[0]['pouch_pack_ins_value'] : "-")
+            (is_array($getVal23) ? $getVal23[0]['pouch_pack_ins_value'] : "-")
           );
 
           getTableTD(

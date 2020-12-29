@@ -394,11 +394,15 @@ if ($structureMaster == 1) {
 	selectChecker("SELECT * FROM `work_order_ui_pouch_tear_notch_side` 
 	where tear_notch_side_show =1 and tear_notch_side_id=".$_POST['work_order_2_pouch_tear_notch_side'],
 	'Tear Notch Side Not Found', 'mysqlSelect');
-
+	
+	$WorkOrderMaster["master_wo_2_pouch_round_corner"] = $_POST["work_order_2_pouch_round_corner"];
+	
+	$WorkOrderMaster["master_wo_2_pouch_punch_type"] = $_POST["work_order_2_pouch_punch_type"];
 	if($_POST["work_order_2_pouch_punch_type"] == 10){
 		$WorkOrderMaster["master_wo_2_pouch_euro_punch"] = $_POST["work_order_2_pouch_euro_punch"];
 	}
-
+	
+	$WorkOrderMaster["master_wo_2_pouch_zipper"] = $_POST["work_order_2_pouch_zipper"];
 	if($_POST['work_order_2_pouch_zipper'] == 1){
 		$WorkOrderMaster["master_wo_2_pouch_zipper_opc"] = $_POST["work_order_2_pouch_zipper_opc"];
 		$WorkOrderMaster["master_wo_pouch_top_dist"] = $_POST["work_order_pouch_top_dist"];
@@ -406,7 +410,8 @@ if ($structureMaster == 1) {
 			$WorkOrderMaster["master_wo_2_pouch_pestrip"] = $_POST["work_order_2_pouch_pestrip"];
 		}
 	}
-
+	
+	$WorkOrderMaster["master_wo_2_pouch_tear_notch"] = $_POST["work_order_2_pouch_tear_notch"];
 	if($_POST["work_order_2_pouch_tear_notch"] == 1){
 		$WorkOrderMaster["master_wo_2_pouch_tear_notch_qty"] = $_POST["work_order_2_pouch_tear_notch_qty"];
 		$WorkOrderMaster["master_wo_2_pouch_tear_notch_side"] = $_POST["work_order_2_pouch_tear_notch_side"];
@@ -510,7 +515,6 @@ if ($structureMaster == 1) {
 	$WorkOrderMaster["master_wo_max_imps_p_r"] = $_POST["work_order_max_imps_p_r"];
 	$WorkOrderMaster["master_wo_max_joints"] = $_POST["work_order_max_joints"];
 }
-die();
 
 if (!$itIsEdit) {
 	//make the master Reference entry in the Table and get the New Work Order ID

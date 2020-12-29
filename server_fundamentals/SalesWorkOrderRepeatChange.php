@@ -41,18 +41,13 @@ $toCheck = array(
 	"work_order_quantity_tolerance", "work_order_2_laser_config", "work_order_ply", "work_order_total_gsm", "work_order_total_gsm_tolerance",
 	"work_order_2_wind_dir", "work_order_roll_od", "work_order_roll_width", "work_order_roll_cutoff_len", "work_order_max_w_p_r",
 	"work_order_max_lmtr_p_r", "work_order_max_imps_p_r", "work_order_2_slitting_core_id", "work_order_2_slitting_core_material", "work_order_2_slitting_core_plugs",
-	"work_order_2_slitting_qc_ins", "work_order_max_joints", "work_order_remarks_roll", "work_order_pouch_type",
-	"work_order_pouch_val_a", "work_order_pouch_val_b", "work_order_pouch_val_c", "work_order_pouch_val_d", "work_order_pouch_val_e",
-	"work_order_pouch_val_f", "work_order_pouch_val_g", "work_order_pouch_val_h", "work_order_remarks_pouch",
-	"work_order_bag_type", "work_order_bags_val_a", "work_order_bags_val_b", "work_order_bags_val_c", "work_order_bags_val_d",
-	"work_order_bags_val_e", "work_order_bags_val_f", "work_order_bags_val_g", "work_order_bags_val_h", "work_order_remarks_bags",
+	"work_order_2_slitting_qc_ins", "work_order_max_joints", "work_order_remarks_roll", "work_order_remarks_pouch", "work_order_remarks_bags",
 	"work_order_2_foil_print_side", "work_order_2_printing_method", "work_order_2_printing_shade_card_needed", "work_order_2_printing_color_ref_type", "work_order_2_printing_approvalby",
 	"work_order_2_roll_pack_ins", "work_order_2_carton_pack_ins", "work_order_2_pallet_mark_ins", "work_order_pouch_per_bund", "work_order_bund_per_box",
 	"work_order_2_pallet_type", "work_order_2_cont_stuff", "work_order_max_gross_pallet_weight", "work_order_2_pallet_dim", "work_order_2_freight_type",
 	"work_order_cart_thick", "work_order_3_docs", "work_order_remarks_overall",
 	"work_order_2_coating_options", "work_order_coating_gsm", "work_order_cof_val", "work_order_submersion_temp", "work_order_submersion_duration"
 );
-
 
 
 checkPost($toCheck);

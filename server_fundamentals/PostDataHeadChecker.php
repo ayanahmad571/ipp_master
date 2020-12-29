@@ -30,7 +30,23 @@ $WOselectArrays = array(
 	"work_order_2_pallet_type" => "master_wo_2_pallet_type",
 	"work_order_2_cont_stuff" => "master_wo_2_cont_stuff",
 	"work_order_2_pallet_dim" => "master_wo_2_pallet_dim",
-	"work_order_2_freight_type" => "master_wo_2_freight_type"
+	"work_order_2_freight_type" => "master_wo_2_freight_type",
+
+	"work_order_2_bag_type" => "master_wo_2_bag_type",
+	"work_order_2_bags_handle" => "master_wo_2_bags_handle",
+
+	"work_order_2_pouch_master" => "master_wo_2_pouch_master",
+	"work_order_2_pouch_punch_type" => "master_wo_2_pouch_punch_type",
+	"work_order_2_pouch_euro_punch" => "master_wo_2_pouch_euro_punch",
+	"work_order_2_pouch_round_corner" => "master_wo_2_pouch_round_corner",
+	"work_order_2_pouch_zipper" => "master_wo_2_pouch_zipper",
+	"work_order_2_pouch_zipper_opc" => "master_wo_2_pouch_zipper_opc",
+	"work_order_2_pouch_pestrip" => "master_wo_2_pouch_pestrip",
+	"work_order_2_pouch_tear_notch" => "master_wo_2_pouch_tear_notch",
+	"work_order_2_pouch_tear_notch_qty" => "master_wo_2_pouch_tear_notch_qty",
+	"work_order_2_pouch_tear_notch_side" => "master_wo_2_pouch_tear_notch_side"
+
+
 
 );
 
@@ -73,24 +89,15 @@ $WOstraightArrays = array(
 	"work_order_max_lmtr_p_r" => "master_wo_max_lmtr_p_r",
 	"work_order_max_imps_p_r" => "master_wo_max_imps_p_r",
 	"work_order_max_joints" => "master_wo_max_joints",
-	"work_order_pouch_type" => "master_wo_pouch_type",
-	"work_order_pouch_val_a" => "master_wo_pouch_val_a",
-	"work_order_pouch_val_b" => "master_wo_pouch_val_b",
-	"work_order_pouch_val_c" => "master_wo_pouch_val_c",
-	"work_order_pouch_val_d" => "master_wo_pouch_val_d",
-	"work_order_pouch_val_e" => "master_wo_pouch_val_e",
-	"work_order_pouch_val_f" => "master_wo_pouch_val_f",
-	"work_order_pouch_val_g" => "master_wo_pouch_val_g",
-	"work_order_pouch_val_h" => "master_wo_pouch_val_h",
-	"work_order_bag_type" => "master_wo_bag_type",
-	"work_order_bags_val_a" => "master_wo_bags_val_a",
-	"work_order_bags_val_b" => "master_wo_bags_val_b",
-	"work_order_bags_val_c" => "master_wo_bags_val_c",
-	"work_order_bags_val_d" => "master_wo_bags_val_d",
-	"work_order_bags_val_e" => "master_wo_bags_val_e",
-	"work_order_bags_val_f" => "master_wo_bags_val_f",
-	"work_order_bags_val_g" => "master_wo_bags_val_g",
-	"work_order_bags_val_h" => "master_wo_bags_val_h",
+
+
+	"work_order_pouch_top_dist" => "master_wo_pouch_top_dist",
+
+
+	"work_order_bags_top_fold" => "master_wo_bags_top_fold",
+	"work_order_bags_flap" => "master_wo_bags_flap",
+	"work_order_bags_lip" => "master_wo_bags_lip",
+
 	"work_order_pouch_per_bund" => "master_wo_pouch_per_bund",
 	"work_order_bund_per_box" => "master_wo_bund_per_box",
 	"work_order_max_gross_pallet_weight" => "master_wo_max_gross_pallet_weight",
