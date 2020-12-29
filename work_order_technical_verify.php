@@ -5,7 +5,7 @@ getHead("WO Technical");
 ?>
 
 <link rel="stylesheet" type="text/css" href="assets/DataTables/datatables.min.css" />
-
+<link rel="stylesheet" href="assets/modules/izit.css">
 <body>
   <div id="app">
     <div class="main-wrapper">
@@ -25,10 +25,11 @@ getHead("WO Technical");
         <?php getPageTitle("Work Order - Technical Verify"); ?>
           <!-- TOP CONTENT BLOCKS -->
           <div class="row">
-            <?php getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000") ?>
-            <?php getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000") ?>
-            <?php getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000") ?>
-            <?php getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000") ?>
+          <?php 
+            // getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000");
+            // getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000");
+            // getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000");
+            ?>
           </div>
 
 
@@ -307,6 +308,45 @@ getHead("WO Technical");
 
 
   </script>
+
+<?php $getDraftsH = mysqlSelect(workOrderPagesQuery("7")); ?>
+<input type="hidden" id="rowDiff" value="<?php echo (is_array($getDraftsH) ? count($getDraftsH): "0"); ?>" />
+
+<script src="assets/modules/iZiToast.js"></script>
+
+<script>
+    function fetchdata() {
+      var rowD = $("#rowDiff").val();
+      $.ajax({
+        url: 'WorkOrderControllers/AllController.php',
+        type: 'post',
+        data: {
+          rowDiffChecker: rowD,
+          ids: "7",
+          not_ski: "0"
+        },
+        success: function(response) {
+          // Perform operation on the return value
+          if (response != "0") {
+            iziToast.success({
+              title: 'Work Order Update!',
+              message: 'New Updates, Refresh the page to see them',
+              position: 'topRight'
+            });
+            $("#rowDiff").val(response);
+          }
+        }
+      });
+    }
+
+    $(document).ready(function() {
+      setInterval(fetchdata, 5000);
+    });
+
+  </script>
+
+
+
 </body>
 
 </html>

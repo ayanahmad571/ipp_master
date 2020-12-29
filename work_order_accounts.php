@@ -5,6 +5,7 @@ getHead("WO Accounts");
 ?>
 
 <link rel="stylesheet" type="text/css" href="assets/DataTables/datatables.min.css" />
+<link rel="stylesheet" href="assets/modules/izit.css">
 
 <body>
   <div id="app">
@@ -25,10 +26,22 @@ getHead("WO Accounts");
           <?php getPageTitle("Work Order - Accounts"); ?>
           <!-- TOP CONTENT BLOCKS -->
           <div class="row">
-            <?php getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000") ?>
-            <?php getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000") ?>
-            <?php getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000") ?>
-            <?php getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000") ?>
+            <?php
+            // $pendingCount = mysqlSelect("select ifnull(count(m.master_wo_id),0) as ans from (select *
+            // from `master_work_order_reference_number` r 
+            // left join master_work_order_main on (		SELECT master_wo_id FROM `master_work_order_main`
+            //                                         where master_wo_ref = r.mwo_ref_id
+            //                                         order by master_wo_id desc 
+            //                                         limit 1) = master_wo_id ) m
+            //  where m.master_wo_status = 4");
+            ?>
+            <?php 
+            // getTopCard("col-lg-4 col-md-6 col-sm-6 col-12", "far fa-user", "Pending", $pendingCount[0]['ans']);
+            // getTopCard("col-lg-4 col-md-6 col-sm-6 col-12", "far fa-user", "Conditional Release Pending", "0000"); 
+            // getTopCard("col-lg-4 col-md-6 col-sm-6 col-12", "far fa-user", "Published", "0000");
+             ?>
+            <?php //getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000")
+            ?>
           </div>
 
 
@@ -70,7 +83,7 @@ getHead("WO Accounts");
                               $getBy = mysqlSelect("select * from user_main where lum_id = " . $Draft['master_wo_gen_lum_id'] . " and lum_valid =1");
                               $getFor = mysqlSelect("select * from user_main where lum_id = " . $Draft['master_wo_2_sales_id'] . " and lum_valid =1");
 
-                              echo getByForFromWO($getBy,$getFor);
+                              echo getByForFromWO($getBy, $getFor);
                               ?>
                             </td>
                             <td><?php echo date('d-m-Y @ h:i:s a', $Draft['master_wo_gen_dnt']); ?></td>
@@ -88,11 +101,11 @@ getHead("WO Accounts");
                                 </a>
                               </td>
                             <?php
-                            }else if($getCondRel[0]['crw_status'] == 1){
+                            } else if ($getCondRel[0]['crw_status'] == 1) {
                               echo '<td>Requested Conditional Release</td>';
-                            }else if($getCondRel[0]['crw_status'] == 3){
+                            } else if ($getCondRel[0]['crw_status'] == 3) {
                               //Rejected
-                              ?>
+                            ?>
                               <td>
                                 <?php echo "<strong>Release Rejected</strong>" ?>
                                 <br>
@@ -160,7 +173,7 @@ getHead("WO Accounts");
                               $getBy = mysqlSelect("select * from user_main where lum_id = " . $Discard['mwo_gen_lum_id'] . " and lum_valid =1");
                               $getFor = mysqlSelect("select * from user_main where lum_id = " . $Discard['mwo_gen_on_behalf_lum_id'] . " and lum_valid =1");
 
-                              echo getByForFromWO($getBy,$getFor);
+                              echo getByForFromWO($getBy, $getFor);
                               ?>
                             </td>
                             <td><?php echo date('d-m-Y @ h:i:s a', $Discard['master_wo_gen_dnt']); ?></td>
@@ -271,6 +284,43 @@ getHead("WO Accounts");
       }); /* .pubslishDraft Click*/
     }); /*Doc Ready*/
   </script>
+
+<?php $getDraftsH = mysqlSelect(workOrderPagesQuery("4")); ?>
+<input type="hidden" id="rowDiff" value="<?php echo (is_array($getDraftsH) ? count($getDraftsH): "0"); ?>" />
+
+<script src="assets/modules/iZiToast.js"></script>
+
+<script>
+    function fetchdata() {
+      var rowD = $("#rowDiff").val();
+      $.ajax({
+        url: 'WorkOrderControllers/AllController.php',
+        type: 'post',
+        data: {
+          rowDiffChecker: rowD,
+          ids: "4",
+          not_ski: "0"
+        },
+        success: function(response) {
+          // Perform operation on the return value
+          if (response != "0") {
+            iziToast.success({
+              title: 'Work Order Update!',
+              message: 'New Updates, Refresh the page to see them',
+              position: 'topRight'
+            });
+            $("#rowDiff").val(response);
+          }
+        }
+      });
+    }
+
+    $(document).ready(function() {
+      setInterval(fetchdata, 5000);
+    });
+
+  </script>
+
 </body>
 
 </html>

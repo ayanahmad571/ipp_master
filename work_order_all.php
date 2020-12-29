@@ -26,10 +26,11 @@ getHead("WO Technical");
           <?php getPageTitle("Work Order - General View"); ?>
           <!-- TOP CONTENT BLOCKS -->
           <div class="row">
-            <?php getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000") ?>
-            <?php getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000") ?>
-            <?php getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000") ?>
-            <?php getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000") ?>
+          <?php 
+            // getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000");
+            // getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000");
+            // getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000");
+            ?>
           </div>
 
 
@@ -87,23 +88,34 @@ getHead("WO Technical");
   getScripts();
   ?>
 
-  <!-- <script src="assets/js/bootbox.min.js"></script> -->
-  <?php $getDrafts = mysqlSelect(workOrderPagesQuery("9")); ?>
-  <input type="hidden" id="rowDiff" value="<?php echo count($getDrafts); ?>" />
   <script type="text/javascript" src="assets/Datatables/datatables.min.js"></script>
 
   <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
-  <!-- JS Libraies -->
-  <script src="assets/modules/iZiToast.js"></script>
 
   <script>
+
+    $("#DraftsContainerTable").DataTable({
+      "processing": true,
+      "serverSide": true,
+      "ajax": "WorkOrderControllers/AllControllerTable.php"
+    });
+  </script>
+
+<?php $getDraftsH = mysqlSelect(workOrderPagesQuery("9")); ?>
+<input type="hidden" id="rowDiff" value="<?php echo (is_array($getDraftsH) ? count($getDraftsH): "0"); ?>" />
+
+<script src="assets/modules/iZiToast.js"></script>
+
+<script>
     function fetchdata() {
       var rowD = $("#rowDiff").val();
       $.ajax({
         url: 'WorkOrderControllers/AllController.php',
         type: 'post',
         data: {
-          rowDiffChecker: rowD
+          rowDiffChecker: rowD,
+          ids: "9",
+          not_ski: "0"
         },
         success: function(response) {
           // Perform operation on the return value
@@ -123,13 +135,10 @@ getHead("WO Technical");
       setInterval(fetchdata, 5000);
     });
 
-
-    $("#DraftsContainerTable").DataTable({
-      "processing": true,
-      "serverSide": true,
-      "ajax": "WorkOrderControllers/AllControllerTable.php"
-    });
   </script>
+
+
+
 
 </body>
 

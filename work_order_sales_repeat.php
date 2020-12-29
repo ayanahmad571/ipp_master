@@ -126,10 +126,10 @@ $WorkOrderRepPub =  $getWo[0];
 
                       <div class="row">
                         <div class="form-group col-12 col-md-6 col-xl-3">
-                          <label>Sales Code</label>
+                          <label>IPP Sales Code</label>
                           <select class="form-control select_a" required name="work_order_2_sales_id">
                             <?php
-                            $getDrafts = mysqlSelect($getAttachedTreeSql);
+                            $getDrafts = mysqlSelect($getAttachedTreeSql . " order by lum_code asc");
 
                             if (is_array($getDrafts)) {
                               foreach ($getDrafts as $Draft) {

@@ -5,6 +5,8 @@ getHead("WO Sales Verification");
 ?>
 
 <link rel="stylesheet" type="text/css" href="assets/DataTables/datatables.min.css" />
+<link rel="stylesheet" href="assets/modules/izit.css">
+
 
 <body>
   <div id="app">
@@ -25,10 +27,11 @@ getHead("WO Sales Verification");
           <?php getPageTitle("Sales Order - Sales Verifier"); ?>
           <!-- TOP CONTENT BLOCKS -->
           <div class="row">
-            <?php getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000") ?>
-            <?php getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000") ?>
-            <?php getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000") ?>
-            <?php getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000") ?>
+          <?php 
+            // getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000");
+            // getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000");
+            // getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000");
+            ?>
           </div>
           
           <hr id="Splitter" />
@@ -304,29 +307,45 @@ getHead("WO Sales Verification");
       }); /* .pubslishDraft Click*/
     }); /*Doc Ready*/
 
+  </script>
 
-    // $(document).ready(function(e) {
-    //   $('.diSscardDraft').click(function(e) {
-    //     var dataId = ($(this).data("id"));
+<?php $getDraftsH = mysqlSelect(workOrderPagesQuery("2")); ?>
+<input type="hidden" id="rowDiff" value="<?php echo (is_array($getDraftsH) ? count($getDraftsH): "0"); ?>" />
 
-    //     bootbox.confirm("Are you sure you want to return Sales Order Number: " + dataId + " to sales? <br> This action can not be undone", function(result) {
-    //       if (result) {
+<script src="assets/modules/iZiToast.js"></script>
 
+<script>
+    function fetchdata() {
+      var rowD = $("#rowDiff").val();
+      $.ajax({
+        url: 'WorkOrderControllers/AllController.php',
+        type: 'post',
+        data: {
+          rowDiffChecker: rowD,
+          ids: "2",
+          not_ski: "0"
+        },
+        success: function(response) {
+          // Perform operation on the return value
+          if (response != "0") {
+            iziToast.success({
+              title: 'Work Order Update!',
+              message: 'New Updates, Refresh the page to see them',
+              position: 'topRight'
+            });
+            $("#rowDiff").val(response);
+          }
+        }
+      });
+    }
 
-    //         $.post("server_fundamentals/MainWorkOrderSubmit", {
-    //             returnSales: dataId,
-    //           },
-    //           function(data, status) {
-    //             bootbox.alert(data);
-    //           });
-
-
-    //       }
-    //     });
-    //   }); /* .pubslishDraft Click*/
-    // }); /*Doc Ready*/
+    $(document).ready(function() {
+      setInterval(fetchdata, 5000);
+    });
 
   </script>
+
+
 </body>
 
 </html>
