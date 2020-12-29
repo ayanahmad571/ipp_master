@@ -467,7 +467,6 @@ $repeat = $getWO['mwo_type'] != 1;
                     (is_array($getVal) ? $getVal[0]['rollopts_value'] : "-")
                   );
                 } else {
-                  var_dump($getWO['master_wo_2_pouchbag_fillops']);
                   if(is_null($getWO['master_wo_2_pouchbag_fillops'])){
                     $getVal = null;
                   }else{

@@ -1,6 +1,8 @@
 <?php
 require_once("SessionHandler.php");
 require_once("PostDataHeadChecker.php");
+require_once("../WorkOrderControllers/FormController.php");
+
 //user type_check only sales and MD people can make this WO
 // if (!in_array($USER_ARRAY['user_type_id'], array(1, 2, 4, 10, 16))) {
 // 	die('User Not Authorized');
@@ -29,38 +31,8 @@ if (isset($_POST['work_order_edit_id'])) {
 	}
 	$itIsEdit = true;
 }
-//NOT COMPLETE DONT USER
-$toCheck = array(
-	"work_order_2_client_id", "work_order_customer_design_name", "work_order_customer_item_code", "work_order_customer_po", "work_order_po_date", "work_order_delivery_date",
-	"work_order_3_customer_loc", "work_order_2_sales_id",
-	"work_order_2_structure", "work_order_2_type_printed", "work_order_ink_gsm_pre_c", "work_order_2_application", "work_order_2_roll_fill_opts",
-	"work_order_2_pouchbag_fillops", "work_order_2_fill_temp", "work_order_fill_temp", "work_order_line_speed",
-	"work_order_dwell_time", "work_order_seal_temp", "work_order_design_id", "work_order_rev_no", "work_order_approved_sample_wo_no",
-	"work_order_pack_weight", "work_order_2_pack_weight_unit", "work_order_quantity", "work_order_2_units",
-	"work_order_quantity_tolerance", "work_order_2_laser_config", "work_order_ply", "work_order_total_gsm", "work_order_total_gsm_tolerance",
-	"work_order_2_wind_dir", "work_order_roll_od", "work_order_roll_width", "work_order_roll_cutoff_len", "work_order_max_w_p_r",
-	"work_order_max_lmtr_p_r", "work_order_max_imps_p_r", "work_order_2_slitting_core_id", "work_order_2_slitting_core_material", "work_order_2_slitting_core_plugs",
-	"work_order_2_slitting_qc_ins", "work_order_max_joints", "work_order_remarks_roll", "work_order_remarks_pouch", "work_order_remarks_bags",
-	"work_order_2_foil_print_side", "work_order_2_printing_method", "work_order_2_printing_shade_card_needed", "work_order_2_printing_color_ref_type", "work_order_2_printing_approvalby",
-	"work_order_2_roll_pack_ins", "work_order_2_carton_pack_ins", "work_order_2_pallet_mark_ins", "work_order_pouch_per_bund", "work_order_bund_per_box",
-	"work_order_2_pallet_type", "work_order_2_cont_stuff", "work_order_max_gross_pallet_weight", "work_order_2_pallet_dim", "work_order_2_freight_type",
-	"work_order_cart_thick", "work_order_3_docs", "work_order_remarks_overall",
-	"work_order_2_coating_options", "work_order_coating_gsm", "work_order_cof_val", "work_order_submersion_temp", "work_order_submersion_duration"
-);
 
-//pack size.
-//cof big val.
-//contact name.
-//contact mobno.
-//contact email.
-//filling duration.
-
-
-//adhesive 1-4
-//coating options,
-//coating vals,
-//Submersion temp.
-//Submersion duration.
+$toCheck = submitParams();
 
 
 checkPost($toCheck);
@@ -69,90 +41,41 @@ if ($itIsEdit && $getDraftWork['mwo_type'] != 1) {
 	$toCheck2 = array('work_order_ccr_no', 'work_order_ncr_no');
 	checkPost($toCheck2);
 }
+
+
+
 $plyNumber = $_POST["work_order_ply"];
 $foilPrint = false;
 $RemarksMain = array();
 $QueryCols = array();
 $QueryVals = array();
+
 //checkPly
-if ($plyNumber > 5 || $plyNumber < 1) {
-	die("PLY Value not in range [1,5]");
-}
+submitPlyCheck($plyNumber);
+
 
 $adhesiveNos = $plyNumber - 1;
 
 #check for the Layers in essentials since they are not included in the Essential Checkers
-for ($counter1 = 1; $counter1 <= $plyNumber; $counter1++) {
-	if (!isset($_POST['work_order_layer_' . $counter1 . '_micron'])) {
-		die('Missing Value of Layer ' . $counter1 . ' Micron ');
-	}
-	if (!isset($_POST['work_order_5_layer_' . $counter1 . '_material'])) {
-		die('Missing Value of Layer ' . $counter1 . ' Structure ');
-	}
-}
 
-for ($counter1 = 1; $counter1 <= $plyNumber; $counter1++) {
+submitLayerCheck($plyNumber, $_POST);
 
-	if (!is_numeric($_POST['work_order_layer_' . $counter1 . '_micron'])) {
-		die('Invalid Numeric Value of Layer ' . $counter1 . ' Micron ');
-	}
+submitAdhesiveCheck($adhesiveNos, $_POST);
 
-	if (!is_numeric($_POST['work_order_5_layer_' . $counter1 . '_material'])) {
-		die('Invalid Value of Layer ' . $counter1 . ' Material ');
-	}
-}
+submitMaterialsCheck($plyNumber, $_POST);
 
-for ($counter2 = 1; $counter2 <= $adhesiveNos; $counter2++) {
-	if (!isset($_POST['work_order_adh' . $counter2])) {
-		die('Missing Value of Adhesive ' . $counter2 . ' GSM ');
-	}
-}
-
-for ($counter2 = 1; $counter2 <= $adhesiveNos; $counter2++) {
-	if (!is_numeric($_POST['work_order_adh' . $counter2])) {
-		die('Invalid Value of Adhesive ' . $counter2 . ' GSM ');
-	}
-}
-
-
-for ($counter1 = 1; $counter1 <= $plyNumber; $counter1++) {
-	//checkLayerStructure
-	selectChecker("SELECT * FROM `materials_main`  where material_id= " . $_POST['work_order_5_layer_' . $counter1 . '_material'], 'Structure Not Found for Layer-' . $counter1, 'mysqlSelect');
-	$valFilmID = $_POST['work_order_5_layer_' . $counter1 . '_material'];
-
-	if ($counter1 == 1) {
-		if ($valFilmID == 3 || $valFilmID == 17 || $valFilmID == 52) {
-			$foilPrint = true;
-		}
-	}
-}
-
+$foilPrint = submitFoilPrintSet($plyNumber, $_POST);
 
 
 //check dates x2
-$date_created = date_create_from_format("d-m-Y @ H:i:s", $_POST['work_order_po_date'] . ' @ 12:10:00');
-if (!empty($date_created)) {
-	$obj = get_object_vars($date_created);
-} else {
-	die("Invalid Customer PO Date Format");
-}
-
+$obj = submitDateCheck($_POST['work_order_po_date'] . ' @ 12:10:00', "Invalid Customer PO Date Format");
 $checkCustPoDate = strtotime($obj['date']);
-// if ($checkCustPoDate < time()) {
-// 	die("Invalid Customer PO Date, Date Must be in the Future");
-// }
 
-$date_created2 = date_create_from_format("d-m-Y @ H:i:s", $_POST['work_order_delivery_date'] . ' @ 12:10:00');
-if (!empty($date_created2)) {
-	$obj2 = get_object_vars($date_created2);
-} else {
-	die("Invalid Delivery Date Format");
-}
 
+$obj2 = submitDateCheck($_POST['work_order_delivery_date'] . ' @ 12:10:00', "Invalid Delivery Date Format");
 $checkDeliveryDate = strtotime($obj2['date']);
-if ($checkDeliveryDate < time()) {
-	die("Invalid Delivery Date, Date Must be in the Future");
-}
+
+submitFutureCheckDate($checkDeliveryDate, "Invalid Delivery Date, Date Must be in the Future");
 
 
 
@@ -270,6 +193,10 @@ $WorkOrderMaster["master_wo_max_gross_pallet_weight"] = $_POST["work_order_max_g
 
 $WorkOrderMaster["master_wo_cof_val"] = $_POST["work_order_cof_val"];
 
+if ($itIsEdit && $getDraftWork['mwo_type'] != 1) {
+	$WorkOrderMaster['master_wo_extra_ccr'] = $_POST["work_order_ccr_no"];
+	$WorkOrderMaster['master_wo_extra_ncr'] = $_POST["work_order_ncr_no"];
+}
 
 for ($counter1 = 1; $counter1 <= $plyNumber; $counter1++) {
 	//checkLayerStructure
@@ -574,10 +501,7 @@ $WorkOrderMaster['master_wo_gen_dnt'] = time();
 $WorkOrderMaster['master_wo_gen_lum_id'] = $USER_ARRAY['lum_id'];
 $WorkOrderMaster['master_wo_status'] = $statusNo;
 
-if ($itIsEdit && $getDraftWork['mwo_type'] != 1) {
-	$WorkOrderMaster['master_wo_extra_ccr'] = $_POST["work_order_ccr_no"];
-	$WorkOrderMaster['master_wo_extra_ncr'] = $_POST["work_order_ncr_no"];
-}
+
 
 
 //Insert  Query Content Builder

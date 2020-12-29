@@ -168,9 +168,10 @@ $WorkOrderRepPub =  $getWo[0];
   <?php getScriptFunctionalSetup(); ?>
 
   <script>
-    $(document).ready(function(e) {
+    $(document).ready(async function(e) {
       <?php
        getEditTrueLayers($WorkOrderRepPub);
+       getEditBagPouchScript($WorkOrderRepPub);
       ?>
     });
   </script>

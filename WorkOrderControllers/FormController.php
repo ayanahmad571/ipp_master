@@ -1837,4 +1837,120 @@ function getEditBagPouchScript($WorkOrderMain)
     }
 }
 
+
+function submitParams()
+{
+    return array(
+        "work_order_2_client_id", "work_order_customer_design_name", "work_order_customer_item_code", "work_order_customer_po", "work_order_po_date", "work_order_delivery_date",
+        "work_order_3_customer_loc", "work_order_2_sales_id",
+        "work_order_2_structure", "work_order_2_type_printed", "work_order_ink_gsm_pre_c", "work_order_2_application", "work_order_2_roll_fill_opts",
+        "work_order_2_pouchbag_fillops", "work_order_2_fill_temp", "work_order_fill_temp", "work_order_line_speed",
+        "work_order_dwell_time", "work_order_seal_temp", "work_order_design_id", "work_order_rev_no", "work_order_approved_sample_wo_no",
+        "work_order_pack_weight", "work_order_2_pack_weight_unit", "work_order_quantity", "work_order_2_units",
+        "work_order_quantity_tolerance", "work_order_2_laser_config", "work_order_ply", "work_order_total_gsm", "work_order_total_gsm_tolerance",
+        "work_order_2_wind_dir", "work_order_roll_od", "work_order_roll_width", "work_order_roll_cutoff_len", "work_order_max_w_p_r",
+        "work_order_max_lmtr_p_r", "work_order_max_imps_p_r", "work_order_2_slitting_core_id", "work_order_2_slitting_core_material", "work_order_2_slitting_core_plugs",
+        "work_order_2_slitting_qc_ins", "work_order_max_joints", "work_order_remarks_roll", "work_order_remarks_pouch", "work_order_remarks_bags",
+        "work_order_2_foil_print_side", "work_order_2_printing_method", "work_order_2_printing_shade_card_needed", "work_order_2_printing_color_ref_type", "work_order_2_printing_approvalby",
+        "work_order_2_roll_pack_ins", "work_order_2_carton_pack_ins", "work_order_2_pallet_mark_ins", "work_order_pouch_per_bund", "work_order_bund_per_box",
+        "work_order_2_pallet_type", "work_order_2_cont_stuff", "work_order_max_gross_pallet_weight", "work_order_2_pallet_dim", "work_order_2_freight_type",
+        "work_order_cart_thick", "work_order_3_docs", "work_order_remarks_overall",
+        "work_order_2_coating_options", "work_order_coating_gsm", "work_order_cof_val", "work_order_submersion_temp", "work_order_submersion_duration"
+    );
+}
+
+function submitPlyCheck($plyNumber)
+{
+    if ($plyNumber > 5 || $plyNumber < 1) {
+        die("PLY Value not in range [1,5]");
+    }
+}
+
+function submitAdhesiveCheck($adhesiveNos, $superPOST)
+{
+    for ($counter2 = 1; $counter2 <= $adhesiveNos; $counter2++) {
+        if (!isset($superPOST['work_order_adh' . $counter2])) {
+            die('Missing Value of Adhesive ' . $counter2 . ' GSM ');
+        }
+    }
+
+    for ($counter2 = 1; $counter2 <= $adhesiveNos; $counter2++) {
+        if (!is_numeric($superPOST['work_order_adh' . $counter2])) {
+            die('Invalid Value of Adhesive ' . $counter2 . ' GSM ');
+        }
+    }
+}
+
+
+function submitLayerCheck($plyNumber, $superPOST)
+{
+    for ($counter1 = 1; $counter1 <= $plyNumber; $counter1++) {
+        if (!isset($superPOST['work_order_layer_' . $counter1 . '_micron'])) {
+            die('Missing Value of Layer ' . $counter1 . ' Micron ');
+        }
+        if (!isset($superPOST['work_order_5_layer_' . $counter1 . '_material'])) {
+            die('Missing Value of Layer ' . $counter1 . ' Structure ');
+        }
+    }
+
+    for ($counter1 = 1; $counter1 <= $plyNumber; $counter1++) {
+
+        if (!is_numeric($superPOST['work_order_layer_' . $counter1 . '_micron'])) {
+            die('Invalid Numeric Value of Layer ' . $counter1 . ' Micron ');
+        }
+
+        if (!is_numeric($superPOST['work_order_5_layer_' . $counter1 . '_material'])) {
+            die('Invalid Value of Layer ' . $counter1 . ' Material ');
+        }
+    }
+}
+
+function submitMaterialsCheck($plyNumber, $superPOST)
+{
+
+    for ($counter1 = 1; $counter1 <= $plyNumber; $counter1++) {
+        //checkLayerStructure
+        selectChecker(
+            "SELECT * FROM `materials_main`  
+        where material_id= " . $superPOST['work_order_5_layer_' . $counter1 . '_material'],
+            'Structure Not Found for Layer-' . $counter1,
+            'mysqlSelect'
+        );
+        $valFilmID = $superPOST['work_order_5_layer_' . $counter1 . '_material'];
+    }
+}
+
+function submitFoilPrintSet($plyNumber, $superPOST)
+{
+    $foilPrint = false;
+    for ($counter1 = 1; $counter1 <= $plyNumber; $counter1++) {
+        //checkLayerStructure
+        $valFilmID = $superPOST['work_order_5_layer_' . $counter1 . '_material'];
+
+        if ($counter1 == 1) {
+            if ($valFilmID == 3 || $valFilmID == 17 || $valFilmID == 52) {
+                $foilPrint = true;
+            }
+        }
+    }
+
+    return $foilPrint;
+}
+
+
+function submitDateCheck($dateIn, $errorIn)
+{
+    $date_created = date_create_from_format("d-m-Y @ H:i:s", $dateIn);
+    if (empty($date_created)) {
+        die($errorIn);
+    }
+    return get_object_vars($date_created);
+}
+
+function submitFutureCheckDate($dateIn, $errorIn)
+{
+    if ($dateIn < time()) {
+        die($errorIn);
+    }
+}
 ?>
