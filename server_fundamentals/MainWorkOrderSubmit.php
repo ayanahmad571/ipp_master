@@ -6,9 +6,32 @@ $extraInput = "";
 if (isset($_POST['draftToMain'])) {
 	#                         POST NAME			 Prev ID, Send ID NAME
 	$PAGE_ESSENTIALS = array('draftToMain', 1, 2);
+
+	$insertReference = $_POST['draftToMain'];
+	$insertWorkOrderMain = "NA";
+	logInsert(
+		basename($_SERVER['PHP_SELF']),
+		$_SESSION[SESSION_HASH_NAME],
+		$USER_ARRAY['lum_id'],
+		$_SERVER['REMOTE_ADDR'],
+		$USER_ARRAY['lum_code'] . " published sales order with REF: ".$insertReference." ID: " . $insertWorkOrderMain." to sales verification",
+		"mysqlInsertData"
+	);
+
 } else if (isset($_POST['salesToAccounts'])) {
 
 	$PAGE_ESSENTIALS = array('salesToAccounts', 2, 4);
+	$insertReference = $_POST['salesToAccounts'];
+	$insertWorkOrderMain = "NA";
+	logInsert(
+		basename($_SERVER['PHP_SELF']),
+		$_SESSION[SESSION_HASH_NAME],
+		$USER_ARRAY['lum_id'],
+		$_SERVER['REMOTE_ADDR'],
+		$USER_ARRAY['lum_code'] . " verified sales order with REF: ".$insertReference." ID: " . $insertWorkOrderMain." and sent it to accounts",
+		"mysqlInsertData"
+	);
+
 } else if (isset($_POST['returnSales'])) {
 	if (!isset($_POST['reasonRej'])) {
 		die("<p style='color:red'>Incomplete Form Submitted</p>");
@@ -20,12 +43,46 @@ if (isset($_POST['draftToMain'])) {
 
 	$PAGE_ESSENTIALS = array('returnSales', 2, 3);
 	$extraInput = array("master_reject_text" => $_POST['reasonRej']);
+	$insertReference = $_POST['returnSales'];
+	$insertWorkOrderMain = "NA";
+	logInsert(
+		basename($_SERVER['PHP_SELF']),
+		$_SESSION[SESSION_HASH_NAME],
+		$USER_ARRAY['lum_id'],
+		$_SERVER['REMOTE_ADDR'],
+		$USER_ARRAY['lum_code'] . " rejected sales order with REF: ".$insertReference." ID: " . $insertWorkOrderMain." reason : ".$_POST['reasonRej'],
+		"mysqlInsertData"
+	);
+
 } else if (isset($_POST['rePublishSales'])) {
 
 	$PAGE_ESSENTIALS = array('rePublishSales', 3, 2);
+
+	$insertReference = $_POST['rePublishSales'];
+	$insertWorkOrderMain = "NA";
+	logInsert(
+		basename($_SERVER['PHP_SELF']),
+		$_SESSION[SESSION_HASH_NAME],
+		$USER_ARRAY['lum_id'],
+		$_SERVER['REMOTE_ADDR'],
+		$USER_ARRAY['lum_code'] . " re-published sales order with REF: ".$insertReference." ID: " . $insertWorkOrderMain." to sales verification",
+		"mysqlInsertData"
+	);
+
 } else if (isset($_POST['AccountsToTechnical'])) {
 
 	$PAGE_ESSENTIALS = array('AccountsToTechnical', 4, 5);
+	$insertReference = $_POST['AccountsToTechnical'];
+	$insertWorkOrderMain = "NA";
+	logInsert(
+		basename($_SERVER['PHP_SELF']),
+		$_SESSION[SESSION_HASH_NAME],
+		$USER_ARRAY['lum_id'],
+		$_SERVER['REMOTE_ADDR'],
+		$USER_ARRAY['lum_code'] . " published sales order with REF: ".$insertReference." ID: " . $insertWorkOrderMain." to Technical",
+		"mysqlInsertData"
+	);
+
 } else if (isset($_POST['AccountsCondToTechnical'])) {
 
 	$getCondRel = mysqlSelect("SELECT * FROM `conditional_release_wo` where
@@ -51,18 +108,60 @@ if (isset($_POST['draftToMain'])) {
 	if (!is_numeric($insert)) {
 		die("<p style='color:red'>Not Released Conditionally</p>");
 	}
+	$insertReference = $_POST['AccountsCondToTechnical'];
+	$insertWorkOrderMain = "NA";
+	logInsert(
+		basename($_SERVER['PHP_SELF']),
+		$_SESSION[SESSION_HASH_NAME],
+		$USER_ARRAY['lum_id'],
+		$_SERVER['REMOTE_ADDR'],
+		$USER_ARRAY['lum_code'] . " conditionally released a work order with REF: ".$insertReference." ID: " . $insertWorkOrderMain." to technical",
+		"mysqlInsertData"
+	);
 
 	$PAGE_ESSENTIALS = array('AccountsCondToTechnical', 4, 6);
+
 } else if (isset($_POST['technicalToVerify'])) {
 
 	$PAGE_ESSENTIALS = array('technicalToVerify', 5, 7);
+	$insertReference = $_POST['technicalToVerify'];
+	$insertWorkOrderMain = "NA";
+	logInsert(
+		basename($_SERVER['PHP_SELF']),
+		$_SESSION[SESSION_HASH_NAME],
+		$USER_ARRAY['lum_id'],
+		$_SERVER['REMOTE_ADDR'],
+		$USER_ARRAY['lum_code'] . " published work order with REF: ".$insertReference." ID: " . $insertWorkOrderMain." to technical VERIFICATION",
+		"mysqlInsertData"
+	);
 } else if (isset($_POST['technicalToVerifyCond'])) {
 
 	$PAGE_ESSENTIALS = array('technicalToVerifyCond', 6, 7);
+	$insertReference = $_POST['technicalToVerifyCond'];
+	$insertWorkOrderMain = "NA";
+	logInsert(
+		basename($_SERVER['PHP_SELF']),
+		$_SESSION[SESSION_HASH_NAME],
+		$USER_ARRAY['lum_id'],
+		$_SERVER['REMOTE_ADDR'],
+		$USER_ARRAY['lum_code'] . " verified and published a conditionally approved work order with REF: ".$insertReference." ID: " . $insertWorkOrderMain." for all to view",
+		"mysqlInsertData"
+	);
 } else if (isset($_POST['techRePub'])) {
 
 	$PAGE_ESSENTIALS = array('techRePub', 8, 7);
+	$insertReference = $_POST['techRePub'];
+	$insertWorkOrderMain = "NA";
+	logInsert(
+		basename($_SERVER['PHP_SELF']),
+		$_SESSION[SESSION_HASH_NAME],
+		$USER_ARRAY['lum_id'],
+		$_SERVER['REMOTE_ADDR'],
+		$USER_ARRAY['lum_code'] . " published a work order with REF: ".$insertReference." ID: " . $insertWorkOrderMain." for technical verification",
+		"mysqlInsertData"
+	);
 } else if (isset($_POST['technicalToVerifyRej'])) {
+
 	if (!isset($_POST['reasonRejected'])) {
 		die("<p style='color:red'>Incomplete Form Submitted</p>");
 	}
@@ -72,10 +171,31 @@ if (isset($_POST['draftToMain'])) {
 	}
 
 	$PAGE_ESSENTIALS = array('technicalToVerifyRej', 7, 8);
+	$insertReference = $_POST['technicalToVerifyRej'];
+	$insertWorkOrderMain = "NA";
+	logInsert(
+		basename($_SERVER['PHP_SELF']),
+		$_SESSION[SESSION_HASH_NAME],
+		$USER_ARRAY['lum_id'],
+		$_SERVER['REMOTE_ADDR'],
+		$USER_ARRAY['lum_code'] . " rejected a work order with REF: ".$insertReference." ID: " . $insertWorkOrderMain." and sent back to technical reason:".$_POST['reasonRejected'],
+		"mysqlInsertData"
+	);
+
 	$extraInput = array("master_reject_text" => $_POST['reasonRejected']);
 } else if (isset($_POST['techVerPublish'])) {
 
 	$PAGE_ESSENTIALS = array('techVerPublish', 7, 9);
+	$insertReference = $_POST['techVerPublish'];
+	$insertWorkOrderMain = "NA";
+	logInsert(
+		basename($_SERVER['PHP_SELF']),
+		$_SESSION[SESSION_HASH_NAME],
+		$USER_ARRAY['lum_id'],
+		$_SERVER['REMOTE_ADDR'],
+		$USER_ARRAY['lum_code'] . " verified and published a work order with REF: ".$insertReference." ID: " . $insertWorkOrderMain." for all to view",
+		"mysqlInsertData"
+	);
 } else {
 	die("Document Not Reachable");
 }

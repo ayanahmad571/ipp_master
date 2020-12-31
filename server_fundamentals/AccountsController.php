@@ -65,6 +65,15 @@ if (isset($_POST['wo_id']) && isset($_POST['WorkOrderRelReasonID']) && isset($_P
 	if (!is_numeric($insert)) {
 		die("<p style='color:red'>Not Released Conditionally</p>");
 	} else {
+		logInsert(
+			basename($_SERVER['PHP_SELF']),
+			$_SESSION[SESSION_HASH_NAME],
+			$USER_ARRAY['lum_id'],
+			$_SERVER['REMOTE_ADDR'],
+			$USER_ARRAY['lum_code'] . " requested conditional release for work order with  REF: ".$_POST['wo_id']." | Reason: ".$_POST['WorkOrderRelReason']." |ID: ".$insert,
+			"mysqlInsertData"
+		);
+
 		die("<p style='color:green'>Successfully Requested Work Order Release</p>");
 	}
 } else if (isset($_POST['WorkOrderGetDetails'])) {
@@ -186,6 +195,15 @@ else if(isset($_POST['AccountsCondToTechnicalRejectCond']) && isset($_POST['rejC
 	if (!is_numeric($insert)) {
 		die("<p style='color:red'>Error Updating records</p>");
 	} else {
+		logInsert(
+			basename($_SERVER['PHP_SELF']),
+			$_SESSION[SESSION_HASH_NAME],
+			$USER_ARRAY['lum_id'],
+			$_SERVER['REMOTE_ADDR'],
+			$USER_ARRAY['lum_code'] . " REJECTED conditionally approving request for work order with  REF: ".$_POST['AccountsCondToTechnicalRejectCond']." | Reason: ".$_POST['rejCond'],
+			"mysqlInsertData"
+		);
+
 		die("<p style='color:green'>Successfully Registered Request</p>");
 	}
 

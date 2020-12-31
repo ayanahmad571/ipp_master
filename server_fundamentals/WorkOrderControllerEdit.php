@@ -156,4 +156,12 @@ if (is_array($RemarksMain)) {
 	}
 }
 
+
+logInsert(basename($_SERVER['PHP_SELF']), 
+		$_SESSION[SESSION_HASH_NAME], 
+		$USER_ARRAY['lum_id'], 
+		$_SERVER['REMOTE_ADDR'], 
+		"User : ".$USER_ARRAY['lum_id']." has edited work order ".$WorkOrderMaster['master_wo_ref']." been edited at the Technical Stage", 
+		"mysqlInsertData");
+
 ?>

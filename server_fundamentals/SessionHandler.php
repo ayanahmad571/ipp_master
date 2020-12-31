@@ -92,6 +92,7 @@ $getAttachedTreeSql = "SELECT * FROM `user_sales_attach`
 */
 					$inColsWO = "";
 					$inColsDRAFT = "";					
-
+if(basename($_SERVER['PHP_SELF']) != "AllController.php"){
 logInsert(basename($_SERVER['PHP_SELF']), $_SESSION[SESSION_HASH_NAME], $USER_ARRAY['lum_id'], $_SERVER['REMOTE_ADDR'], "This login protected page has been accessed", "mysqlInsertData");
+}
 ?>

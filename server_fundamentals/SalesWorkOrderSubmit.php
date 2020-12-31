@@ -533,63 +533,22 @@ if (is_array($RemarksMain)) {
 	}
 }
 
-// if (isset($_POST['work_order_edit_draft_id'])) {
-
-// 	$updateCols = array();
-
-// 	foreach ($finalMaster as $a => $b) {
-// 		$updateCols[] = '`' . $a . '`' . " = '" . $b . "' ";
-// 	}
-
-// 	$insertSql = 'update `sales_work_order_main` 
-// 			set
-// 			' . implode(', ', $updateCols) . ' 
-			
-// 			where
-// 			s_wo_id = ' . $_POST['work_order_edit_draft_id'];
-
-// 	$check = mysqlUpdateData($insertSql, true);
-// 	if (!is_numeric($check)) {
-// 		die("503 - Internal Server Error, Update Failed");
-// 	}
-
-// 	logInsert(
-// 		basename($_SERVER['PHP_SELF']),
-// 		$_SESSION[SESSION_HASH_NAME],
-// 		$USER_ARRAY['lum_id'],
-// 		$_SERVER['REMOTE_ADDR'],
-// 		$USER_ARRAY['lum_code'] . " edited draft with ID: " . $_POST['work_order_edit_draft_id'],
-// 		"mysqlInsertData"
-// 	);
-// } else {
-// 	//Time and GEN LUM ID only added when a new WO is generated
-// 	$finalMaster['s_wo_gen_dnt'] = time();
-// 	$finalMaster['s_wo_gen_lum_id'] = $USER_ARRAY['lum_id'];
-
-// 	$QueryCols = array();
-// 	$QueryVals = array();
-
-// 	foreach ($finalMaster as $a => $b) {
-// 		$QueryCols[] = '`' . $a . '`';
-// 		$QueryVals[] = "'" . $b . "'";
-// 	}
-
-// 	$insertSql = 'INSERT INTO `sales_work_order_main` (' . implode(', 
-// 			', $QueryCols) . ') VALUES (' . implode(',
-// 			', $QueryVals) . ')';
-
-
-// 	$check = mysqlInsertData($insertSql, true);
-// 	if (!is_numeric($check)) {
-// 		die("503 - Internal Server Error, Insert Failed");
-// 	}
-
-// 	logInsert(
-// 		basename($_SERVER['PHP_SELF']),
-// 		$_SESSION[SESSION_HASH_NAME],
-// 		$USER_ARRAY['lum_id'],
-// 		$_SERVER['REMOTE_ADDR'],
-// 		$USER_ARRAY['lum_code'] . " added a new draft with ID: " . $check,
-// 		"mysqlInsertData"
-// 	);
-// }
+if($itIsEdit){
+	logInsert(
+		basename($_SERVER['PHP_SELF']),
+		$_SESSION[SESSION_HASH_NAME],
+		$USER_ARRAY['lum_id'],
+		$_SERVER['REMOTE_ADDR'],
+		$USER_ARRAY['lum_code'] . " edited sales order with REF: ".$insertReference." ID: " . $insertWorkOrderMain,
+		"mysqlInsertData"
+	);	
+}else{
+	logInsert(
+		basename($_SERVER['PHP_SELF']),
+		$_SESSION[SESSION_HASH_NAME],
+		$USER_ARRAY['lum_id'],
+		$_SERVER['REMOTE_ADDR'],
+		$USER_ARRAY['lum_code'] . " added sales order with REF: ".$insertReference." ID: " . $insertWorkOrderMain,
+		"mysqlInsertData"
+	);
+}

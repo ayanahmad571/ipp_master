@@ -2,6 +2,11 @@
 require_once("server_fundamentals/SessionHandler.php");
 
 getHead("WO Sales");
+
+$genQuery = workOrderPagesQuery("1");
+$retQuery = workOrderPagesQuery("3");
+$pubQuery = workOrderPagesQuery("1,3", true);
+
 ?>
 
 <link rel="stylesheet" type="text/css" href="assets/DataTables/datatables.min.css" />
@@ -56,7 +61,7 @@ getHead("WO Sales");
 
                     <tbody>
                       <?php
-                      $getDrafts = mysqlSelect(workOrderPagesQuery("1"));
+                      $getDrafts = mysqlSelect($genQuery);
 
                       if (is_array($getDrafts)) {
                         foreach ($getDrafts as $Draft) {
@@ -122,7 +127,7 @@ getHead("WO Sales");
 
                     <tbody>
                       <?php
-                      $getDiscards = mysqlSelect(workOrderPagesQuery("3"));
+                      $getDiscards = mysqlSelect($retQuery);
 
                       if (is_array($getDiscards)) {
                         foreach ($getDiscards as $Discard) {
@@ -183,7 +188,7 @@ getHead("WO Sales");
 
                     <tbody>
                       <?php
-                      $getDiscards = mysqlSelect(workOrderPagesQuery("1,3", true));
+                      $getDiscards = mysqlSelect($pubQuery);
 
                       if (is_array($getDiscards)) {
                         foreach ($getDiscards as $Discard) {

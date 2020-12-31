@@ -586,12 +586,12 @@ if (is_array($RemarksMain)) {
 // 		die("503 - Internal Server Error, Insert Failed");
 // 	}
 
-// 	logInsert(
-// 		basename($_SERVER['PHP_SELF']),
-// 		$_SESSION[SESSION_HASH_NAME],
-// 		$USER_ARRAY['lum_id'],
-// 		$_SERVER['REMOTE_ADDR'],
-// 		$USER_ARRAY['lum_code'] . " added a new draft with ID: " . $check,
-// 		"mysqlInsertData"
-// 	);
+	logInsert(
+		basename($_SERVER['PHP_SELF']),
+		$_SESSION[SESSION_HASH_NAME],
+		$USER_ARRAY['lum_id'],
+		$_SERVER['REMOTE_ADDR'],
+		$USER_ARRAY['lum_code'] . " added repeat with change sales order with REF: ".$insertReference." ID: " . $insertWorkOrderMain,
+		"mysqlInsertData"
+	);
 // }
