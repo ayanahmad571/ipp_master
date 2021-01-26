@@ -2,6 +2,72 @@
 require_once("server_fundamentals/SessionHandler.php");
 
 getHead("WO Sales Verification");
+
+$salesGroups = mysqlSelect("select sgp_sgm_id from sales_groups_people where sgp_lum_id = ".$USER_ARRAY['lum_id']);
+
+
+
+if($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2){
+  #Master Admin and MD
+  $recQuery = workOrderPagesQuery("2");
+  $sentQuery = workOrderPagesQuery("3");
+  $backQuery = workOrderPagesQuery("4");
+  
+}else if($USER_ARRAY['lum_user_type'] == 4){
+  #Sales Coordinator
+  if(!is_array($salesGroups)){
+    die("User not assigned to any sales group");
+  }
+  // $containerLeft = "select * from ( ";
+  // $containerRight = " ) sb where (sb.mwo_gen_lum_id = ".$USER_ARRAY['lum_id']." or sb.mwo_gen_on_behalf_lum_id = ".$USER_ARRAY['lum_id'].")";
+
+  // $recQuery = $containerLeft.workOrderPagesQuery("2").$containerRight;
+  // $sentQuery = $containerLeft.workOrderPagesQuery("3").$containerRight;
+  // $backQuery = $containerLeft.workOrderPagesQuery("4").$containerRight;
+
+  die("User not allowed!!");
+
+}else if($USER_ARRAY['lum_user_type'] == 18){
+  #Assistant Sales Manager
+  if(!is_array($salesGroups)){
+    die("User not assigned to any sales group");
+  }
+
+  
+  $containerLeft = "select * from ( ";
+  $containerRight = " ) sb where (sb.mwo_gen_lum_id = ".$USER_ARRAY['lum_id']." or sb.mwo_gen_on_behalf_lum_id = ".$USER_ARRAY['lum_id'].")";
+
+  $recQuery = $containerLeft.workOrderPagesQuery("2").$containerRight;
+  $sentQuery = $containerLeft.workOrderPagesQuery("3").$containerRight;
+  $backQuery = $containerLeft.workOrderPagesQuery("4").$containerRight;
+
+}else if($USER_ARRAY['lum_user_type'] == 16){
+  #Sales Manager
+  if(!is_array($salesGroups)){
+    die("User not assigned to any sales group");
+  }
+
+  $allLowerUsers = ("select p.sgp_lum_id from sales_groups_people p 
+  left join user_main on p.sgp_lum_id = lum_id
+  where 
+  lum_user_type in (18,4) and
+  p.sgp_sgm_id in (select s.sgp_sgm_id from sales_groups_people s where s.sgp_lum_id = ".$USER_ARRAY['lum_id'].")");
+  
+
+  $containerLeft = "select * from ( ";
+  $containerRight = " ) sb 
+  where (sb.mwo_gen_lum_id in ".$USER_ARRAY['lum_id']." or sb.mwo_gen_on_behalf_lum_id = ".$USER_ARRAY['lum_id']." or 
+  sb.mwo_gen_lum_id in (".$allLowerUsers.") 
+  or sb.mwo_gen_on_behalf_lum_id = (".$allLowerUsers.") )";
+
+  $recQuery = $containerLeft.workOrderPagesQuery("2").$containerRight;
+  $sentQuery = $containerLeft.workOrderPagesQuery("3").$containerRight;
+  $backQuery = $containerLeft.workOrderPagesQuery("4").$containerRight;
+}else{
+  die("Un-Authorized User");
+}
+
+
 ?>
 
 <link rel="stylesheet" type="text/css" href="assets/DataTables/datatables.min.css" />
@@ -57,7 +123,7 @@ getHead("WO Sales Verification");
 
                     <tbody>
                       <?php
-                      $getDrafts = mysqlSelect(workOrderPagesQuery("2"));
+                      $getDrafts = mysqlSelect($recQuery);
 
                       if (is_array($getDrafts)) {
                         foreach ($getDrafts as $Draft) {
@@ -120,10 +186,10 @@ getHead("WO Sales Verification");
 
                     <tbody>
                       <?php
-                      $getDiscards = mysqlSelect(workOrderPagesQuery("3"));
+                      $getSentAll = mysqlSelect($sentQuery);
 
-                      if (is_array($getDiscards)) {
-                        foreach ($getDiscards as $Discard) {
+                      if (is_array($getSentAll)) {
+                        foreach ($getSentAll as $Discard) {
                       ?>
                           <tr>
                             <td><?php echo $Discard['master_wo_ref'] ?></td>
@@ -180,10 +246,10 @@ getHead("WO Sales Verification");
 
                     <tbody>
                       <?php
-                      $getDiscards = mysqlSelect(workOrderPagesQuery("4"));
+                      $getBackAll = mysqlSelect($backQuery);
 
-                      if (is_array($getDiscards)) {
-                        foreach ($getDiscards as $Discard) {
+                      if (is_array($getBackAll)) {
+                        foreach ($getBackAll as $Discard) {
                       ?>
                           <tr>
                             <td><?php echo $Discard['master_wo_ref'] ?></td>

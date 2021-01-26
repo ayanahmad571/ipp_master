@@ -3,9 +3,68 @@ require_once("server_fundamentals/SessionHandler.php");
 
 getHead("WO Sales");
 
-$genQuery = workOrderPagesQuery("1");
-$retQuery = workOrderPagesQuery("3");
-$pubQuery = workOrderPagesQuery("1,3", true);
+$salesGroups = mysqlSelect("select sgp_sgm_id from sales_groups_people where sgp_lum_id = ".$USER_ARRAY['lum_id']);
+
+
+
+if($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2){
+  #Master Admin and MD
+  $genQuery = workOrderPagesQuery("1");
+  $retQuery = workOrderPagesQuery("3");
+  $pubQuery = workOrderPagesQuery("1,3", true);
+  
+}else if($USER_ARRAY['lum_user_type'] == 4){
+  #Sales Coordinator
+  if(!is_array($salesGroups)){
+    die("User not assigned to any sales group");
+  }
+  $containerLeft = "select * from ( ";
+  $containerRight = " ) sb where (sb.mwo_gen_lum_id = ".$USER_ARRAY['lum_id']." or sb.mwo_gen_on_behalf_lum_id = ".$USER_ARRAY['lum_id'].")";
+
+  $genQuery = $containerLeft.workOrderPagesQuery("1").$containerRight;
+  $retQuery = $containerLeft.workOrderPagesQuery("3").$containerRight;
+  $pubQuery = $containerLeft.workOrderPagesQuery("1,3", true).$containerRight;
+
+}else if($USER_ARRAY['lum_user_type'] == 18){
+  #Assistant Sales Manager
+  if(!is_array($salesGroups)){
+    die("User not assigned to any sales group");
+  }
+
+  
+  $containerLeft = "select * from ( ";
+  $containerRight = " ) sb where (sb.mwo_gen_lum_id = ".$USER_ARRAY['lum_id']." or sb.mwo_gen_on_behalf_lum_id = ".$USER_ARRAY['lum_id'].")";
+
+  $genQuery = $containerLeft.workOrderPagesQuery("1").$containerRight;
+  $retQuery = $containerLeft.workOrderPagesQuery("3").$containerRight;
+  $pubQuery = $containerLeft.workOrderPagesQuery("1,3", true).$containerRight;
+
+}else if($USER_ARRAY['lum_user_type'] == 16){
+  #Sales Manager
+  if(!is_array($salesGroups)){
+    die("User not assigned to any sales group");
+  }
+
+  $allLowerUsers = ("select p.sgp_lum_id from sales_groups_people p 
+  left join user_main on p.sgp_lum_id = lum_id
+  where 
+  lum_user_type in (18,4) and
+  p.sgp_sgm_id in (select s.sgp_sgm_id from sales_groups_people s where s.sgp_lum_id = ".$USER_ARRAY['lum_id'].")");
+  
+
+  $containerLeft = "select * from ( ";
+  $containerRight = " ) sb 
+  where (sb.mwo_gen_lum_id in ".$USER_ARRAY['lum_id']." or sb.mwo_gen_on_behalf_lum_id = ".$USER_ARRAY['lum_id']." or 
+  sb.mwo_gen_lum_id in (".$allLowerUsers.") 
+  or sb.mwo_gen_on_behalf_lum_id = (".$allLowerUsers.") )";
+
+  $genQuery = $containerLeft.workOrderPagesQuery("1").$containerRight;
+  $retQuery = $containerLeft.workOrderPagesQuery("3").$containerRight;
+  $pubQuery = $containerLeft.workOrderPagesQuery("1,3", true).$containerRight;
+}else{
+  die("Un-Authorized User");
+}
+
 
 ?>
 

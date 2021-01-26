@@ -107,5 +107,43 @@ logInsert(basename($_SERVER['PHP_SELF']),
 logInsert(basename($_SERVER['PHP_SELF']), $_SESSION[SESSION_HASH_NAME], $USER_ARRAY['lum_id'], $_SERVER['REMOTE_ADDR'], "Password for User : ".$checkUser[0]['lum_code']." has been reset by ".$USER_ARRAY['lum_code'], "mysqlInsertData");
 		die("ok");
 	}
+###
+	if(isset($_POST['user_id']) && isset($_POST['user_group_add'])){
+		$checkGroup = mysqlSelect("select * from sales_groups_master where sgm_id=".$_POST['user_group_add']);
+		$checkUser = mysqlSelect("select * from user_main where lum_valid =1 and lum_id =".$_POST['user_id']);
+		$checkDup = mysqlSelect("select s.* from sales_groups_people s 
+		left join user_main u on sgp_lum_id = lum_id
+		left join user_types t on u.lum_user_type = t.user_type_id
+		where sgp_sgm_id = ".$_POST['user_group_add']."
+		and sgp_lum_id = ".$_POST['user_id']);
 
- ?>
+		if(is_array($checkGroup) && is_array($checkUser) && !is_array($checkDup)){
+			$insertGroup = mysqlInsertData("INSERT INTO `sales_groups_people`( `sgp_sgm_id`, `sgp_lum_id`) VALUES (".$_POST['user_group_add'].",".$_POST['user_id'].") ",true);
+			if(is_numeric($insertGroup)){
+				header("Location: ../sales_groups");
+			}else{
+				header("Location: ../sales_groups?ins_err");
+			}
+		}else{
+			header("Location: ../sales_groups?dups");
+		}
+
+
+	}
+###
+	if(isset($_POST['del_user_group'])){
+		$checkMembership = mysqlSelect("select * from sales_groups_people where sgp_id=".$_POST['del_user_group']);
+		if(is_array($checkMembership)){
+			
+			
+			$sql = "DELETE FROM `sales_groups_people` WHERE sgp_id=".$_POST['del_user_group'];
+
+			if ($conn->query($sql) === TRUE) {
+				header("Location: ../sales_groups");
+			} else {
+				header("Location: ../sales_groups?ins_err");
+			}
+		}else{
+			header("Location: ../sales_groups?not_f");
+		}
+	}
