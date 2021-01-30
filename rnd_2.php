@@ -1,5 +1,82 @@
 
 <?php
+
+$arrayHolder = array(
+
+	array("Work Order Applications", "work_order_applications", "application"),
+	array("Work Order Pack Size Unit", "work_order_pack_size_unit", "psu"),
+	array("Work Order Product Type Printed", "work_order_product_type_printed", "ptp"),
+	array("Work Order Qty Units", "work_order_qty_units", "unit"),
+	array("Bag Handle", "work_order_ui_bag_handle", "bag_handle"),
+	array("Customer Location", "work_order_ui_customer_location", "customer_location"),
+	array("Ext Cof", "work_order_ui_ext_cof", "cof"),
+	array("Filling Temp", "work_order_ui_filling_temp", "filling_temp"),
+	array("Foil Print Side", "work_order_ui_foil_print_side", "foil_print_side"),
+	array("Lam Options", "work_order_ui_lam_options", "lamo"),
+	array("Pallet Size", "work_order_ui_pallet_size", "pallet_size"),
+	array("Pe Film Feature", "work_order_ui_pe_film_feature", "pe_film_feature"),
+	array("Pouch Bag Fill Opts", "work_order_ui_pouch_bag_fill_opts", "pbfo"),
+	array("Pouch Euro Punch", "work_order_ui_pouch_euro_punch", "euro"),
+	array("Pouch Lap Fin", "work_order_ui_pouch_lap_fin", "lap_fin"),
+	array("Pouch Pack Ins", "work_order_ui_pouch_pack_ins", "pouch_pack_ins"),
+	array("Pouch Pe Strip", "work_order_ui_pouch_pe_strip", "pestrip"),
+	array("Pouch Punch Type", "work_order_ui_pouch_punch_type", "punch"),
+	array("Pouch Round Corner", "work_order_ui_pouch_round_corner", "round_corner"),
+	array("Pouch Tear Notch", "work_order_ui_pouch_tear_notch", "tear_notch"),
+	array("Pouch Tear Notch Qty", "work_order_ui_pouch_tear_notch_qty", "tear_notch_qty"),
+	array("Pouch Tear Notch Side", "work_order_ui_pouch_tear_notch_side", "tear_notch_side"),
+	array("Pouch Zipper", "work_order_ui_pouch_zipper", "zipper"),
+	array("Pouch Zipper Opc", "work_order_ui_pouch_zipper_opc", "zipopc"),
+	array("Print End Options", "work_order_ui_print_end_options", "print_end_opts"),
+	array("Print Options", "work_order_ui_print_options", "print_options"),
+	array("Print Shadecard Ref Type", "work_order_ui_print_shadecard_ref_type", "shadecard_ref_type"),
+	array("Print Shadecardreq", "work_order_ui_print_shadecardreq", "shadecardreq"),
+	array("Print Surfrev", "work_order_ui_print_surfrev", "surfrev"),
+	array("Repeat Types", "work_order_ui_repeat_types", "rept"),
+	array("Roll Options", "work_order_ui_roll_options", "rollopts"),
+	array("Shipment", "work_order_ui_shipment", "shipment"),
+	array("Slitting Core Id Length", "work_order_ui_slitting_core_id_length", "slitting_core_id_length"),
+	array("Slitting Core Id Type", "work_order_ui_slitting_core_id_type", "slitting_core_id_type"),
+	array("Slitting Core Plugs", "work_order_ui_slitting_core_plugs", "core_plugs"),
+	array("Slitting Freight Ins", "work_order_ui_slitting_freight_ins", "freight"),
+	array("Slitting Laser Config", "work_order_ui_slitting_laser_config", "laser"),
+	array("Slitting Pack Ins", "work_order_ui_slitting_pack_ins", "pack_ins"),
+	array("Slitting Packing Opts", "work_order_ui_slitting_packing_opts", "slitting_packing_opts"),
+	array("Slitting Pallet", "work_order_ui_slitting_pallet", "slitting_pallet"),
+	array("Slitting Pallet Instructions", "work_order_ui_slitting_pallet_instructions", "pallet_instructions"),
+	array("Slitting Qc Ins", "work_order_ui_slitting_qc_ins", "slitting_qc_ins"),
+	array("Slitting Shipping Dets", "work_order_ui_slitting_shipping_dets", "shipping_dets"),
+	array("Structure", "work_order_ui_structure", "structure"),
+	array("Work Order Wind Dir", "work_order_wind_dir", "wind")
+
+
+);
+
+
+foreach($arrayHolder as $infopiece){
+	?>
+    if(isset($_POST['<?php echo $infopiece[2] ?>_value'])){<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;$insSQL = mysqlInsertData("INSERT INTO `<?php echo $infopiece[1] ?>`(`<?php echo $infopiece[2] ?>_value`, `<?php echo $infopiece[2] ?>_show`) VALUES (<br>
+		&nbsp;&nbsp;&nbsp;&nbsp;'".$_POST['<?php echo $infopiece[2] ?>_value']."',<br>
+		&nbsp;&nbsp;&nbsp;&nbsp;'1')",true);<br>
+		&nbsp;&nbsp;&nbsp;&nbsp;if(is_numeric($insSQL)){<br>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;die("ok");<br>
+		&nbsp;&nbsp;&nbsp;&nbsp;}else{<br>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;die("Internal Server Error , 503 : <?php echo $infopiece[0] ?> Insert Error");<br>
+		&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+    }<br><br>
+    <?php
+}
+
+die();
+require_once("server_fundamentals/DatabaseConnection.php");
+
+$get = mysqlSelect("SELECT g.table_name, (SELECT dd.COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS dd WHERE TABLE_NAME = g.table_name and dd.table_schema = 'IPP' limit 1 ) as nn FROM information_schema.tables g WHERE table_schema = 'IPP' ");
+foreach($get as $Sing){
+	echo 'array("'.trim(ucwords(str_replace("_"," ",str_replace("work_order_ui_"," ",$Sing['table_name'])))).'", "'.$Sing['table_name'].'", "'.str_replace("_id","",$Sing['nn']).'"),<br>';
+}
+die();
+
 $str = '{"45":"7","46":"8","47":"9","48":"10","49":"11","50":"12","51":"13","52":"14"}';
 $js = json_decode($str);
 var_dump(($js->{45}));
