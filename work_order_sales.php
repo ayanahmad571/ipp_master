@@ -54,7 +54,7 @@ if($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2){
 
   $containerLeft = "select * from ( ";
   $containerRight = " ) sb 
-  where (sb.mwo_gen_lum_id in ".$USER_ARRAY['lum_id']." or sb.mwo_gen_on_behalf_lum_id = ".$USER_ARRAY['lum_id']." or 
+  where (sb.mwo_gen_lum_id = ".$USER_ARRAY['lum_id']." or sb.mwo_gen_on_behalf_lum_id = ".$USER_ARRAY['lum_id']." or 
   sb.mwo_gen_lum_id in (".$allLowerUsers.") 
   or sb.mwo_gen_on_behalf_lum_id = (".$allLowerUsers.") )";
 
