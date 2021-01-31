@@ -196,6 +196,21 @@ if (isset($_POST['draftToMain'])) {
 		$USER_ARRAY['lum_code'] . " verified and published a work order with REF: ".$insertReference." ID: " . $insertWorkOrderMain." for all to view",
 		"mysqlInsertData"
 	);
+}
+else if (isset($_POST['MarkComplete'])) {
+
+	$PAGE_ESSENTIALS = array('MarkComplete', 9, 10);
+	$insertReference = $_POST['MarkComplete'];
+	$insertWorkOrderMain = "NA";
+	logInsert(
+		basename($_SERVER['PHP_SELF']),
+		$_SESSION[SESSION_HASH_NAME],
+		$USER_ARRAY['lum_id'],
+		$_SERVER['REMOTE_ADDR'],
+		$USER_ARRAY['lum_code'] . " marked work order with REF: ".$insertReference." ID: " . $insertWorkOrderMain." as complete ",
+		"mysqlInsertData"
+	);
+
 } else {
 	die("Document Not Reachable");
 }
