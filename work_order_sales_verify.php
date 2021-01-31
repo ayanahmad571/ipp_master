@@ -47,18 +47,20 @@ if($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2){
     die("User not assigned to any sales group");
   }
 
-  $allLowerUsers = ("select p.sgp_lum_id from sales_groups_people p 
+  $allLowerUsers = ("select sgp_lum_id from sales_groups_people p
   left join user_main on p.sgp_lum_id = lum_id
   where 
-  lum_user_type in (18,4) and
+  lum_user_type in (18,4,16) and
   p.sgp_sgm_id in (select s.sgp_sgm_id from sales_groups_people s where s.sgp_lum_id = ".$USER_ARRAY['lum_id'].")");
   
 
   $containerLeft = "select * from ( ";
   $containerRight = " ) sb 
-  where ( sb.mwo_gen_on_behalf_lum_id = ".$USER_ARRAY['lum_id']." or 
-  sb.mwo_gen_lum_id in (".$allLowerUsers.") 
-  or sb.mwo_gen_on_behalf_lum_id = (".$allLowerUsers.") )";
+  where (
+    sb.mwo_gen_lum_id in (".$allLowerUsers.") or
+    sb.mwo_gen_on_behalf_lum_id in (".$allLowerUsers.")
+    )
+    ";
 
   $recQuery = $containerLeft.workOrderPagesQuery("2").$containerRight;
   $sentQuery = $containerLeft.workOrderPagesQuery("3").$containerRight;
@@ -123,7 +125,7 @@ if($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2){
 
                     <tbody>
                       <?php
-                      $getDrafts = mysqlSelect($recQuery);
+                      $getDrafts =  mysqlSelect($recQuery);
 
                       if (is_array($getDrafts)) {
                         foreach ($getDrafts as $Draft) {

@@ -1,6 +1,46 @@
 
 <?php
+include("server_fundamentals/FunctionsController.php");
 
+
+$string = "lum_id|lum_user_type|lum_code|lum_email|lum_hash|lum_name
+1|2|MD-1|intgpack@eim.ae|abc|Ahmed S.
+2|20|S-03|mohammed.nasrullah@ipp.ae|abc|Nasrullah
+3|4|S-21|ritesh.tak@ipp.ae|abc|Ritesh 
+4|4|S-22|ankit.kumar@ipp.ae|abc|Ankit
+5|4|S-25|upashna.s@ipp.ae|abc|Upashna
+6|4|NA|pulkit.jain@ipp.ae|abc|Pulkit
+7|4|S-17|alihasan@ipp.ae|abc|Ali
+8|20|S-02|malik.tauqeer@ipp.ae|abc|Malik
+9|4|S-26|Madina.ayazbayeva@ipp.ae|abc|Madina
+10|4|S-13|shivang.sharma@ipp.ae|abc|Shivang
+11|4|S-19 M|navneet.behl@ipp.ae|abc|Navneet
+12|4|NA|rahil.asif@ipp.ae|abc|Rahil
+13|4|S-11 Abrey|abrey.page@ipp.ae|abc|Abrey 
+14|4|S-11|arjun.chitra@ipp.ae|abc|Arjun
+15|4|S-18|basel.meaari@ipp.ae|abc|Basel
+16|4|S-19E|ian.crofts@ipp.ae|abc|Ian
+17|1|S-24|abid.r@ipp.ae|abc|Abid
+18|15|NA|accounts.receivable@ipp.ae|abc|Accounts R.
+19|5|NA|jayachandran@ipp.ae|abc|JC
+20|17|NA|qc.manager@ipp.ae|abc|Bipin
+21|17|NA|manoj.pandey@ipp.ae|abc|MP
+22|3|NA|steven.baretto@ipp.ae|abc|Steven
+23|7|NA|ppc@ipp.ae|abc|Shakil
+24|2|MD-2|shahid@ipp.ae|abc|Shahid S.";
+
+
+$ex = explode("
+",$string);
+echo 'INSERT INTO `user_main`(`lum_user_type`, `lum_code`, `lum_email`, `lum_hash`, `lum_name`, `lum_dnt`) VALUES <br>';
+foreach($ex as $str){
+	$us = explode('|', $str);
+	
+	echo '("'.$us[1].'","'.$us[2].'","'.$us[3].'","'.genHash($us[3],$us[4]).'","'.$us[5].'","'.time().'"),<br>';
+}
+
+
+die();
 $arrayHolder = array(
 
 	array("Work Order Applications", "work_order_applications", "application"),
@@ -86,37 +126,7 @@ var_dump(($result));
 
 $js[45];
 die();
-include("server_fundamentals/FunctionsController.php");
 
-
-
-$string = "Mohammed Nasrullah|saleswo1@ipp.ae|S 03|ipp@dubai|4
-Ankit Kumar|saleswo2@ipp.ae|S 22|ipp@dubai|4
-Ritesh Tak|saleswo3@ipp.ae|S 21|ipp@dubai|4
-Upashna Sherpa|saleswo4@ipp.ae|S 25|ipp@dubai|4
-Navneet Behl|saleswo10@ipp.ae|S 19M|ipp@dubai|4
-Madina Ayazbayeva|saleswo14@ipp.ae|S 26|ipp@dubai|4
-Malik|saleswo16@ipp.ae|S 02|ipp@dubai|4
-Shivang Sharma|saleswo7@ipp.ae|S 13|ipp@dubai|4
-Ali Hasan|saleswo8@ipp.ae|S 17|ipp@dubai|4
-Arjun Chitra|saleswo5@ipp.ae|S 11|ipp@dubai|4
-Abrey Page|saleswo6@ipp.ae|S-11-(Abrey)|ipp@dubai|4
-Basel Jordan|saleswo9@ipp.ae|S 18|ipp@dubai|4
-Basel Al Behar|saleswo15@ipp.ae|AB|ipp@dubai|4
-Ian Crofts|saleswo11@ipp.ae|S 19E|ipp@dubai|4
-Abid R|saleswo12@ipp.ae|S 24|ipp@dubai|4";
-
-$ex = explode("
-",$string);
-echo 'INSERT INTO `user_main`(`lum_user_type`, `lum_code`, `lum_email`, `lum_hash`, `lum_name`, `lum_dnt`) VALUES <br>';
-foreach($ex as $str){
-	$us = explode('|', $str);
-	
-	echo '("'.$us[4].'","'.$us[2].'","'.$us[1].'","'.genHash($us[1],$us[3]).'","'.$us[0].'","'.time().'"),<br>';
-}
-
-
-die();
   $c = 1;
   foreach ($getWO as $key => $value) {
 	echo 'getTableTD("'.$key.' - ".$getWO["'.$key.'"]);

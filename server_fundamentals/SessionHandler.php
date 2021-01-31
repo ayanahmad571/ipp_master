@@ -61,7 +61,13 @@ if(!is_array($pageViewChecker)){
 	die("Access Denied");
 }
 
-$getAttachedTreeSql = "select * from user_main where lum_user_type in (2,4,10,16) ";
+$getAttachedTreeSql = "select * from user_main where lum_id in (
+select sgp_lum_id from sales_groups_people where sgp_sgm_id in
+	(select sgp_sgm_id from sales_groups_people where sgp_lum_id = ".$USER_ARRAY['lum_id'].") 
+)
+and lum_valid =1";
+
+// "select * from user_main where lum_user_type in (2,4,10,16) ";
 /*
 $getAttachedTreeSql = "SELECT * FROM `user_sales_attach` 
 		left join user_main on attach_child_lum = lum_id

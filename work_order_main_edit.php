@@ -70,7 +70,7 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
             <div class="col-12 ">
               <div class="card card-warning">
                 <div class="card-header">
-                  <h4><?php echo ($WorkOrderRepPub['mwo_type'] == 1 ? "New Work Order" : ($WorkOrderRepPub['mwo_type'] == 2 ? "Repeat Work Order":"Repeat with Change Work Order")) ?></h4>
+                  <h4><?php echo (isset($_GET['techID']) ? "Techincal - " : "") ?><?php echo ($WorkOrderRepPub['mwo_type'] == 1 ? "New Work Order" : ($WorkOrderRepPub['mwo_type'] == 2 ? "Repeat Work Order":"Repeat with Change Work Order")) ?></h4>
                 </div>
 
                 <div class="card-body text-justify">
@@ -95,7 +95,7 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
                       getFormRepHead($WorkOrderRepPub['mwo_repeat_wo_id']);
                     }
 
-                    getRow($getAttachedTreeSql);
+                    getRow("select * from user_main where lum_valid =1");
 
                     getPrintedSection(true);
 
