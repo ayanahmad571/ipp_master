@@ -1,10 +1,21 @@
 <?php
 require_once("server_fundamentals/SessionHandler.php");
 require_once("server_fundamentals/PostDataHeadChecker.php");
+$stringCond = "";
+$topQuery = $UpdatedStatusQuery;
 
 if (isset($_GET['id'])) {
-  if (is_numeric($_GET['id'])) {
-    $getWO = mysqlSelect($UpdatedStatusQuery . "
+  $stringCond = "master_wo_ref = " . $_GET['id'];
+} else if (isset($_GET['pid'])) {
+
+  $topQuery = "select * from master_work_order_main left join master_work_order_reference_number on master_wo_ref = mwo_ref_id ";
+  $stringCond = "master_wo_id = " . $_GET['pid'];
+} else {
+  die("<br><h1>Error - Expected a Work Order ID, got nothing.</h1>");
+}
+
+
+$getWO = mysqlSelect($topQuery . "
      
       
   left join clients_main on master_wo_2_client_id = client_id
@@ -45,22 +56,16 @@ if (isset($_GET['id'])) {
   left join work_order_ui_pouch_tear_notch_qty on master_wo_2_pouch_tear_notch_qty = tear_notch_qty_id
   left join work_order_ui_pouch_tear_notch_side on master_wo_2_pouch_tear_notch_side = tear_notch_side_id
 
-      where master_wo_ref= " . $_GET['id'] . " 
-  " . $inColsWO . "
+      where " . $stringCond . " 
   order by master_wo_id desc
       ");
 
 
-    if (!is_array($getWO)) {
-      die("<br><h1>Error - Work Order Not Found.</h1>");
-    }
-    $getWO = $getWO[0];
-  } else {
-    die("<br><h1>Error - Work Order ID Invalid</h1>");
-  }
-} else {
-  die("<br><h1>Error - Expected a Work Order ID, got nothing.</h1>");
+if (!is_array($getWO)) {
+  die("<br><h1>Error - Work Order Not Found.</h1>");
 }
+$getWO = $getWO[0];
+
 
 $repeat = $getWO['mwo_type'] != 1;
 ?>
@@ -71,7 +76,7 @@ $repeat = $getWO['mwo_type'] != 1;
 
 <head>
   <title>
-    Work Order <?php echo $_GET['id'] ?> Print
+    Work Order <?php echo $getWO['master_wo_ref'] ?> Print
   </title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
@@ -467,9 +472,9 @@ $repeat = $getWO['mwo_type'] != 1;
                     (is_array($getVal) ? $getVal[0]['rollopts_value'] : "-")
                   );
                 } else {
-                  if(is_null($getWO['master_wo_2_pouchbag_fillops'])){
+                  if (is_null($getWO['master_wo_2_pouchbag_fillops'])) {
                     $getVal = null;
-                  }else{
+                  } else {
                     $getVal = mysqlSelect("SELECT * FROM `work_order_ui_pouch_bag_fill_opts` where pbfo_id= " . $getWO['master_wo_2_pouchbag_fillops']);
                   }
                   getTableTD(
@@ -637,11 +642,11 @@ $repeat = $getWO['mwo_type'] != 1;
                   if ($getWO['master_wo_2_pouch_zipper'] == 1) {
                     $col1Out .= "<strong>Zipper Open Close?</strong> - " . $getWO["zipopc_value"] . "<br>";
                     $col1Out .= "<strong>Distance From Top</strong> - " . $getWO["master_wo_pouch_top_dist"] . "<br>";
-                    
+
                     if ($getWO['master_wo_2_pouch_master'] == 9 || $getWO['master_wo_2_pouch_master'] == 10) {
                       $col1Out .= "<strong>PE Strip</strong> - " . $getWO["pestrip_value"] . "<br>";
                     }
-                  }else{
+                  } else {
                     $col1Out .= "<strong>Zipper</strong> - No<br>";
                   }
 
@@ -649,7 +654,7 @@ $repeat = $getWO['mwo_type'] != 1;
                   if ($getWO["master_wo_2_pouch_tear_notch"] == 1) {
                     $col1Out .= "<strong>Tear Notch Number of Sides</strong> - " . $getWO["tear_notch_qty_value"] . "<br>";
                     $col1Out .= "<strong>Tear Notch Side</strong> - " . $getWO["tear_notch_side_value"] . "<br>";
-                  }else{
+                  } else {
                     $col1Out .= "<strong>Tear Notch</strong> - No<br>";
                   }
                   // $col1Out .= "<strong>Options</strong> - " . groupConcatGetVal("work_order_ui_pouch_lap_fin", "lap_fin", $getWO['master_wo_3_pouch_lap_fin'], 'mysqlSelect');
@@ -927,13 +932,13 @@ $repeat = $getWO['mwo_type'] != 1;
         } else {
           // FIX
           // var_dump($getWO['master_wo_2_carton_pack_ins']);
-          if(is_null($getWO['master_wo_2_carton_pack_ins'])){
+          if (is_null($getWO['master_wo_2_carton_pack_ins'])) {
             $getVal23 = null;
-          }else{
+          } else {
             $getVal23 = mysqlSelect("SELECT * FROM `work_order_ui_pouch_pack_ins` 
             where pouch_pack_ins_id= " . $getWO['master_wo_2_carton_pack_ins']);
           }
-          
+
           getTableTD(
             "Carton Packing Instructions",
             (is_array($getVal23) ? $getVal23[0]['pouch_pack_ins_value'] : "-")
