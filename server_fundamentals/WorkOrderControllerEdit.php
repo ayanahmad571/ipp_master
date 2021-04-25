@@ -42,7 +42,7 @@ $RemarksMain = array();
 $QueryCols = array();
 $QueryVals = array();
 
-
+$insertReference = $WorkOrderMaster['master_wo_ref'];
 // selectChecker("SELECT * FROM `work_order_ui_structure` where structure_id = " . $_POST['work_order_2_structure'], 'Structure Not Found', 'mysqlSelect');
 
 
