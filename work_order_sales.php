@@ -400,7 +400,7 @@ if($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2){
     function fetchdata() {
       var rowD = $("#rowDiff").val();
       $.ajax({
-        url: 'WorkOrderControllers/AllController.php',
+        url: 'WorkOrderControllers/AllController',
         type: 'post',
         data: {
           rowDiffChecker: rowD,
