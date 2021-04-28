@@ -111,7 +111,7 @@ getHead("Form Controller");
 															<td><?php echo $FormVal[$asset[2] . '_id'] ?></td>
 															<td><?php echo $FormVal[$asset[2] . '_value'] ?></td>
 															<td>
-																<form id="<?php echo $h ?>" action="server_fundamentals/FormManagerController.php" method="post">
+																<form id="<?php echo $h ?>" action="server_fundamentals/FormManagerController" method="post">
 																	<input type="hidden" value="<?php echo $FormVal[$asset[2] . '_id'] ?>" name="<?php echo $asset[2] . "_toggle" ?>" />
 																	<?php echo ($FormVal[$asset[2] . '_show'] == 1 ? '<button class="btn btn-danger">Hide</button>' : '<button class="btn btn-success">Show</button>') ?>
 																</form>
@@ -122,7 +122,7 @@ getHead("Form Controller");
 													}
 												}
 												?>
-												<form id="SH<?php echo md5($asset[1] . $asset[2]) ?>" action="server_fundamentals/FormManagerController.php" method="post">
+												<form id="SH<?php echo md5($asset[1] . $asset[2]) ?>" action="server_fundamentals/FormManagerController" method="post">
 													<tr>
 														<td></td>
 														<td><input required type="text" class="form-control" name="<?php echo  $asset[2] ?>_value" placeholder="<?php echo  $asset[0] ?> Value" /></td>
