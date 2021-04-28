@@ -15,7 +15,6 @@ Structure Types
 Take all the radios and Checkboxes to the database.
 Db Control of those values.
 
-
 NUmeric State is not currently in Strict Mode
 
 TRUNCATE `conditional_release_wo`;
