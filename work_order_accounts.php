@@ -294,7 +294,7 @@ getHead("WO Accounts");
     function fetchdata() {
       var rowD = $("#rowDiff").val();
       $.ajax({
-        url: 'WorkOrderControllers/AllController.php',
+        url: 'WorkOrderControllers/AllController',
         type: 'post',
         data: {
           rowDiffChecker: rowD,
