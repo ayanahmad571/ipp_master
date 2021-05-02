@@ -583,7 +583,7 @@ function getRoll($itisEdit, $woid = 0)
     <div class="classOnlyRoll">
         <div class="row">
 
-            <div class="col-12 col-lg-4">
+            <div class="showPrintedRoll col-12 col-lg-4">
                 <div class="row">
                     <div id="imgRollPut" class="col-12 ">
                         <img class="img-thumbnail" src="assets/img/winding_dir.png" />
@@ -594,7 +594,7 @@ function getRoll($itisEdit, $woid = 0)
 
             <div class="col-12 col-lg-8">
                 <div class="row">
-                    <div class="form-group col-12 col-lg-3">
+                    <div class="showPrintedRoll form-group col-12 col-lg-3">
                         <label>Wind DIR</label>
                         <select class="form-control select_a" required name="work_order_2_wind_dir">
                             <?php
@@ -775,7 +775,7 @@ function getPouch($itisEdit, $woid = 0)
 
                 <hr>
 
-                <h6>Extra Options - Punch</h6>
+                <h6>Extra Options - Punch/Perforation</h6>
                 <div class="row">
                     <?php
                     getSelectBox(
@@ -1350,6 +1350,7 @@ function getScriptInitializer()
             setCartonPly();
             setUpLSD();
             setUpPerforation();
+            setUpWindingDisplay();
             $(".remarksEdit").wysihtml5();
 
         });
@@ -1383,6 +1384,7 @@ function getScriptTriggers()
             $("select[name=work_order_2_structure]").change(function(e) {
                 setBagPouchSetup();
                 setCartonPly();
+                setUpWindingDisplay();
             });
 
 
@@ -1487,6 +1489,7 @@ function getScriptTriggers()
 
             $("select[name=work_order_2_type_printed]").change(function(e) {
                 setUpPrintingOption();
+                setUpWindingDisplay();
             });
 
             $('input[name="work_order_ink_gsm_pre_c"]').change(function(e) {
@@ -1924,6 +1927,17 @@ function getScriptFunctionalSetup()
             } else {
                 $('.PerforationClickedShow').hide();
             }
+        }
+
+        function setUpWindingDisplay() {
+            var a = $("select[name=work_order_2_structure] :selected").val();
+            var b = $("select[name=work_order_2_type_printed] :selected").val();
+            if (a == 3 && b == 1) {
+                $('.showPrintedRoll').show();
+            } else {
+                $('.showPrintedRoll').hide();
+            }
+
         }
     </script>
 <?php
