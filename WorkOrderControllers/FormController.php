@@ -29,6 +29,31 @@ function getChangeTypePills()
 <?php
 }
 
+function getTransitionFields()
+{
+?>
+    <div class="row">
+        <div class="form-group col-sm-12 col-md-6 col-xl-4 ">
+            <label>Manual LWO</label>
+            <input type="text" class="form-control" name="work_order_m_lwo" placeholder="Manual Last Work Order">
+        </div>
+
+        <div class="form-group col-sm-12 col-md-6 col-xl-4 ">
+            <label>NCR #</label>
+            <input type="text" class="form-control" name="work_order_ncr_no" placeholder="NCR Number">
+        </div>
+
+        <div class="form-group col-sm-12 col-md-6 col-xl-4 ">
+            <label>CCR #</label>
+            <input type="text" class="form-control" name="work_order_ccr_no" placeholder="CCR Number">
+        </div>
+
+    </div>
+
+    <hr>
+<?php
+}
+
 function getFormRepHead($lwo)
 {
 ?>
@@ -96,9 +121,20 @@ function getRow($getAttachedTreeSqlIn)
         </div>
 
         <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
+            <label>RFP #</label>
+            <input type="text" class="form-control" name="work_order_rfp_no" placeholder="RFP Number">
+        </div>
+
+        <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
+            <label>RFP Date</label>
+            <input type="text" class="form-control" name="work_order_rfp_date" placeholder="DD-MM-YYYY">
+        </div>
+
+        <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
             <label>Customer's Design Name</label>
             <input type="text" class="form-control" name="work_order_customer_design_name" placeholder="Customer Design Name">
         </div>
+
         <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
             <label>Customer's Item Code</label>
             <input type="text" class="form-control" name="work_order_customer_item_code" placeholder="Customer Item Code">
@@ -108,10 +144,22 @@ function getRow($getAttachedTreeSqlIn)
             <label>Customer P.O#</label>
             <input type="text" class="form-control" name="work_order_customer_po" placeholder="Customer P.O#">
         </div>
+
         <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
             <label>Customer P.O Date</label>
             <input onchange="getDif()" type="text" class="form-control" name="work_order_po_date" placeholder="DD-MM-YYYY">
         </div>
+
+        <?php
+        getSelectBox(
+            "form-group col-sm-12 col-md-6 col-lg-3 col-xl-2",
+            "Partial Delivery",
+            "work_order_2_partial_delivery",
+            "SELECT * FROM `work_order_ui_partial_del` where partial_del_show = 1 order by partial_del_value",
+            'partial_del_id',
+            'partial_del_value'
+        );
+        ?>
 
         <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
             <label>Required Delivery Date</label>
@@ -123,7 +171,7 @@ function getRow($getAttachedTreeSqlIn)
             <input id="numberOfDays" type="text" disabled class="form-control" name="">
         </div>
 
-        <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
+        <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-3">
             <label>Customer Location</label>
 
             <div class="selectgroup selectgroup-pills">
@@ -183,7 +231,7 @@ function getRow($getAttachedTreeSqlIn)
 
         <?php
         getSelectBox(
-            "form-group col-sm-12 col-xl-2",
+            "form-group col-sm-12 col-xl-3",
             "Application",
             "work_order_2_application",
             "SELECT * FROM `work_order_applications` where application_show =1 order by application_value asc ",
@@ -299,6 +347,25 @@ function getPrintedSection($isTechnical = false)
                 </div>
             </div>
         </div>
+
+
+        <?php
+        getSelectBox(
+            "form-group col-12 col-lg-6 col-xl-2 whenPrintedClickedGO",
+            "LSD Required",
+            "work_order_2_lsd_required",
+            "SELECT * FROM `work_order_ui_lsd_required` where lsd_required_show = 1  order by lsd_required_value asc",
+            'lsd_required_id',
+            'lsd_required_value'
+        );
+        ?>
+
+        <div class="whenPrintedAndLSDClicked form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
+            <label>Number of LSD Copies</label>
+            <input type="text" class="form-control" name="work_order_lsd_copies" placeholder="LSD Copies">
+        </div>
+
+
 
         <?php
         if ($isTechnical) {
@@ -731,6 +798,26 @@ function getPouch($itisEdit, $woid = 0)
                         'euro_value'
                     );
                     ?>
+                    <div class="form-group col-xs-12 col-sm-6">
+                        <label>Distance from Top</label>
+                        <input type="text" class="form-control" name="work_order_pouch_distance_top_extra" placeholder="Distance from Top">
+                    </div>
+
+                    <?php
+                    getSelectBox(
+                        "form-group col-xs-12 col-sm-6",
+                        "Perforation",
+                        "work_order_2_pouch_perforation",
+                        "SELECT * FROM `work_order_ui_pouch_perforation` where pouch_perforation_show =1 order by pouch_perforation_value asc ",
+                        'pouch_perforation_id',
+                        'pouch_perforation_value'
+                    );
+                    ?>
+                    <div class="PerforationClickedShow form-group col-xs-12 col-sm-6">
+                        <label>Perforation Distance from Top</label>
+                        <input type="text" class="form-control" name="work_order_pouch_perforation_distance_top" placeholder="Perforation Distance from Top">
+                    </div>
+
                 </div>
                 <hr>
                 <h6>Extra Options - Corner</h6>
@@ -923,6 +1010,10 @@ function getBag($itisEdit, $woid = 0)
                         <label>Lip</label>
                         <input type="text" class="form-control" name="work_order_bags_lip" placeholder="Lip">
                     </div>
+                    <div class="form-group col-xs-12 col-sm-6">
+                        <label>Distance from Top</label>
+                        <input type="text" class="form-control" name="work_order_bags_distance_top_extra" placeholder="Distance from Top">
+                    </div>
                 </div>
 
             </div>
@@ -1086,7 +1177,7 @@ function getSlit($itisEdit, $woid = 0)
         </div>
 
         <div class="row">
-            <div class="form-group col-sm-12 ">
+            <div class="form-group col-12 col-sm-10 ">
                 <label>Shipment Documents</label>
 
                 <div class="selectgroup selectgroup-pills">
@@ -1104,6 +1195,11 @@ function getSlit($itisEdit, $woid = 0)
                     ?>
 
                 </div>
+            </div>
+
+            <div class="form-group col-12 col-sm-2">
+                <label>Port Name</label>
+                <input name="work_order_ship_port_name" type="text" class="form-control" placeholder="Port Name">
             </div>
 
 
@@ -1252,6 +1348,8 @@ function getScriptInitializer()
             setUpInkGsmCalc();
             setPastRet()
             setCartonPly();
+            setUpLSD();
+            setUpPerforation();
             $(".remarksEdit").wysihtml5();
 
         });
@@ -1403,6 +1501,14 @@ function getScriptTriggers()
                 setCartonPly();
             });
 
+            $("select[name=work_order_2_lsd_required]").change(function(e) {
+                setUpLSD();
+            });
+
+            $("select[name=work_order_2_pouch_perforation]").change(function(e) {
+                setUpPerforation();
+            });
+
             $("#formLoading").hide();
 
         });
@@ -1502,8 +1608,10 @@ function getScriptFunctionalSetup()
             var a = $("select[name=work_order_2_type_printed] :selected").val();
             if (a == 1) {
                 $('.whenPrintedClickedGO').show();
+                setUpLSD();
             } else {
                 $('.whenPrintedClickedGO').hide();
+                setUpLSD();
             }
 
 
@@ -1796,6 +1904,26 @@ function getScriptFunctionalSetup()
                 $(".tearNotch").hide();
             }
 
+        }
+
+        function setUpLSD() {
+            var a = $("select[name=work_order_2_type_printed] :selected").val();
+            var b = $("select[name=work_order_2_lsd_required] :selected").val();
+            if (a == 1 && b == 2) {
+                $('.whenPrintedAndLSDClicked').show();
+            } else {
+                $('.whenPrintedAndLSDClicked').hide();
+            }
+
+        }
+
+        function setUpPerforation() {
+            var a = $("select[name=work_order_2_pouch_perforation] :selected").val();
+            if (a == 2) {
+                $('.PerforationClickedShow').show();
+            } else {
+                $('.PerforationClickedShow').hide();
+            }
         }
     </script>
 <?php
