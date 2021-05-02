@@ -19,6 +19,7 @@ $getWO = mysqlSelect($topQuery . "
      
       
   left join clients_main on master_wo_2_client_id = client_id
+  left join user_main on mwo_gen_on_behalf_lum_id = lum_id 
   left join master_work_order_main_identitiy on master_wo_status = mwoid_id
   left join work_order_ui_structure on master_wo_2_structure = structure_id
   left join work_order_qty_units on master_wo_2_units =  unit_id
@@ -207,7 +208,7 @@ $repeat = $getWO['mwo_type'] != 1;
 
               <tr>
                 <?php
-                getTableTD("Sales ID", $getWO["mwo_gen_on_behalf_lum_id"], 1);
+                getTableTD("Sales ID", $getWO["lum_name"], 1);
 
                 getTableTD("WO#", $getWO["mwo_ref_id"], 1);
 
@@ -559,6 +560,7 @@ $repeat = $getWO['mwo_type'] != 1;
               </tr>
 
               <?php
+              $showFoil = false;
               for ($from = 1; $from <= $getWO['master_wo_ply']; $from++) {
 
                 $thisIter = $getWO['master_wo_layer_' . ($from) . '_structure'];
@@ -569,8 +571,15 @@ $repeat = $getWO['mwo_type'] != 1;
 
                   if (is_array($getLayerOut)) {
                     $struct = $getLayerOut[0]['material_value'];
+                    $valFilmID = $getLayerOut[0]['material_id'];
+
+                    if ($from == 1 && ($valFilmID == 3 || $valFilmID == 17 || $valFilmID == 52)) {
+                      $showFoil = true;
+                    }
                   }
                 }
+
+
 
                 echo '<tr>';
                 $colVal = 6;
@@ -587,12 +596,21 @@ $repeat = $getWO['mwo_type'] != 1;
                     $colVal
                   );
                 } else {
-                  getTableTD(
+                  if ($showFoil) {
+                    getTableTD(
 
-                    "Foil Print Side",
-                    $getWO["foil_print_side_value"],
-                    $colVal
-                  );
+                      "Foil Print Side",
+                      $getWO["foil_print_side_value"],
+                      $colVal
+                    );
+                  } else {
+                    getTableTD(
+
+                      "",
+                      "",
+                      $colVal
+                    );
+                  }
                 }
 
                 echo '</tr>';
