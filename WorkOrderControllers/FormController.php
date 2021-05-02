@@ -1997,7 +1997,9 @@ function submitParams()
         "work_order_2_roll_pack_ins", "work_order_2_carton_pack_ins", "work_order_2_pallet_mark_ins", "work_order_pouch_per_bund", "work_order_bund_per_box",
         "work_order_2_pallet_type", "work_order_2_cont_stuff", "work_order_max_gross_pallet_weight", "work_order_2_pallet_dim", "work_order_2_freight_type",
         "work_order_cart_thick", "work_order_3_docs", "work_order_remarks_overall",
-        "work_order_2_coating_options", "work_order_coating_gsm", "work_order_cof_val", "work_order_submersion_temp", "work_order_submersion_duration"
+        "work_order_2_coating_options", "work_order_coating_gsm", "work_order_cof_val", "work_order_submersion_temp", "work_order_submersion_duration",
+        "work_order_m_lwo", "work_order_ncr_no", "work_order_ccr_no", "work_order_rfp_date", "work_order_rfp_no", 
+        "work_order_2_partial_delivery", "work_order_2_lsd_required", "work_order_lsd_copies", "work_order_ship_port_name"
     );
 }
 
