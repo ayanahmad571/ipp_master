@@ -500,16 +500,27 @@ function getTableTD($val1,  $val2 = "", $rowcol = 3)
 	}
 }
 
-function getSectionSep( $val1, $rem = false, $rowcol = 12)
+function getSectionSep($val1, $rem = false, $rowcol = 12)
 {
 	$str = "background-color:black; color:antiquewhite; ";
-	if($rem){
+	if ($rem) {
 		$str = "background-color:grey; color:white; ";
 	}
 ?>
 	<td style="<?php echo $str; ?> text-align: center;" colspan="<?php echo $rowcol ?>">
 		<h4 style="margin: 0;"><?php echo $val1 ?></h4>
 	</td>
+<?php
+}
+
+function getPrintJS()
+{
+?>
+	<script>
+		function openWindow(woID) {
+			var newWin = window.open(`work_order_view_print?id=${woID}`, `Print View ${woID}`, 'width=800,height=750');
+		}
+	</script>
 <?php
 }
 ?>

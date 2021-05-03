@@ -6,6 +6,7 @@ getHead("WO Technical");
 
 <link rel="stylesheet" type="text/css" href="assets/DataTables/datatables.min.css" />
 <link rel="stylesheet" href="assets/modules/izit.css">
+
 <body>
   <div id="app">
     <div class="main-wrapper">
@@ -22,10 +23,10 @@ getHead("WO Technical");
       <!-- Main Content -->
       <div class="main-content">
         <section class="section">
-        <?php getPageTitle("Work Order - Technical Verify"); ?>
+          <?php getPageTitle("Work Order - Technical Verify"); ?>
           <!-- TOP CONTENT BLOCKS -->
           <div class="row">
-          <?php 
+            <?php
             // getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000");
             // getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000");
             // getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000");
@@ -73,16 +74,14 @@ getHead("WO Technical");
                               $getBy = mysqlSelect("select * from user_main where lum_id = " . $Draft['mwo_gen_lum_id'] . " and lum_valid =1");
                               $getFor = mysqlSelect("select * from user_main where lum_id = " . $Draft['mwo_gen_on_behalf_lum_id'] . " and lum_valid =1");
 
-                              echo getByForFromWO($getBy,$getFor);
+                              echo getByForFromWO($getBy, $getFor);
                               ?>
                             </td>
                             <td><?php echo date('d-m-Y @ h:i:s a', $Draft['master_wo_gen_dnt']); ?></td>
                             <td>
-                              <a target="_blank" href="work_order_view_print?id=<?php echo $Draft['master_wo_ref'] ?>">
-                                <button class="btn btn-warning mt-1">View</button>
-                              </a>
-                                <button class="publishDraft btn btn-success mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Publish</button>
-                                <button class="discardDraft btn btn-danger mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Return</button>
+                              <button onclick="openWindow(<?php echo $Draft['master_wo_ref'] ?>)" class="btn btn-warning mt-1">View</button>
+                              <button class="publishDraft btn btn-success mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Publish</button>
+                              <button class="discardDraft btn btn-danger mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Return</button>
                             </td>
                           </tr>
                       <?php
@@ -136,15 +135,13 @@ getHead("WO Technical");
                               $getBy = mysqlSelect("select * from user_main where lum_id = " . $Discard['mwo_gen_lum_id'] . " and lum_valid =1");
                               $getFor = mysqlSelect("select * from user_main where lum_id = " . $Discard['mwo_gen_on_behalf_lum_id'] . " and lum_valid =1");
 
-                              echo getByForFromWO($getBy,$getFor);
+                              echo getByForFromWO($getBy, $getFor);
                               ?>
                             </td>
                             <td><?php echo date('d-m-Y @ h:i:s a', $Discard['master_wo_gen_dnt']); ?></td>
                             <td><?php echo $Discard['mwoid_desc2'] ?></td>
                             <td>
-                              <a href="work_order_sales_generate?editId=<?php echo $Discard['master_wo_ref'] ?>" target="_blank">
-                                <button class="btn btn-warning mt-1">View/Edit</button>
-                              </a>
+                              <button onclick="openWindow(<?php echo $Discard['master_wo_ref'] ?>)" class="btn btn-warning mt-1">View</button>
                             </td>
                           </tr>
                       <?php
@@ -196,16 +193,13 @@ getHead("WO Technical");
                               $getBy = mysqlSelect("select * from user_main where lum_id = " . $Discard['mwo_gen_lum_id'] . " and lum_valid =1");
                               $getFor = mysqlSelect("select * from user_main where lum_id = " . $Discard['mwo_gen_on_behalf_lum_id'] . " and lum_valid =1");
 
-                              echo getByForFromWO($getBy,$getFor);
+                              echo getByForFromWO($getBy, $getFor);
                               ?>
                             </td>
                             <td><?php echo date('d-m-Y @ h:i:s a', $Discard['master_wo_gen_dnt']); ?></td>
                             <td><?php echo $Discard['mwoid_desc2'] ?></td>
                             <td>
-                              <a href="work_order_view_print?id=<?php echo $Discard['master_wo_ref'] ?>" target="_blank">
-                                <button class="btn btn-warning mt-1" data-id="<?php echo md5($Discard['master_wo_id']); ?>">View</button>
-                              </a>
-
+                              <button onclick="openWindow(<?php echo $Discard['master_wo_ref'] ?>)" class="btn btn-warning mt-1">View</button>
                             </td>
                           </tr>
                       <?php
@@ -304,17 +298,15 @@ getHead("WO Technical");
           });
 
       }); /* .pubslishDraft Click*/
-    }); 
-
-
+    });
   </script>
 
-<?php $getDraftsH = mysqlSelect(workOrderPagesQuery("7")); ?>
-<input type="hidden" id="rowDiff" value="<?php echo (is_array($getDraftsH) ? count($getDraftsH): "0"); ?>" />
+  <?php $getDraftsH = mysqlSelect(workOrderPagesQuery("7")); ?>
+  <input type="hidden" id="rowDiff" value="<?php echo (is_array($getDraftsH) ? count($getDraftsH) : "0"); ?>" />
 
-<script src="assets/modules/iZiToast.js"></script>
+  <script src="assets/modules/iZiToast.js"></script>
 
-<script>
+  <script>
     function fetchdata() {
       var rowD = $("#rowDiff").val();
       $.ajax({
@@ -342,10 +334,9 @@ getHead("WO Technical");
     $(document).ready(function() {
       setInterval(fetchdata, 5000);
     });
-
   </script>
 
-
+  <?php getPrintJS(); ?>
 
 </body>
 

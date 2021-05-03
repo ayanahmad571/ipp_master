@@ -29,9 +29,7 @@ $columns = array(
         'db'        => 'master_wo_ref',
         'dt'        => 6,
         'formatter' => function( $d, $row ) {
-            return '<a target="_blank" href="work_order_view_print?id='.$d.'">
-                        <button class="btn btn-primary mt-1">View</button>
-                    </a>';
+            return '<button onclick="openWindow('.$d.')" class="btn btn-primary mt-1">View</button>';
         }
     )    
 );

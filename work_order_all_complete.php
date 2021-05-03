@@ -68,15 +68,12 @@ getHead("WO Accounts");
                               ?>
                             </td>
                             <td><?php echo date('d-m-Y @ h:i:s a', $Draft['master_wo_gen_dnt']); ?></td>
-                            
-                              <td>
-                                
-                                <?php if($Draft['master_wo_status'] == 9){?><button class="publishDraft btn btn-success mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Mark Complete</button><?php } ?>
-                                <a target="_blank" href="work_order_view_print?id=<?php echo $Draft['master_wo_ref'] ?>">
-                                  <button class="btn btn-primary mt-1">View</button>
-                                </a>
-                              </td>
-              
+
+                            <td>
+                              <button onclick="openWindow(<?php echo $Draft['master_wo_ref'] ?>)" class="btn btn-primary mt-1">View</button>
+                              <?php if ($Draft['master_wo_status'] == 9) { ?><button class="publishDraft btn btn-success mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Mark Complete</button><?php } ?>
+                            </td>
+
                           </tr>
                       <?php
                         }
@@ -142,12 +139,11 @@ getHead("WO Accounts");
         });
       }); /* .pubslishDraft Click*/
     }); /*Doc Ready*/
-
   </script>
 
-<script src="assets/modules/iZiToast.js"></script>
+  <script src="assets/modules/iZiToast.js"></script>
 
-
+  <?php getPrintJS(); ?>
 </body>
 
 </html>
