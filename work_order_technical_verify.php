@@ -70,8 +70,8 @@ getHead("WO Technical");
                             <td><?php echo $Draft['master_wo_design_id']; ?></td>
                             <td>
                               <?php
-                              $getBy = mysqlSelect("select * from user_main where lum_id = " . $Draft['master_wo_gen_lum_id'] . " and lum_valid =1");
-                              $getFor = mysqlSelect("select * from user_main where lum_id = " . $Draft['master_wo_2_sales_id'] . " and lum_valid =1");
+                              $getBy = mysqlSelect("select * from user_main where lum_id = " . $Draft['mwo_gen_lum_id'] . " and lum_valid =1");
+                              $getFor = mysqlSelect("select * from user_main where lum_id = " . $Draft['mwo_gen_on_behalf_lum_id'] . " and lum_valid =1");
 
                               echo getByForFromWO($getBy,$getFor);
                               ?>
