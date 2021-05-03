@@ -1783,7 +1783,7 @@ function getScriptFunctionalSetup()
                 varOutString = varOutString.concat("",
                     '<div class="form-group  col-12 col-md-6 col-xl-3">',
                     "<label>Adhesive Pass " + l2 + " GSM</label>",
-                    '<input type="number" class="form-control" name="work_order_adh' + l2 + '" placeholder="Adhesive ' + l2 + ' GSM">',
+                    '<input type="number" step="0.01" class="form-control" name="work_order_adh' + l2 + '" placeholder="Adhesive ' + l2 + ' GSM">',
                     "</div>");
 
             }
