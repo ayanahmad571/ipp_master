@@ -715,7 +715,7 @@ if ($exit_out) {
                         <tr>
                             <td>' . $OverallRem['lum_code'] . ' - ' . $OverallRem['lum_name'] . '</td>
                             <td>' . $OverallRem['remark_text'] . '</td>
-                            <td>' . date('d-m-Y @ h:i:s a', $OverallRem['remark_dnt']) . '</td>
+                            <td>' . date(getDateTimeFormat(), $OverallRem['remark_dnt']) . '</td>
                         </tr>
                         
                         ';
@@ -1153,7 +1153,7 @@ if ($exit_out) {
                         <tr>
                             <td>' . $OverallRem['lum_code'] . ' - ' . $OverallRem['lum_name'] . '</td>
                             <td>' . $OverallRem['remark_text'] . '</td>
-                            <td>' . date('d-m-Y @ h:i:s a', $OverallRem['remark_dnt']) . '</td>
+                            <td>' . date(getDateTimeFormat(), $OverallRem['remark_dnt']) . '</td>
                         </tr>
                         
                         ';
@@ -1259,7 +1259,7 @@ if ($exit_out) {
                         <tr>
                             <td>' . $OverallRem['lum_code'] . ' - ' . $OverallRem['lum_name'] . '</td>
                             <td>' . $OverallRem['remark_text'] . '</td>
-                            <td>' . date('d-m-Y @ h:i:s a', $OverallRem['remark_dnt']) . '</td>
+                            <td>' . date(getDateTimeFormat(), $OverallRem['remark_dnt']) . '</td>
                         </tr>
                         
                         ';
@@ -1636,7 +1636,7 @@ if ($exit_out) {
                         <tr>
                             <td>' . $OverallRem['lum_code'] . ' - ' . $OverallRem['lum_name'] . '</td>
                             <td>' . $OverallRem['remark_text'] . '</td>
-                            <td>' . date('d-m-Y @ h:i:s a', $OverallRem['remark_dnt']) . '</td>
+                            <td>' . date(getDateTimeFormat(), $OverallRem['remark_dnt']) . '</td>
                         </tr>
                         
                         ';
@@ -1937,7 +1937,7 @@ if ($exit_out) {
                         <tr>
                             <td>' . $OverallRem['lum_code'] . ' - ' . $OverallRem['lum_name'] . '</td>
                             <td>' . $OverallRem['remark_text'] . '</td>
-                            <td>' . date('d-m-Y @ h:i:s a', $OverallRem['remark_dnt']) . '</td>
+                            <td>' . date(getDateTimeFormat(), $OverallRem['remark_dnt']) . '</td>
                         </tr>
                         
                         ';
@@ -2283,7 +2283,7 @@ if ($exit_out) {
                         <tr>
                             <td>' . $OverallRem['lum_code'] . ' - ' . $OverallRem['lum_name'] . '</td>
                             <td>' . $OverallRem['remark_text'] . '</td>
-                            <td>' . date('d-m-Y @ h:i:s a', $OverallRem['remark_dnt']) . '</td>
+                            <td>' . date(getDateTimeFormat(), $OverallRem['remark_dnt']) . '</td>
                         </tr>
                         
                         ';

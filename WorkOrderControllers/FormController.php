@@ -743,7 +743,7 @@ function getRoll($itisEdit, $woid = 0, $isTechnical = false)
                                   <tr>
                                       <td>' . $OverallRem['lum_code'] . ' - ' . $OverallRem['lum_name'] . '</td>
                                       <td>' . $OverallRem['remark_text'] . '</td>
-                                      <td>' . date('d-m-Y @ h:i:s a', $OverallRem['remark_dnt']) . '</td>
+                                      <td>' . date(getDateTimeFormat(), $OverallRem['remark_dnt']) . '</td>
                                   </tr>
                                   
                                   ';
@@ -971,7 +971,7 @@ function getPouch($itisEdit, $woid = 0, $isTechnical = false)
                                   <tr>
                                       <td>' . $OverallRem['lum_code'] . ' - ' . $OverallRem['lum_name'] . '</td>
                                       <td>' . $OverallRem['remark_text'] . '</td>
-                                      <td>' . date('d-m-Y @ h:i:s a', $OverallRem['remark_dnt']) . '</td>
+                                      <td>' . date(getDateTimeFormat(), $OverallRem['remark_dnt']) . '</td>
                                   </tr>
                                   
                                   ';
@@ -1074,7 +1074,7 @@ function getBag($itisEdit, $woid = 0, $isTechnical = false)
             <tr>
                 <td>' . $OverallRem['lum_code'] . ' - ' . $OverallRem['lum_name'] . '</td>
                 <td>' . $OverallRem['remark_text'] . '</td>
-                <td>' . date('d-m-Y @ h:i:s a', $OverallRem['remark_dnt']) . '</td>
+                <td>' . date(getDateTimeFormat(), $OverallRem['remark_dnt']) . '</td>
             </tr>
             
             ';
@@ -1269,7 +1269,7 @@ function getSlit($itisEdit, $woid = 0, $isTechnical = false)
                                 <tr>
                                     <td>' . $OverallRem['lum_code'] . ' - ' . $OverallRem['lum_name'] . '</td>
                                     <td>' . $OverallRem['remark_text'] . '</td>
-                                    <td>' . date('d-m-Y @ h:i:s a', $OverallRem['remark_dnt']) . '</td>
+                                    <td>' . date(getDateTimeFormat(), $OverallRem['remark_dnt']) . '</td>
                                 </tr>
                                 
                                 ';

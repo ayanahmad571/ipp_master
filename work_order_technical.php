@@ -73,7 +73,7 @@ getHead("WO Technical");
                               echo getByForFromWO($getBy, $getFor);
                               ?>
                             </td>
-                            <td><?php echo date('d-m-Y @ h:i:s a', $Draft['master_wo_gen_dnt']); ?></td>
+                            <td><?php echo date(getDateTimeFormat(), $Draft['master_wo_gen_dnt']); ?></td>
                             <td>
                               <a target="_blank" href="work_order_main_edit?techID=<?php echo $Draft['master_wo_ref'] ?>">
                                 <button class="btn btn-warning mt-1">View/Edit</button>
@@ -147,7 +147,7 @@ getHead("WO Technical");
                               echo getByForFromWO($getBy, $getFor);
                               ?>
                             </td>
-                            <td><?php echo date('d-m-Y @ h:i:s a', $Discard['master_wo_gen_dnt']); ?></td>
+                            <td><?php echo date(getDateTimeFormat(), $Discard['master_wo_gen_dnt']); ?></td>
                             <td><?php echo $Discard['mwoid_desc2'] ?>
                               <hr><strong><?php echo $Discard['master_reject_text'] ?></strong>
                             </td>
@@ -210,7 +210,7 @@ getHead("WO Technical");
                               echo getByForFromWO($getBy, $getFor);
                               ?>
                             </td>
-                            <td><?php echo date('d-m-Y @ h:i:s a', $Discard['master_wo_gen_dnt']); ?></td>
+                            <td><?php echo date(getDateTimeFormat(), $Discard['master_wo_gen_dnt']); ?></td>
                             <td><?php echo $Discard['mwoid_desc2'] ?></td>
                             <td>
                               <button onclick="openWindow(<?php echo $Discard['master_wo_ref'] ?>)" class="btn btn-warning mt-1">View</button>
@@ -253,12 +253,12 @@ getHead("WO Technical");
   <script type="text/javascript" src="assets/Datatables/datatables.min.js"></script>
 
   <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
-  <script>
-    $("#pendingTableCont").DataTable();
-    $("#PublishedContainerTable").DataTable();
-    $("#ReturnedContainerTable").DataTable();
-  </script>
 
+  <?php
+  getDataTableDefiner("pendingTableCont");
+  getDataTableDefiner("PublishedContainerTable");
+  getDataTableDefiner("ReturnedContainerTable");
+  ?>
   <script>
     $(document).ready(function(e) {
       $('.publishDraft').click(function(e) {

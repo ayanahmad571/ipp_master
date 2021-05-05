@@ -59,7 +59,7 @@ getHead("ADMIN - Users");
                 	<td><?php echo $Users['lum_name'] ?></td>
                 	<td><?php echo $Users['user_type_name'] ?></td>
                 	<td><?php echo $Users['lum_email'] ?></td>
-                	<td><?php echo date('d-m-Y @ h:i:s a',$Users['lum_dnt']); ?></td>
+                	<td><?php echo date(getDateTimeFormat(),$Users['lum_dnt']); ?></td>
                 	<td><?php echo ($Users['lum_valid'] == 1? "Active":"Inactive") ?></td>
                 </tr>
                 <?php

@@ -77,7 +77,7 @@ getHead("WO Technical");
                               echo getByForFromWO($getBy, $getFor);
                               ?>
                             </td>
-                            <td><?php echo date('d-m-Y @ h:i:s a', $Draft['master_wo_gen_dnt']); ?></td>
+                            <td><?php echo date(getDateTimeFormat(), $Draft['master_wo_gen_dnt']); ?></td>
                             <td>
                               <button onclick="openWindow(<?php echo $Draft['master_wo_ref'] ?>)" class="btn btn-warning mt-1">View</button>
                               <button class="publishDraft btn btn-success mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Publish</button>
@@ -138,7 +138,7 @@ getHead("WO Technical");
                               echo getByForFromWO($getBy, $getFor);
                               ?>
                             </td>
-                            <td><?php echo date('d-m-Y @ h:i:s a', $Discard['master_wo_gen_dnt']); ?></td>
+                            <td><?php echo date(getDateTimeFormat(), $Discard['master_wo_gen_dnt']); ?></td>
                             <td><?php echo $Discard['mwoid_desc2'] ?></td>
                             <td>
                               <button onclick="openWindow(<?php echo $Discard['master_wo_ref'] ?>)" class="btn btn-warning mt-1">View</button>
@@ -196,7 +196,7 @@ getHead("WO Technical");
                               echo getByForFromWO($getBy, $getFor);
                               ?>
                             </td>
-                            <td><?php echo date('d-m-Y @ h:i:s a', $Discard['master_wo_gen_dnt']); ?></td>
+                            <td><?php echo date(getDateTimeFormat(), $Discard['master_wo_gen_dnt']); ?></td>
                             <td><?php echo $Discard['mwoid_desc2'] ?></td>
                             <td>
                               <button onclick="openWindow(<?php echo $Discard['master_wo_ref'] ?>)" class="btn btn-warning mt-1">View</button>
@@ -239,11 +239,15 @@ getHead("WO Technical");
   <script type="text/javascript" src="assets/Datatables/datatables.min.js"></script>
 
   <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
-  <script>
-    $("#DraftsContainerTable").DataTable();
-    $("#PublishedContainerTable").DataTable();
-    $("#ReturnedContainerTable").DataTable();
-  </script>
+
+
+  <?php
+  getDataTableDefiner("DraftsContainerTable");
+  getDataTableDefiner("PublishedContainerTable");
+  getDataTableDefiner("ReturnedContainerTable");
+  ?>
+
+
   <div id="myModal" class="modal fade" role="dialog">
     <div class="modal-dialog modal-lg ">
 

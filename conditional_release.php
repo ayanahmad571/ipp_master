@@ -70,7 +70,7 @@ getHead("Conditional Release");
                               <td><?php echo $Draft['crw_reason']; ?></td>
                               <td><?php echo $Draft['crw_ncr']; ?></td>
                               <td><?php echo $Draft['crd_text']; ?></td>
-                              <td><?php echo date('d-m-Y @ h:i:s a', $Draft['crw_dnt']) ?></td>
+                              <td><?php echo date(getDateTimeFormat(), $Draft['crw_dnt']) ?></td>
                             </tr>
                         <?php
                             $x++;

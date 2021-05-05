@@ -22,7 +22,7 @@ $columns = array(
         'db'        => 'master_wo_gen_dnt',
         'dt'        => 5,
         'formatter' => function( $d, $row ) {
-            return date( 'd-m-Y @ h:i:s a', ($d));
+            return date( getDateTimeFormat(), ($d));
         }
     ),
     array(

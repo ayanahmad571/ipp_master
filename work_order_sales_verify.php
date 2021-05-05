@@ -139,7 +139,7 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
                               echo getByForFromWO($getBy, $getFor);
                               ?>
                             </td>
-                            <td><?php echo date('d-m-Y @ h:i:s a', $Draft['master_wo_gen_dnt']); ?></td>
+                            <td><?php echo date(getDateTimeFormat(), $Draft['master_wo_gen_dnt']); ?></td>
                             <td>
                               <button class="publishDraft btn btn-success mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Publish</button>
                               <button class="discardDraft btn btn-danger mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Return</button>
@@ -201,7 +201,7 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
                               echo getByForFromWO($getBy, $getFor);
                               ?>
                             </td>
-                            <td><?php echo date('d-m-Y @ h:i:s a', $Discard['master_wo_gen_dnt']); ?></td>
+                            <td><?php echo date(getDateTimeFormat(), $Discard['master_wo_gen_dnt']); ?></td>
                             <td><?php echo $Discard['mwoid_desc2'] ?></td>
                             <td>
                               <button onclick="openWindow(<?php echo $Discard['master_wo_ref'] ?>)" class="btn btn-primary mt-1">View</button>
@@ -259,7 +259,7 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
                               echo getByForFromWO($getBy, $getFor);
                               ?>
                             </td>
-                            <td><?php echo date('d-m-Y @ h:i:s a', $Discard['master_wo_gen_dnt']); ?></td>
+                            <td><?php echo date(getDateTimeFormat(), $Discard['master_wo_gen_dnt']); ?></td>
                             <td><?php echo $Discard['mwoid_desc2'] ?></td>
                             <td>
                               <button onclick="openWindow(<?php echo $Discard['master_wo_ref'] ?>)" class="btn btn-warning mt-1">View</button>
@@ -323,11 +323,11 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
   </div>
 
 
-  <script>
-    $("#DraftsContainerTable").DataTable();
-    $("#PublishedContainerTable").DataTable();
-    $("#ReturnedContainerTable").DataTable();
-  </script>
+  <?php
+  getDataTableDefiner("DraftsContainerTable");
+  getDataTableDefiner("PublishedContainerTable");
+  getDataTableDefiner("ReturnedContainerTable");
+  ?>
 
   <script>
     $(document).ready(function(e) {
