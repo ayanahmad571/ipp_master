@@ -44,6 +44,11 @@ getHead("Form Controller");
 				array("Pouch Tear Notch Side", "work_order_ui_pouch_tear_notch_side", "tear_notch_side"),
 				array("Pouch Zipper", "work_order_ui_pouch_zipper", "zipper"),
 				array("Pouch Zipper Opc", "work_order_ui_pouch_zipper_opc", "zipopc"),
+
+				array("partial Delivery", "work_order_ui_partial_del", "partial_del"),
+				array("LSD Options", "work_order_ui_lsd_required", "lsd_required"),
+				array("Perforation Options", "work_order_ui_pouch_perforation", "pouch_perforation"),
+
 				array("Print End Options", "work_order_ui_print_end_options", "print_end_opts"),
 				array("Print Options", "work_order_ui_print_options", "print_options"),
 				array("Print Shadecard Ref Type", "work_order_ui_print_shadecard_ref_type", "shadecard_ref_type"),

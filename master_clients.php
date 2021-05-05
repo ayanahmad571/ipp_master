@@ -47,7 +47,7 @@ getHead("Master Clients");
                                                 $c = 1;
                                                 foreach ($getClients as $Mat) {
                                             ?>
-                                                    <form action="MasterControllers/ClientsController.php" method="POST">
+                                                    <form action="MasterControllers/ClientsController" method="POST">
                                                         <input type="hidden" name="client_id" value="<?php echo $Mat['client_id'] ?>" />
                                                         <tr>
                                                             <td><?php echo $c ?></td>
@@ -63,7 +63,7 @@ getHead("Master Clients");
                                             }
                                             ?>
                                             <tr>
-                                                <form action="MasterControllers/ClientsController.php" method="POST">
+                                                <form action="MasterControllers/ClientsController" method="POST">
                                                     <td>NEW</td>
                                                     <td><input type="text" required class="form-control" name="add_client_code" placeholder="Code" /></td>
                                                     <td ><input type="text" required class="form-control" name="add_client_name" placeholder="Name" /></td>

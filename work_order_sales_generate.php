@@ -97,6 +97,8 @@ getHead("Sales Order - " . ($itisEdit ? "Edit Sales Order" : "Make New Sales Ord
 
                     getRow($getAttachedTreeSql);
 
+                    getTransitionFields();
+
                     getPrintedSection();
 
                     getCoatingSection();

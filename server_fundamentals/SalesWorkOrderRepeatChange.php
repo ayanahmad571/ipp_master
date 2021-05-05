@@ -9,8 +9,8 @@ require_once("../WorkOrderControllers/FormController.php");
 // }
 
 if (isset($_POST['work_order_repeat_publish_id'])) {
-    if (is_numeric($_POST['work_order_repeat_publish_id'])) {
-        $getWO = mysqlSelect($UpdatedStatusQuery . "
+	if (is_numeric($_POST['work_order_repeat_publish_id'])) {
+		$getWO = mysqlSelect($UpdatedStatusQuery . "
        
         
 		left join clients_main on master_wo_2_client_id = client_id
@@ -21,15 +21,15 @@ if (isset($_POST['work_order_repeat_publish_id'])) {
 		order by master_wo_id desc
         ");
 
-        if (!is_array($getWO)) {
-            die("Editing Sales Order Not Found.");
-        }
-        $getWO = $getWO[0];
-    } else {
-        die("Work Order ID Invalid");
-    }
+		if (!is_array($getWO)) {
+			die("Editing Sales Order Not Found.");
+		}
+		$getWO = $getWO[0];
+	} else {
+		die("Work Order ID Invalid");
+	}
 } else {
-    die("Expected a Last Work Order ID, got nothing.");
+	die("Expected a Last Work Order ID, got nothing.");
 }
 
 $toCheck = submitParams();
@@ -147,6 +147,23 @@ if ($foilPrint) {
 	$WorkOrderMaster["master_wo_2_foil_print_side"] = $_POST["work_order_2_foil_print_side"];
 }
 
+selectChecker("SELECT * FROM `work_order_ui_partial_del` where partial_del_show = 1 and partial_del_id = " . $_POST['work_order_2_partial_delivery'], 'Partial Delivery Type Not Found', 'mysqlSelect');
+$WorkOrderMaster["master_wo_2_partial_delivery"] = $_POST["work_order_2_partial_delivery"];
+
+selectChecker("SELECT * FROM `work_order_ui_lsd_required` where lsd_required_show = 1 and lsd_required_id = " . $_POST['work_order_2_lsd_required'], 'LSD Required Type Not Found', 'mysqlSelect');
+$WorkOrderMaster["master_wo_2_lsd_required"] = $_POST["work_order_2_lsd_required"];
+
+
+$WorkOrderMaster["master_wo_m_lwo"] = $_POST["work_order_m_lwo"];
+$WorkOrderMaster["master_wo_extra_ncr"] = $_POST["work_order_ncr_no"];
+$WorkOrderMaster["master_wo_extra_ccr"] = $_POST["work_order_ccr_no"];
+
+$WorkOrderMaster["master_wo_rfp_date"] = $_POST["work_order_rfp_date"];
+$WorkOrderMaster["master_wo_rfp_no"] = $_POST["work_order_rfp_no"];
+
+
+$WorkOrderMaster["master_wo_ship_port_name"] = $_POST["work_order_ship_port_name"];
+
 
 $WorkOrderMaster["master_wo_customer_design_name"] = $_POST["work_order_customer_design_name"];
 $WorkOrderMaster["master_wo_customer_item_code"] = $_POST["work_order_customer_item_code"];
@@ -156,6 +173,11 @@ $WorkOrderMaster["master_wo_delivery_date"] = $checkDeliveryDate;
 
 if ($_POST['work_order_2_type_printed'] == 1) {
 	$WorkOrderMaster["master_wo_ink_gsm_pre_c"] = $_POST["work_order_ink_gsm_pre_c"];
+	$WorkOrderMaster["master_wo_design_id"] = $_POST["work_order_design_id"];
+	$WorkOrderMaster["master_wo_rev_no"] = $_POST["work_order_rev_no"];
+	if ($_POST['work_order_2_lsd_required'] == 2) {
+		$WorkOrderMaster["master_wo_lsd_copies"] = $_POST["work_order_lsd_copies"];
+	}
 }
 
 if ($_POST['work_order_2_fill_temp'] == 4 || $_POST['work_order_2_fill_temp'] == 5) {
@@ -170,8 +192,6 @@ $WorkOrderMaster["master_wo_fill_temp"] = $_POST["work_order_fill_temp"];
 $WorkOrderMaster["master_wo_line_speed"] = $_POST["work_order_line_speed"];
 $WorkOrderMaster["master_wo_dwell_time"] = $_POST["work_order_dwell_time"];
 $WorkOrderMaster["master_wo_seal_temp"] = $_POST["work_order_seal_temp"];
-$WorkOrderMaster["master_wo_design_id"] = $_POST["work_order_design_id"];
-$WorkOrderMaster["master_wo_rev_no"] = $_POST["work_order_rev_no"];
 $WorkOrderMaster["master_wo_approved_sample_wo_no"] = $_POST["work_order_approved_sample_wo_no"];
 $WorkOrderMaster["master_wo_coating_gsm"] = $_POST["work_order_coating_gsm"];
 $WorkOrderMaster["master_wo_pack_weight"] = $_POST["work_order_pack_weight"];
@@ -186,10 +206,6 @@ $WorkOrderMaster["master_wo_cart_thick"] = $_POST["work_order_cart_thick"];
 $WorkOrderMaster["master_wo_max_gross_pallet_weight"] = $_POST["work_order_max_gross_pallet_weight"];
 
 $WorkOrderMaster["master_wo_cof_val"] = $_POST["work_order_cof_val"];
-
-$getWO["master_wo_extra_ncr"] = $_POST["work_order_ncr_no"];
-$getWO["master_wo_extra_ccr"] = $_POST["work_order_ccr_no"];
-
 
 
 for ($counter1 = 1; $counter1 <= $plyNumber; $counter1++) {
@@ -247,14 +263,20 @@ if (isset($_POST['work_order_3_changes'])) {
 
 if ($structureMaster == 1) {
 	//Bag
-	selectChecker("SELECT * FROM `bag_digital_master` 
-	where bdm_valid =1 and bdm_id = ".$_POST["work_order_2_bag_type"], 
-	'Bag Type Not Found', 'mysqlSelect');
+	selectChecker(
+		"SELECT * FROM `bag_digital_master` 
+	where bdm_valid =1 and bdm_id = " . $_POST["work_order_2_bag_type"],
+		'Bag Type Not Found',
+		'mysqlSelect'
+	);
 	$WorkOrderMaster["master_wo_2_bag_type"] = $_POST["work_order_2_bag_type"];
 
-	selectChecker("SELECT * FROM `work_order_ui_bag_handle` 
-	where bag_handle_show =1 and bag_handle_id=".$_POST['work_order_2_bags_handle'],
-	'Bag Handle Not Found', 'mysqlSelect');
+	selectChecker(
+		"SELECT * FROM `work_order_ui_bag_handle` 
+	where bag_handle_show =1 and bag_handle_id=" . $_POST['work_order_2_bags_handle'],
+		'Bag Handle Not Found',
+		'mysqlSelect'
+	);
 	$WorkOrderMaster["master_wo_2_bags_handle"] = $_POST["work_order_2_bags_handle"];
 
 
@@ -267,92 +289,134 @@ if ($structureMaster == 1) {
 
 	$WorkOrderMaster["master_wo_pouch_per_bund"] = $_POST["work_order_pouch_per_bund"];
 	$WorkOrderMaster["master_wo_bund_per_box"] = $_POST["work_order_bund_per_box"];
+	$WorkOrderMaster["master_wo_bags_distance_top_extra"] = $_POST["work_order_bags_distance_top_extra"];
 
-	$getAllParams = mysqlSelect("SELECT * FROM `bag_digital_params` where bdp_bdm_id =".$_POST["work_order_2_bag_type"]);
-	if(!isset($_POST['bags'])){
+	$getAllParams = mysqlSelect("SELECT * FROM `bag_digital_params` where bdp_bdm_id =" . $_POST["work_order_2_bag_type"]);
+	if (!isset($_POST['bags'])) {
 		die("Bag Params Not Set");
 	}
 
-	if(!is_array($_POST['bags'])){
+	if (!is_array($_POST['bags'])) {
 		die("Invalid Bag Params Sent");
 	}
 
-	foreach($getAllParams as $Param){
-		if(!isset($_POST['bags'][$Param['bdp_id']])){
-			die("Bag Parameter for ".$Param['bdp_title']." Not Found");
+	foreach ($getAllParams as $Param) {
+		if (!isset($_POST['bags'][$Param['bdp_id']])) {
+			die("Bag Parameter for " . $Param['bdp_title'] . " Not Found");
 		}
 	}
 
 	$WorkOrderMaster["master_wo_bags_values"] = json_encode($_POST['bags']);
-
-	
 } elseif ($structureMaster == 2) {
 	//Pouch
-	selectChecker("SELECT * FROM `pouch_digital_sub` 
-	where pds_valid =1 and pds_id = ".$_POST["work_order_2_pouch_master"], 
-	'Pouch Type Not Found', 'mysqlSelect');
+	selectChecker(
+		"SELECT * FROM `pouch_digital_sub` 
+	where pds_valid =1 and pds_id = " . $_POST["work_order_2_pouch_master"],
+		'Pouch Type Not Found',
+		'mysqlSelect'
+	);
 	$WorkOrderMaster["master_wo_2_pouch_master"] = $_POST["work_order_2_pouch_master"];
 
-	selectChecker("SELECT * FROM `work_order_ui_pouch_punch_type` 
-	where punch_show =1 and punch_id=".$_POST['work_order_2_pouch_punch_type'],
-	'Punch Type Not Found', 'mysqlSelect');
+	selectChecker(
+		"SELECT * FROM `work_order_ui_pouch_punch_type` 
+	where punch_show =1 and punch_id=" . $_POST['work_order_2_pouch_punch_type'],
+		'Punch Type Not Found',
+		'mysqlSelect'
+	);
 
-	selectChecker("SELECT * FROM `work_order_ui_pouch_euro_punch` 
-	where euro_show =1 and euro_id=".$_POST['work_order_2_pouch_euro_punch'],
-	'Euro Punch Not Found', 'mysqlSelect');
-###
-	selectChecker("SELECT * FROM `work_order_ui_pouch_round_corner` 
-	where round_corner_show =1 and round_corner_id=".$_POST['work_order_2_pouch_round_corner'],
-	'Round Corner Not Found', 'mysqlSelect');
-###
-	selectChecker("SELECT * FROM `work_order_ui_pouch_zipper` 
-	where zipper_show =1 and zipper_id=".$_POST['work_order_2_pouch_zipper'],
-	'Zipper Not Found', 'mysqlSelect');
+	selectChecker(
+		"SELECT * FROM `work_order_ui_pouch_euro_punch` 
+	where euro_show =1 and euro_id=" . $_POST['work_order_2_pouch_euro_punch'],
+		'Euro Punch Not Found',
+		'mysqlSelect'
+	);
+	###
+	selectChecker(
+		"SELECT * FROM `work_order_ui_pouch_round_corner` 
+	where round_corner_show =1 and round_corner_id=" . $_POST['work_order_2_pouch_round_corner'],
+		'Round Corner Not Found',
+		'mysqlSelect'
+	);
+	###
+	selectChecker(
+		"SELECT * FROM `work_order_ui_pouch_zipper` 
+	where zipper_show =1 and zipper_id=" . $_POST['work_order_2_pouch_zipper'],
+		'Zipper Not Found',
+		'mysqlSelect'
+	);
 
-	selectChecker("SELECT * FROM `work_order_ui_pouch_zipper_opc` 
-	where zipopc_show =1 and zipopc_id=".$_POST['work_order_2_pouch_zipper_opc'],
-	'Open/Close? Not Found', 'mysqlSelect');
+	selectChecker(
+		"SELECT * FROM `work_order_ui_pouch_zipper_opc` 
+	where zipopc_show =1 and zipopc_id=" . $_POST['work_order_2_pouch_zipper_opc'],
+		'Open/Close? Not Found',
+		'mysqlSelect'
+	);
 
-	selectChecker("SELECT * FROM `work_order_ui_pouch_pe_strip` 
-	where pestrip_show =1 and pestrip_id=".$_POST['work_order_2_pouch_pestrip'],
-	'PE Strip Not Found', 'mysqlSelect');
-###
-	selectChecker("SELECT * FROM `work_order_ui_pouch_tear_notch` 
-	where tear_notch_show =1 and tear_notch_id=".$_POST['work_order_2_pouch_tear_notch'],
-	'Tear Notch Not Found', 'mysqlSelect');
+	selectChecker(
+		"SELECT * FROM `work_order_ui_pouch_pe_strip` 
+	where pestrip_show =1 and pestrip_id=" . $_POST['work_order_2_pouch_pestrip'],
+		'PE Strip Not Found',
+		'mysqlSelect'
+	);
+	###
+	selectChecker(
+		"SELECT * FROM `work_order_ui_pouch_tear_notch` 
+	where tear_notch_show =1 and tear_notch_id=" . $_POST['work_order_2_pouch_tear_notch'],
+		'Tear Notch Not Found',
+		'mysqlSelect'
+	);
 
-	selectChecker("SELECT * FROM `work_order_ui_pouch_tear_notch_qty` 
-	where tear_notch_qty_show =1 and tear_notch_qty_id=".$_POST['work_order_2_pouch_tear_notch_qty'],
-	'Tear Notch Number of Sides Not Found', 'mysqlSelect');
+	selectChecker(
+		"SELECT * FROM `work_order_ui_pouch_tear_notch_qty` 
+	where tear_notch_qty_show =1 and tear_notch_qty_id=" . $_POST['work_order_2_pouch_tear_notch_qty'],
+		'Tear Notch Number of Sides Not Found',
+		'mysqlSelect'
+	);
 
-	selectChecker("SELECT * FROM `work_order_ui_pouch_tear_notch_side` 
-	where tear_notch_side_show =1 and tear_notch_side_id=".$_POST['work_order_2_pouch_tear_notch_side'],
-	'Tear Notch Side Not Found', 'mysqlSelect');
-	
+	selectChecker(
+		"SELECT * FROM `work_order_ui_pouch_tear_notch_side` 
+	where tear_notch_side_show =1 and tear_notch_side_id=" . $_POST['work_order_2_pouch_tear_notch_side'],
+		'Tear Notch Side Not Found',
+		'mysqlSelect'
+	);
+
+	selectChecker(
+		"SELECT * FROM `work_order_ui_pouch_perforation`
+	where pouch_perforation_show = 1 and pouch_perforation_id = " . $_POST['work_order_2_pouch_perforation'],
+		'Perforation Type Not Found',
+		'mysqlSelect'
+	);
+
+	$WorkOrderMaster["master_wo_2_pouch_perforation"] = $_POST["work_order_2_pouch_perforation"];
 	$WorkOrderMaster["master_wo_2_pouch_round_corner"] = $_POST["work_order_2_pouch_round_corner"];
-	
 	$WorkOrderMaster["master_wo_2_pouch_punch_type"] = $_POST["work_order_2_pouch_punch_type"];
-	if($_POST["work_order_2_pouch_punch_type"] == 10){
+
+	if ($_POST["work_order_2_pouch_punch_type"] == 10) {
 		$WorkOrderMaster["master_wo_2_pouch_euro_punch"] = $_POST["work_order_2_pouch_euro_punch"];
 	}
-	
+
 	$WorkOrderMaster["master_wo_2_pouch_zipper"] = $_POST["work_order_2_pouch_zipper"];
-	if($_POST['work_order_2_pouch_zipper'] == 1){
+	if ($_POST['work_order_2_pouch_zipper'] == 1) {
 		$WorkOrderMaster["master_wo_2_pouch_zipper_opc"] = $_POST["work_order_2_pouch_zipper_opc"];
 		$WorkOrderMaster["master_wo_pouch_top_dist"] = $_POST["work_order_pouch_top_dist"];
-		if($_POST['work_order_2_pouch_master'] ==9 || $_POST['work_order_2_pouch_master'] == 10){
+		if ($_POST['work_order_2_pouch_master'] == 9 || $_POST['work_order_2_pouch_master'] == 10) {
 			$WorkOrderMaster["master_wo_2_pouch_pestrip"] = $_POST["work_order_2_pouch_pestrip"];
 		}
 	}
-	
+
 	$WorkOrderMaster["master_wo_2_pouch_tear_notch"] = $_POST["work_order_2_pouch_tear_notch"];
-	if($_POST["work_order_2_pouch_tear_notch"] == 1){
+	if ($_POST["work_order_2_pouch_tear_notch"] == 1) {
 		$WorkOrderMaster["master_wo_2_pouch_tear_notch_qty"] = $_POST["work_order_2_pouch_tear_notch_qty"];
 		$WorkOrderMaster["master_wo_2_pouch_tear_notch_side"] = $_POST["work_order_2_pouch_tear_notch_side"];
 	}
 
 	$WorkOrderMaster["master_wo_pouch_per_bund"] = $_POST["work_order_pouch_per_bund"];
 	$WorkOrderMaster["master_wo_bund_per_box"] = $_POST["work_order_bund_per_box"];
+
+	$WorkOrderMaster["master_wo_pouch_distance_top_extra"] = $_POST["work_order_pouch_distance_top_extra"];
+	if ($_POST['work_order_2_pouch_perforation'] == 2) {
+		$WorkOrderMaster["master_wo_pouch_perforation_distance_top"] = $_POST["work_order_pouch_perforation_distance_top"];
+	}
 
 	//Check if the posted options are valid
 	// if (isset($_POST['work_order_3_pouch_lap_fin'])) {
@@ -366,23 +430,22 @@ if ($structureMaster == 1) {
 	// 	}
 	// 	$WorkOrderMaster['master_wo_3_pouch_lap_fin'] = implode(',', $_POST['work_order_3_pouch_lap_fin']);
 	// }
-	$getAllParams = mysqlSelect("SELECT * FROM `pouch_digital_params` where pdp_pds_id =".$_POST["work_order_2_pouch_master"]);
-	if(!isset($_POST['pouch'])){
+	$getAllParams = mysqlSelect("SELECT * FROM `pouch_digital_params` where pdp_pds_id =" . $_POST["work_order_2_pouch_master"]);
+	if (!isset($_POST['pouch'])) {
 		die("Pouch Params Not Set");
 	}
 
-	if(!is_array($_POST['pouch'])){
+	if (!is_array($_POST['pouch'])) {
 		die("Invalid Pouch Params Sent");
 	}
 
-	foreach($getAllParams as $Param){
-		if(!isset($_POST['pouch'][$Param['pdp_id']])){
-			die("Pouch Parameter for ".$Param['pdp_title']." Not Found");
+	foreach ($getAllParams as $Param) {
+		if (!isset($_POST['pouch'][$Param['pdp_id']])) {
+			die("Pouch Parameter for " . $Param['pdp_title'] . " Not Found");
 		}
 	}
 
 	$WorkOrderMaster["master_wo_pouch_values"] = json_encode($_POST['pouch']);
-
 } elseif ($structureMaster == 3) {
 	//Roll
 	selectChecker(
@@ -440,6 +503,10 @@ if ($structureMaster == 1) {
 		'mysqlSelect'
 	);
 
+	if ($_POST["work_order_max_w_p_r"] !== "" && $_POST["work_order_roll_od"] !== "") {
+		die("Please only enter either Roll OD or Weight");
+	}
+
 	$WorkOrderMaster["master_wo_2_roll_pack_ins"] = $_POST["work_order_2_roll_pack_ins"];
 	$WorkOrderMaster["master_wo_roll_od"] = $_POST["work_order_roll_od"];
 	$WorkOrderMaster["master_wo_roll_width"] = $_POST["work_order_roll_width"];
@@ -457,13 +524,13 @@ $insertReference = mysqlInsertData("INSERT INTO `master_work_order_reference_num
         '" . $USER_ARRAY['lum_id'] . "',
         '3' , 
         '" . $_POST["work_order_repeat_publish_id"] . "',
-        '".$WorkOrderType."')", true);
+        '" . $WorkOrderType . "')", true);
 
 
-	if (!is_numeric($insertReference)) {
-		die("503: Internal Error, Could not insert WORK ORDER REFERENCE");
-	}
-	$statusNo = 1;
+if (!is_numeric($insertReference)) {
+	die("503: Internal Error, Could not insert WORK ORDER REFERENCE");
+}
+$statusNo = 1;
 
 
 if (($_POST["work_order_remarks_overall"] != '')) {
@@ -546,7 +613,7 @@ if (is_array($RemarksMain)) {
 // 	$insertSql = 'update `sales_work_order_main` 
 // 			set
 // 			' . implode(', ', $updateCols) . ' 
-			
+
 // 			where
 // 			s_wo_id = ' . $_POST['work_order_edit_draft_id'];
 
@@ -586,12 +653,12 @@ if (is_array($RemarksMain)) {
 // 		die("503 - Internal Server Error, Insert Failed");
 // 	}
 
-	logInsert(
-		basename($_SERVER['PHP_SELF']),
-		$_SESSION[SESSION_HASH_NAME],
-		$USER_ARRAY['lum_id'],
-		$_SERVER['REMOTE_ADDR'],
-		$USER_ARRAY['lum_code'] . " added repeat with change sales order with REF: ".$insertReference." ID: " . $insertWorkOrderMain,
-		"mysqlInsertData"
-	);
+logInsert(
+	basename($_SERVER['PHP_SELF']),
+	$_SESSION[SESSION_HASH_NAME],
+	$USER_ARRAY['lum_id'],
+	$_SERVER['REMOTE_ADDR'],
+	$USER_ARRAY['lum_code'] . " added repeat with change sales order with REF: " . $insertReference . " ID: " . $insertWorkOrderMain,
+	"mysqlInsertData"
+);
 // }

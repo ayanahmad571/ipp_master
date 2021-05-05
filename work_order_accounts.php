@@ -35,11 +35,11 @@ getHead("WO Accounts");
             //                                         limit 1) = master_wo_id ) m
             //  where m.master_wo_status = 4");
             ?>
-            <?php 
+            <?php
             // getTopCard("col-lg-4 col-md-6 col-sm-6 col-12", "far fa-user", "Pending", $pendingCount[0]['ans']);
             // getTopCard("col-lg-4 col-md-6 col-sm-6 col-12", "far fa-user", "Conditional Release Pending", "0000"); 
             // getTopCard("col-lg-4 col-md-6 col-sm-6 col-12", "far fa-user", "Published", "0000");
-             ?>
+            ?>
             <?php //getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000")
             ?>
           </div>
@@ -80,8 +80,8 @@ getHead("WO Accounts");
                             <td><?php echo $Draft['master_wo_design_id']; ?></td>
                             <td>
                               <?php
-                              $getBy = mysqlSelect("select * from user_main where lum_id = " . $Draft['master_wo_gen_lum_id'] . " and lum_valid =1");
-                              $getFor = mysqlSelect("select * from user_main where lum_id = " . $Draft['master_wo_2_sales_id'] . " and lum_valid =1");
+                              $getBy = mysqlSelect("select * from user_main where lum_id = " . $Draft['mwo_gen_lum_id'] . " and lum_valid =1");
+                              $getFor = mysqlSelect("select * from user_main where lum_id = " . $Draft['mwo_gen_on_behalf_lum_id'] . " and lum_valid =1");
 
                               echo getByForFromWO($getBy, $getFor);
                               ?>
@@ -96,9 +96,7 @@ getHead("WO Accounts");
                               <td>
                                 <button class="publishDraft btn btn-success mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Release</button>
                                 <button class="publishConditionalDraft btn btn-warning mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Conditional Release</button>
-                                <a target="_blank" href="work_order_view_print?id=<?php echo $Draft['master_wo_ref'] ?>">
-                                  <button class="btn btn-primary mt-1">View</button>
-                                </a>
+                                <button onclick="openWindow(<?php echo $Draft['master_wo_ref'] ?>)" class="btn btn-primary mt-1">View</button>
                               </td>
                             <?php
                             } else if ($getCondRel[0]['crw_status'] == 1) {
@@ -113,9 +111,7 @@ getHead("WO Accounts");
                                 <hr>
                                 <button class="publishDraft btn btn-success mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Release</button>
                                 <button class="publishConditionalDraft btn btn-warning mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Conditional Release</button>
-                                <a target="_blank" href="work_order_view_print?id=<?php echo $Draft['master_wo_ref'] ?>">
-                                  <button class="btn btn-primary mt-1">View</button>
-                                </a>
+                                <button onclick="openWindow(<?php echo $Draft['master_wo_ref'] ?>)" class="btn btn-primary mt-1">View</button>
                               </td>
                             <?php
                             }
@@ -179,9 +175,8 @@ getHead("WO Accounts");
                             <td><?php echo date('d-m-Y @ h:i:s a', $Discard['master_wo_gen_dnt']); ?></td>
                             <td><?php echo $Discard['mwoid_desc2'] ?></td>
                             <td>
-                              <a href="work_order_view_print?id=<?php echo $Discard['master_wo_ref'] ?>" target="_blank">
-                                <button class="btn btn-warning mt-1">View</button>
-                              </a>
+                              <button onclick="openWindow(<?php echo $Discard['master_wo_ref'] ?>)" class="btn btn-warning mt-1">View</button>
+
                             </td>
                           </tr>
                       <?php
@@ -285,12 +280,12 @@ getHead("WO Accounts");
     }); /*Doc Ready*/
   </script>
 
-<?php $getDraftsH = mysqlSelect(workOrderPagesQuery("4")); ?>
-<input type="hidden" id="rowDiff" value="<?php echo (is_array($getDraftsH) ? count($getDraftsH): "0"); ?>" />
+  <?php $getDraftsH = mysqlSelect(workOrderPagesQuery("4")); ?>
+  <input type="hidden" id="rowDiff" value="<?php echo (is_array($getDraftsH) ? count($getDraftsH) : "0"); ?>" />
 
-<script src="assets/modules/iZiToast.js"></script>
+  <script src="assets/modules/iZiToast.js"></script>
 
-<script>
+  <script>
     function fetchdata() {
       var rowD = $("#rowDiff").val();
       $.ajax({
@@ -318,9 +313,8 @@ getHead("WO Accounts");
     $(document).ready(function() {
       setInterval(fetchdata, 5000);
     });
-
   </script>
-
+  <?php getPrintJS(); ?>
 </body>
 
 </html>

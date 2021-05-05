@@ -1,16 +1,7 @@
 <?php
 
 
-define("DB_HOST", "localhost");
-define("DB_TABLE", "image_uploads_table");
-
-define("DB_USER", "root");
-define("DB_PASS", "");
-define("DB_NAME", "ipp");
-
-// define("DB_USER", "u448825944_ipp");
-// define("DB_PASS", "5!luY7rB2569853265*//*-*/");
-// define("DB_NAME", "u448825944_ipp");
+require("SecretKeys.php");
 
 // Create connection
 $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
