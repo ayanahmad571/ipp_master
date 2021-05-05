@@ -117,6 +117,7 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
                         <th>User</th>
                         <th>TimeStamp</th>
                         <th>Action</th>
+                        <th>Flag</th>
                       </tr>
                     </thead>
 
@@ -145,6 +146,17 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
                               <button class="discardDraft btn btn-danger mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Return</button>
                               <button onclick="openWindow(<?php echo $Draft['master_wo_ref'] ?>)" class="btn btn-primary mt-1">View</button>
 
+                            </td>
+                            <td>
+                              <?php
+
+
+                              $checkSQL = mysqlSelect("SELECT * FROM `master_work_order_main` WHERE `master_wo_status` = 3 and `master_wo_ref` = " . $Draft['master_wo_ref'] . " order by `master_wo_gen_dnt` desc limit 1");
+                              $flag = is_array($checkSQL);
+                              if ($flag) {
+                                echo "<strong>Previously Rejected</strong> <br><hr> " . $checkSQL[0]['master_reject_text'];
+                              }
+                              ?>
                             </td>
                           </tr>
                       <?php

@@ -120,6 +120,7 @@ if (isset($_POST['wo_id']) && isset($_POST['WorkOrderRelReasonID']) && isset($_P
 		<p style='color:green'>Successfully Requested Work Order Release, Click below to continue</p>
 		<button class="btn btn-success" onclick="window.location.reload();">Continue..</button>
 	</div>
+	
 	<p id="ret"></p>
 	<div id="holderContainer">
 		<input id="a" type="hidden" value="<?php echo $_POST['WorkOrderGetDetails'] ?>" />
