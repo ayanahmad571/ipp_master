@@ -35,7 +35,7 @@ getHead("Conditional Release");
 
                   if (isset($_GET['id'])) {
                   ?>
-                    <table class="table table-striped table-bordered " id="DraftsContainerTable">
+                    <table class="table table-striped table-bordered">
                       <thead>
                         <tr>
                           <th>Reason</th>
@@ -85,22 +85,40 @@ getHead("Conditional Release");
                     if ($toAcc) {
                     ?>
                       <div class="row">
-                        <div align="center" class="col-sm-6">
-                          <br>
-                          <form id="CompSub" action="server_fundamentals/MainWorkOrderSubmit" method="POST">
-                            <input name="AccountsCondToTechnical" type="hidden" value="<?php echo $_GET['id']; ?>" />
-                            <button type="submit" class="btn btn-success">Accept</button>
+                        <div class="col-12 col-md-6">
+                          <div class="card card-success">
+                            <div class="center card-header">
+                              <h4>Accept</h4>
+                            </div>
+                            <div class="card-body">
+                              <p>Accept Conditional release and continue.</p>
+                              <form id="CompSub" action="server_fundamentals/MainWorkOrderSubmit" method="POST">
+                                <input name="AccountsCondToTechnical" type="hidden" value="<?php echo $_GET['id']; ?>" />
+                                <button type="submit" class="btn btn-success">Accept</button>
 
-                          </form>
+                              </form>
+                            </div>
+                          </div>
                         </div>
-                        <div class="col-sm-6">
-                          <form id="CompSub2" action="server_fundamentals/AccountsController" method="POST">
-                            <input name="AccountsCondToTechnicalRejectCond" type="hidden" value="<?php echo $_GET['id'] ?>" />
-                            <input name="rejCond" type="text" class="form-control" /><br>
-                            <button type="submit" class="btn btn-danger">Reject</button>
 
-                          </form>
+                        <div class="col-12 col-md-6">
+                          <div class="card card-danger">
+                            <div class="card-header">
+                              <h4>Reject Request</h4>
+                            </div>
+                            <div class="card-body">
+                              <p>Please specify reason for Rejecting Request</code></p>
+                              <form id="CompSub2" action="server_fundamentals/AccountsController" method="POST">
+                                <input name="AccountsCondToTechnicalRejectCond" type="hidden" value="<?php echo $_GET['id'] ?>" />
+                                <input placeholder="Reason ..." name="rejCond" type="text" class="form-control" /><br>
+                                <button type="submit" class="btn btn-danger">Reject</button>
+
+                              </form>
+                            </div>
+                          </div>
                         </div>
+
+
                       </div>
 
 
@@ -109,14 +127,13 @@ getHead("Conditional Release");
                     ?>
                   <?php
                   } else {
-
                   ?>
-
                     <table class="table table-striped table-bordered " id="DraftsContainerTable">
                       <thead>
                         <tr>
                           <th>WO#</th>
                           <th>Status</th>
+                          <th>Timestamp</th>
                           <th>Action</th>
 
                         </tr>
@@ -137,7 +154,10 @@ getHead("Conditional Release");
                             <tr>
                               <td><?php echo $Draft['crw_wo_ref']; ?></td>
                               <td><?php echo $getIdentity[0]['crd_text'] ?></td>
-                              <td><a href="conditional_release?id=<?php echo $Draft['crw_wo_ref'] ?>"><button class="btn btn-primary">View</button></a></td>
+                              <td><?php echo date(getDateTimeFormat(), $Draft['crw_dnt']); ?></td>
+                              <td><a href="conditional_release?id=<?php echo $Draft['crw_wo_ref'] ?>">
+                                  <button class="btn btn-<?php echo ($Draft['crw_status'] == 2 ? "success" : "danger") ?>">View</button></a>
+                              </td>
                             </tr>
                         <?php
                             $x++;
@@ -175,6 +195,20 @@ getHead("Conditional Release");
   ?>
 
   <script src="assets/js/bootbox.min.js"></script>
+
+  <script type="text/javascript" src="assets/Datatables/datatables.min.js"></script>
+
+  <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+
+  <script>
+    $("#DraftsContainerTable").DataTable({
+      "order": [
+        [1, "desc"],
+        [2, "desc"]
+      ]
+    });
+  </script>
+
   <script>
     $(document).ready(function(e) {
       $('#CompSub').on('submit', (function(e) {
@@ -194,7 +228,15 @@ getHead("Conditional Release");
               contentType: false,
               processData: false,
               success: function(data) {
-                bootbox.alert(data);
+                if (data.includes("Success- Work Order Successfully Published")) {
+                  bootbox.alert(data);
+                  setTimeout(function() {
+                    window.location.reload();
+                  }, 1000);
+
+                } else {
+                  bootbox.alert(data);
+                }
               },
               error: function(data) {
                 alert("Contact Admin.");
@@ -227,7 +269,16 @@ getHead("Conditional Release");
               contentType: false,
               processData: false,
               success: function(data) {
-                bootbox.alert(data);
+                if (data.includes("Successfully Registered Request")) {
+                  bootbox.alert(data);
+                  setTimeout(function() {
+                    window.location.reload();
+                  }, 1000);
+
+                } else {
+                  bootbox.alert(data);
+                }
+
               },
               error: function(data) {
                 alert("Contact Admin.");
