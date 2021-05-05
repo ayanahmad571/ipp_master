@@ -416,7 +416,7 @@ function getCoatingSection()
             'lamo_value'
         );
         ?>
-        <div class="form-group col-sm-12 col-md-6 col-lg-2">
+        <div class="showCoatingClick form-group col-sm-12 col-md-6 col-lg-2">
             <label>Coating GSM</label>
             <input type="text" class="form-control" name="work_order_coating_gsm" placeholder="Coating GSM">
         </div>
@@ -1351,6 +1351,7 @@ function getScriptInitializer()
             setUpLSD();
             setUpPerforation();
             setUpWindingDisplay();
+            setUpCoating();
             $(".remarksEdit").wysihtml5();
 
         });
@@ -1510,6 +1511,10 @@ function getScriptTriggers()
 
             $("select[name=work_order_2_pouch_perforation]").change(function(e) {
                 setUpPerforation();
+            });
+
+            $("select[name=work_order_2_coating_options]").change(function(e) {
+                setUpCoating();
             });
 
             $("#formLoading").hide();
@@ -1939,6 +1944,16 @@ function getScriptFunctionalSetup()
             }
 
         }
+
+        function setUpCoating() {
+            var punchId = $("select[name=work_order_2_coating_options]").find(':selected').val();
+
+            if (punchId == 6) {
+                $(".showCoatingClick").hide();
+            } else {
+                $(".showCoatingClick").show();
+            }
+        }
     </script>
 <?php
 }
@@ -1998,7 +2013,7 @@ function submitParams()
         "work_order_2_pallet_type", "work_order_2_cont_stuff", "work_order_max_gross_pallet_weight", "work_order_2_pallet_dim", "work_order_2_freight_type",
         "work_order_cart_thick", "work_order_3_docs", "work_order_remarks_overall",
         "work_order_2_coating_options", "work_order_coating_gsm", "work_order_cof_val", "work_order_submersion_temp", "work_order_submersion_duration",
-        "work_order_m_lwo", "work_order_ncr_no", "work_order_ccr_no", "work_order_rfp_date", "work_order_rfp_no", 
+        "work_order_m_lwo", "work_order_ncr_no", "work_order_ccr_no", "work_order_rfp_date", "work_order_rfp_no",
         "work_order_2_partial_delivery", "work_order_2_lsd_required", "work_order_lsd_copies", "work_order_ship_port_name"
     );
 }
