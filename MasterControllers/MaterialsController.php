@@ -51,5 +51,6 @@ if(isset($_POST['add_material_name']) && isset($_POST['add_material_density']) &
         header("Location: ../master_materials.php");
         die();
     }
+    // TODO Add Logs here and at the top
 }
 ?>

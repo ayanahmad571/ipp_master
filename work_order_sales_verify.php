@@ -3,19 +3,18 @@ require_once("server_fundamentals/SessionHandler.php");
 
 getHead("WO Sales Verification");
 
-$salesGroups = mysqlSelect("select sgp_sgm_id from sales_groups_people where sgp_lum_id = ".$USER_ARRAY['lum_id']);
+$salesGroups = mysqlSelect("select sgp_sgm_id from sales_groups_people where sgp_lum_id = " . $USER_ARRAY['lum_id']);
 
 
 
-if($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2){
+if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
   #Master Admin and MD
   $recQuery = workOrderPagesQuery("2");
   $sentQuery = workOrderPagesQuery("3");
   $backQuery = workOrderPagesQuery("4");
-  
-}else if($USER_ARRAY['lum_user_type'] == 4){
+} else if ($USER_ARRAY['lum_user_type'] == 4) {
   #Sales Coordinator
-  if(!is_array($salesGroups)){
+  if (!is_array($salesGroups)) {
     die("User not assigned to any sales group");
   }
   // $containerLeft = "select * from ( ";
@@ -26,24 +25,22 @@ if($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2){
   // $backQuery = $containerLeft.workOrderPagesQuery("4").$containerRight;
 
   die("User not allowed!!");
-
-}else if($USER_ARRAY['lum_user_type'] == 18){
+} else if ($USER_ARRAY['lum_user_type'] == 18) {
   #Assistant Sales Manager
-  if(!is_array($salesGroups)){
+  if (!is_array($salesGroups)) {
     die("User not assigned to any sales group");
   }
 
-  
+
   $containerLeft = "select * from ( ";
-  $containerRight = " ) sb where (sb.mwo_gen_on_behalf_lum_id = ".$USER_ARRAY['lum_id'].")";
+  $containerRight = " ) sb where (sb.mwo_gen_on_behalf_lum_id = " . $USER_ARRAY['lum_id'] . ")";
 
-  $recQuery = $containerLeft.workOrderPagesQuery("2").$containerRight;
-  $sentQuery = $containerLeft.workOrderPagesQuery("3").$containerRight;
-  $backQuery = $containerLeft.workOrderPagesQuery("4").$containerRight;
-
-}else if($USER_ARRAY['lum_user_type'] == 16){
+  $recQuery = $containerLeft . workOrderPagesQuery("2") . $containerRight;
+  $sentQuery = $containerLeft . workOrderPagesQuery("3") . $containerRight;
+  $backQuery = $containerLeft . workOrderPagesQuery("4") . $containerRight;
+} else if ($USER_ARRAY['lum_user_type'] == 16) {
   #Sales Manager
-  if(!is_array($salesGroups)){
+  if (!is_array($salesGroups)) {
     die("User not assigned to any sales group");
   }
 
@@ -51,21 +48,21 @@ if($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2){
   left join user_main on p.sgp_lum_id = lum_id
   where 
   lum_user_type in (18,4,16) and
-  p.sgp_sgm_id in (select s.sgp_sgm_id from sales_groups_people s where s.sgp_lum_id = ".$USER_ARRAY['lum_id'].")");
-  
+  p.sgp_sgm_id in (select s.sgp_sgm_id from sales_groups_people s where s.sgp_lum_id = " . $USER_ARRAY['lum_id'] . ")");
+
 
   $containerLeft = "select * from ( ";
   $containerRight = " ) sb 
   where (
-    sb.mwo_gen_lum_id in (".$allLowerUsers.") or
-    sb.mwo_gen_on_behalf_lum_id in (".$allLowerUsers.")
+    sb.mwo_gen_lum_id in (" . $allLowerUsers . ") or
+    sb.mwo_gen_on_behalf_lum_id in (" . $allLowerUsers . ")
     )
     ";
 
-  $recQuery = $containerLeft.workOrderPagesQuery("2").$containerRight;
-  $sentQuery = $containerLeft.workOrderPagesQuery("3").$containerRight;
-  $backQuery = $containerLeft.workOrderPagesQuery("4").$containerRight;
-}else{
+  $recQuery = $containerLeft . workOrderPagesQuery("2") . $containerRight;
+  $sentQuery = $containerLeft . workOrderPagesQuery("3") . $containerRight;
+  $backQuery = $containerLeft . workOrderPagesQuery("4") . $containerRight;
+} else {
   die("Un-Authorized User");
 }
 
@@ -95,13 +92,13 @@ if($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2){
           <?php getPageTitle("Sales Order - Sales Verifier"); ?>
           <!-- TOP CONTENT BLOCKS -->
           <div class="row">
-          <?php 
+            <?php
             // getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000");
             // getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000");
             // getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000");
             ?>
           </div>
-          
+
           <hr id="Splitter" />
 
           <div class="row">
@@ -136,19 +133,18 @@ if($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2){
                             <td><?php echo $Draft['master_wo_design_id']; ?></td>
                             <td>
                               <?php
-                              $getBy = mysqlSelect("select * from user_main where lum_id = " . $Draft['master_wo_gen_lum_id'] . " and lum_valid =1");
-                              $getFor = mysqlSelect("select * from user_main where lum_id = " . $Draft['master_wo_2_sales_id'] . " and lum_valid =1");
+                              $getBy = mysqlSelect("select * from user_main where lum_id = " . $Draft['mwo_gen_lum_id'] . " and lum_valid =1");
+                              $getFor = mysqlSelect("select * from user_main where lum_id = " . $Draft['mwo_gen_on_behalf_lum_id'] . " and lum_valid =1");
 
-                              echo getByForFromWO($getBy,$getFor);
+                              echo getByForFromWO($getBy, $getFor);
                               ?>
                             </td>
                             <td><?php echo date('d-m-Y @ h:i:s a', $Draft['master_wo_gen_dnt']); ?></td>
                             <td>
                               <button class="publishDraft btn btn-success mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Publish</button>
                               <button class="discardDraft btn btn-danger mt-1" data-id="<?php echo ($Draft['master_wo_ref']); ?>">Return</button>
-                              <a target="_blank" href="work_order_view_print?id=<?php echo $Draft['master_wo_ref'] ?>">
-                                <button class="btn btn-primary mt-1">View</button>
-                              </a>
+                              <button onclick="openWindow(<?php echo $Draft['master_wo_ref'] ?>)" class="btn btn-primary mt-1">View</button>
+
                             </td>
                           </tr>
                       <?php
@@ -202,15 +198,13 @@ if($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2){
                               $getBy = mysqlSelect("select * from user_main where lum_id = " . $Discard['mwo_gen_lum_id'] . " and lum_valid =1");
                               $getFor = mysqlSelect("select * from user_main where lum_id = " . $Discard['mwo_gen_on_behalf_lum_id'] . " and lum_valid =1");
 
-                              echo getByForFromWO($getBy,$getFor);
+                              echo getByForFromWO($getBy, $getFor);
                               ?>
                             </td>
                             <td><?php echo date('d-m-Y @ h:i:s a', $Discard['master_wo_gen_dnt']); ?></td>
                             <td><?php echo $Discard['mwoid_desc2'] ?></td>
                             <td>
-                              <a target="_blank" href="work_order_view_print?id=<?php echo $Discard['master_wo_ref'] ?>">
-                                <button class="btn btn-primary mt-1">View</button>
-                              </a>
+                              <button onclick="openWindow(<?php echo $Discard['master_wo_ref'] ?>)" class="btn btn-primary mt-1">View</button>
                             </td>
                           </tr>
                       <?php
@@ -262,15 +256,13 @@ if($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2){
                               $getBy = mysqlSelect("select * from user_main where lum_id = " . $Discard['mwo_gen_lum_id'] . " and lum_valid =1");
                               $getFor = mysqlSelect("select * from user_main where lum_id = " . $Discard['mwo_gen_on_behalf_lum_id'] . " and lum_valid =1");
 
-                              echo getByForFromWO($getBy,$getFor);
+                              echo getByForFromWO($getBy, $getFor);
                               ?>
                             </td>
                             <td><?php echo date('d-m-Y @ h:i:s a', $Discard['master_wo_gen_dnt']); ?></td>
                             <td><?php echo $Discard['mwoid_desc2'] ?></td>
                             <td>
-                              <a href="work_order_view_print?id=<?php echo $Discard['master_wo_ref'] ?>" target="_blank">
-                                <button class="btn btn-warning mt-1">View</button>
-                              </a>
+                              <button onclick="openWindow(<?php echo $Discard['master_wo_ref'] ?>)" class="btn btn-warning mt-1">View</button>
                             </td>
                           </tr>
                       <?php
@@ -374,15 +366,14 @@ if($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2){
 
       }); /* .pubslishDraft Click*/
     }); /*Doc Ready*/
-
   </script>
 
-<?php $getDraftsH = mysqlSelect(workOrderPagesQuery("2")); ?>
-<input type="hidden" id="rowDiff" value="<?php echo (is_array($getDraftsH) ? count($getDraftsH): "0"); ?>" />
+  <?php $getDraftsH = mysqlSelect(workOrderPagesQuery("2")); ?>
+  <input type="hidden" id="rowDiff" value="<?php echo (is_array($getDraftsH) ? count($getDraftsH) : "0"); ?>" />
 
-<script src="assets/modules/iZiToast.js"></script>
+  <script src="assets/modules/iZiToast.js"></script>
 
-<script>
+  <script>
     function fetchdata() {
       var rowD = $("#rowDiff").val();
       $.ajax({
@@ -410,10 +401,9 @@ if($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2){
     $(document).ready(function() {
       setInterval(fetchdata, 5000);
     });
-
   </script>
 
-
+  <?php getPrintJS(); ?>
 </body>
 
 </html>

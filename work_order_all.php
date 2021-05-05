@@ -26,7 +26,7 @@ getHead("WO Technical");
           <?php getPageTitle("Work Order - General View"); ?>
           <!-- TOP CONTENT BLOCKS -->
           <div class="row">
-          <?php 
+            <?php
             // getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000");
             // getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000");
             // getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000");
@@ -58,7 +58,7 @@ getHead("WO Technical");
 
 
                     <tbody>
-                      
+
                     </tbody>
 
                   </table>
@@ -93,7 +93,6 @@ getHead("WO Technical");
   <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
 
   <script>
-
     $("#DraftsContainerTable").DataTable({
       "processing": true,
       "serverSide": true,
@@ -101,12 +100,12 @@ getHead("WO Technical");
     });
   </script>
 
-<?php $getDraftsH = mysqlSelect(workOrderPagesQuery("9")); ?>
-<input type="hidden" id="rowDiff" value="<?php echo (is_array($getDraftsH) ? count($getDraftsH): "0"); ?>" />
+  <?php $getDraftsH = mysqlSelect(workOrderPagesQuery("9")); ?>
+  <input type="hidden" id="rowDiff" value="<?php echo (is_array($getDraftsH) ? count($getDraftsH) : "0"); ?>" />
 
-<script src="assets/modules/iZiToast.js"></script>
+  <script src="assets/modules/iZiToast.js"></script>
 
-<script>
+  <script>
     function fetchdata() {
       var rowD = $("#rowDiff").val();
       $.ajax({
@@ -134,10 +133,9 @@ getHead("WO Technical");
     $(document).ready(function() {
       setInterval(fetchdata, 5000);
     });
-
   </script>
 
-
+  <?php getPrintJS(); ?>
 
 
 </body>

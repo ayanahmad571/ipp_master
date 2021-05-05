@@ -19,6 +19,7 @@ $getWO = mysqlSelect($topQuery . "
      
       
   left join clients_main on master_wo_2_client_id = client_id
+  left join user_main on mwo_gen_on_behalf_lum_id = lum_id 
   left join master_work_order_main_identitiy on master_wo_status = mwoid_id
   left join work_order_ui_structure on master_wo_2_structure = structure_id
   left join work_order_qty_units on master_wo_2_units =  unit_id
@@ -56,6 +57,10 @@ $getWO = mysqlSelect($topQuery . "
   left join work_order_ui_pouch_tear_notch_qty on master_wo_2_pouch_tear_notch_qty = tear_notch_qty_id
   left join work_order_ui_pouch_tear_notch_side on master_wo_2_pouch_tear_notch_side = tear_notch_side_id
 
+  left join work_order_ui_lsd_required on master_wo_2_lsd_required = lsd_required_id 
+  left join work_order_ui_partial_del on master_wo_2_partial_delivery = partial_del_id
+  left join work_order_ui_pouch_perforation on master_wo_2_pouch_perforation = pouch_perforation_id 
+  
       where " . $stringCond . " 
   order by master_wo_id desc
       ");
@@ -207,7 +212,7 @@ $repeat = $getWO['mwo_type'] != 1;
 
               <tr>
                 <?php
-                getTableTD("Sales ID", $getWO["mwo_gen_on_behalf_lum_id"], 1);
+                getTableTD("Sales ID", $getWO["lum_code"], 1);
 
                 getTableTD("WO#", $getWO["mwo_ref_id"], 1);
 
@@ -251,6 +256,30 @@ $repeat = $getWO['mwo_type'] != 1;
                   getTableTD(
                     "NCR",
                     $getWO["master_wo_extra_ncr"]
+                  );
+
+                  ?>
+                </tr>
+              <?php } else { ?>
+                <tr>
+                  <?php
+
+                  getTableTD(
+                    "Manual LWO#",
+                    $getWO["master_wo_m_lwo"],
+                    4
+                  );
+
+                  getTableTD(
+                    "CCR",
+                    $getWO["master_wo_extra_ccr"],
+                    3
+                  );
+
+                  getTableTD(
+                    "NCR",
+                    $getWO["master_wo_extra_ncr"],
+                    3
                   );
 
                   ?>
@@ -320,6 +349,28 @@ $repeat = $getWO['mwo_type'] != 1;
 
                 );
 
+
+                ?>
+              </tr>
+              <tr>
+                <?php
+                getTableTD(
+                  "Partial Delivery",
+                  $getWO["partial_del_value"],
+                  4
+                );
+
+                getTableTD(
+                  "RFP Date",
+                  $getWO["master_wo_rfp_date"],
+                  4
+                );
+
+                getTableTD(
+                  "RFP Number",
+                  $getWO["master_wo_rfp_no"],
+                  4
+                );
 
                 ?>
               </tr>
@@ -433,6 +484,33 @@ $repeat = $getWO['mwo_type'] != 1;
                     groupConcatGetVal("work_order_ui_print_end_options", "print_end_opts", $getWO["master_wo_extra_print_end_ops"], 'mysqlSelect'),
                     5
                   );
+
+                  ?>
+                </tr>
+                <tr>
+                  <?php
+
+                  if ($getWO["master_wo_2_lsd_required"] == 2) {
+                    $colValLSD = 6;
+                    getTableTD(
+                      "LSD Required",
+                      $getWO["lsd_required_value"],
+                      $colValLSD
+                    );
+
+                    getTableTD(
+                      "LSD Copied",
+                      $getWO["master_wo_lsd_copies"],
+                      $colValLSD
+                    );
+                  }else{
+                    getTableTD(
+                      "LSD Required",
+                      $getWO["master_wo_2_lsd_required"],
+                      12
+                    );
+                  }
+
 
                   ?>
                 </tr>
@@ -559,6 +637,7 @@ $repeat = $getWO['mwo_type'] != 1;
               </tr>
 
               <?php
+              $showFoil = false;
               for ($from = 1; $from <= $getWO['master_wo_ply']; $from++) {
 
                 $thisIter = $getWO['master_wo_layer_' . ($from) . '_structure'];
@@ -569,8 +648,15 @@ $repeat = $getWO['mwo_type'] != 1;
 
                   if (is_array($getLayerOut)) {
                     $struct = $getLayerOut[0]['material_value'];
+                    $valFilmID = $getLayerOut[0]['material_id'];
+
+                    if ($from == 1 && ($valFilmID == 3 || $valFilmID == 17 || $valFilmID == 52)) {
+                      $showFoil = true;
+                    }
                   }
                 }
+
+
 
                 echo '<tr>';
                 $colVal = 6;
@@ -587,12 +673,21 @@ $repeat = $getWO['mwo_type'] != 1;
                     $colVal
                   );
                 } else {
-                  getTableTD(
+                  if ($showFoil) {
+                    getTableTD(
 
-                    "Foil Print Side",
-                    $getWO["foil_print_side_value"],
-                    $colVal
-                  );
+                      "Foil Print Side",
+                      $getWO["foil_print_side_value"],
+                      $colVal
+                    );
+                  } else {
+                    getTableTD(
+
+                      "",
+                      "",
+                      $colVal
+                    );
+                  }
                 }
 
                 echo '</tr>';
@@ -626,8 +721,11 @@ $repeat = $getWO['mwo_type'] != 1;
                       }
                     }
                   }
-                  $col1Out .= "<hr>Extra Options - Punch<br><br>";
+                  $col1Out .= "<hr>Extra Options - Punch/Perforation<br><br>";
                   $col1Out .= "<strong>Punch Type</strong> - " . $getWO["punch_value"] . "<br>";
+                  $col1Out .= "<strong>Distance from Top</strong> - " . $getWO["master_wo_pouch_distance_top_extra"] . "<br>";
+                  $col1Out .= "<strong>Perforation</strong> - " . $getWO["pouch_perforation_value"] . "<br>";
+                  $col1Out .= "<strong>Perforation Distance from Top</strong> - " . $getWO["master_wo_pouch_perforation_distance_top"] . "<br>";
 
                   if ($getWO["master_wo_2_pouch_punch_type"] == 10) {
                     $col1Out .= "<strong>Euro Punch</strong> - " . $getWO["euro_value"] . "<br>";
@@ -738,6 +836,8 @@ $repeat = $getWO['mwo_type'] != 1;
                   $col1Out .= "<strong>Top Fold</strong> - " . $getWO["master_wo_bags_top_fold"] . "<br>";
                   $col1Out .= "<strong>Flap</strong> - " . $getWO["master_wo_bags_flap"] . "<br>";
                   $col1Out .= "<strong>Lip</strong> - " . $getWO["master_wo_bags_lip"] . "<br>";
+                  $col1Out .= "<strong>Distance from Top</strong> - " . $getWO["master_wo_bags_distance_top_extra"] . "<br>";
+
 
 
 
@@ -970,7 +1070,7 @@ $repeat = $getWO['mwo_type'] != 1;
       </tr>
 
       <?php
-      if ($getWO['master_wo_2_structure'] == 3 && $getWO['master_wo_2_roll_pack_ins'] != 1) {
+      if (($getWO['master_wo_2_structure'] == 3 && $getWO['master_wo_2_roll_pack_ins'] != 1) || ($getWO['master_wo_2_structure'] != 3)) {
         echo "<tr>";
         getTableTD(
           "Carton Thickness",
@@ -1019,8 +1119,8 @@ $repeat = $getWO['mwo_type'] != 1;
 
 
         getTableTD(
-          "Carton Thickness",
-          $getWO["master_wo_cart_thick"],
+          "Shipping Port",
+          $getWO["master_wo_ship_port_name"],
           4
         );
         ?>

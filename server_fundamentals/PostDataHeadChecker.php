@@ -44,8 +44,10 @@ $WOselectArrays = array(
 	"work_order_2_pouch_pestrip" => "master_wo_2_pouch_pestrip",
 	"work_order_2_pouch_tear_notch" => "master_wo_2_pouch_tear_notch",
 	"work_order_2_pouch_tear_notch_qty" => "master_wo_2_pouch_tear_notch_qty",
-	"work_order_2_pouch_tear_notch_side" => "master_wo_2_pouch_tear_notch_side"
-
+	"work_order_2_pouch_tear_notch_side" => "master_wo_2_pouch_tear_notch_side",
+	"work_order_2_partial_delivery" => "master_wo_2_partial_delivery",
+	"work_order_2_lsd_required" => "master_wo_2_lsd_required",
+	"work_order_2_pouch_perforation" => "master_wo_2_pouch_perforation"
 
 
 );
@@ -59,6 +61,7 @@ $WOcheckboxArrays = array(
 );
 
 $WOstraightArrays = array(
+	"work_order_m_lwo" => "master_wo_m_lwo",
 	"work_order_customer_design_name" => "master_wo_customer_design_name",
 	"work_order_customer_item_code" => "master_wo_customer_item_code",
 	"work_order_customer_po" => "master_wo_customer_po",
@@ -83,8 +86,8 @@ $WOstraightArrays = array(
 	"work_order_roll_width" => "master_wo_roll_width",
 	"work_order_roll_cutoff_len" => "master_wo_roll_cutoff_len",
 	"work_order_max_w_p_r" => "master_wo_max_w_p_r",
-	"work_order_submersion_temp"=>"master_wo_submersion_temp",
-	"work_order_submersion_duration"=> "master_wo_submersion_duration",
+	"work_order_submersion_temp" => "master_wo_submersion_temp",
+	"work_order_submersion_duration" => "master_wo_submersion_duration",
 	"work_order_coating_gsm" => "master_wo_coating_gsm",
 	"work_order_max_lmtr_p_r" => "master_wo_max_lmtr_p_r",
 	"work_order_max_imps_p_r" => "master_wo_max_imps_p_r",
@@ -104,7 +107,15 @@ $WOstraightArrays = array(
 	"work_order_cart_thick" => "master_wo_cart_thick",
 	"work_order_ccr_no" => "master_wo_extra_ccr",
 	"work_order_ncr_no" => "master_wo_extra_ncr",
-	"work_order_3_pr_end_ops" => "master_wo_extra_print_end_ops"
+	"work_order_rfp_date" => "master_wo_rfp_date",
+	"work_order_rfp_no" => "master_wo_rfp_no",
+
+	"work_order_lsd_copies" => "master_wo_lsd_copies",
+	"work_order_pouch_distance_top_extra" => "master_wo_pouch_distance_top_extra",
+	"work_order_bags_distance_top_extra" => "master_wo_bags_distance_top_extra",
+	"work_order_pouch_perforation_distance_top" => "master_wo_pouch_perforation_distance_top",
+	"work_order_ship_port_name" => "master_wo_ship_port_name",
+
 
 );
 

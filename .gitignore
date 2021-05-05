@@ -39,3 +39,5 @@ $RECYCLE.BIN/
 # End of https://www.toptal.com/developers/gitignore/api/windows,dreamweaver
 .vscode/
 .metals/
+
+server_fundamentals/SecretKeys.php

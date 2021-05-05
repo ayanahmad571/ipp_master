@@ -48,7 +48,7 @@ getHead("Master Materials");
                                                 $c = 1;
                                                 foreach ($getMats as $Mat) {
                                             ?>
-                                                    <form action="MasterControllers/MaterialsController.php" method="POST">
+                                                    <form action="MasterControllers/MaterialsController" method="POST">
                                                         <input type="hidden" name="material_id" value="<?php echo $Mat['material_id'] ?>" />
                                                         <tr>
                                                             <td><?php echo $c ?></td>
@@ -65,7 +65,7 @@ getHead("Master Materials");
                                             }
                                             ?>
                                             <tr>
-                                                <form action="MasterControllers/MaterialsController.php" method="POST">
+                                                <form action="MasterControllers/MaterialsController" method="POST">
                                                     <td>NEW</td>
                                                     <td><input type="text" required class="form-control" name="add_material_name" placeholder="Name" /></td>
                                                     <td><input type="text" required class="form-control" name="add_material_density" placeholder="Density" /></td>
