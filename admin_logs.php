@@ -59,7 +59,7 @@ getHead("ADMIN - Users");
                 	<td><?php echo $Users['logcat_session_hash'] ?></td>
                 	<td><?php echo $Users['logcat_ip'] ?></td>
                 	<td><?php echo $Users['logcat_text'] ?></td>
-                	<td><?php echo date('d-m-Y @ h:i:s a',$Users['logcat_dnt']); ?></td>
+                	<td><?php echo date(getDateTimeFormat(),$Users['logcat_dnt']); ?></td>
                 </tr>
                 <?php
 			}

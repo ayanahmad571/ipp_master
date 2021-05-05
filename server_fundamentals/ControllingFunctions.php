@@ -45,7 +45,7 @@ function workOrderPagesQuery($sqlInCondition, $notIn = false)
     left join clients_main on master_wo_2_client_id = client_id
     left join master_work_order_main_identitiy on master_wo_status = mwoid_id
     where master_wo_status " . ($notIn ? "not in" : "in") . " (" . $sqlInCondition . ")
-    order by master_wo_id desc";
+    order by master_wo_gen_dnt desc";
 }
 
 function getByForFromWO($gen, $sales_person)
@@ -55,6 +55,24 @@ function getByForFromWO($gen, $sales_person)
 
 function wrapInput($value)
 {
+}
+
+function getDateTimeFormat()
+{
+    return 'Y-m-d @ h:i:s a';
+}
+
+function getDataTableDefiner($id, $pos = 4, $sort = "desc")
+{
+    echo '
+    <script>
+        $("#' . $id . '").DataTable({
+            "order": [
+            [' . $pos . ', "' . $sort . '"]
+            ]
+        });
+    </script>
+      ';
 }
 
 ?>

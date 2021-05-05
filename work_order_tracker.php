@@ -70,7 +70,7 @@ getHead("Version Control");
 														<tr>
 															<td><?php echo $Draft['master_wo_id']; ?></td>
 															<td><?php echo ($Draft['mwoid_desc1']) ?></td>
-															<td><?php echo date('d-m-Y @ h:i:s a', $Draft['master_wo_gen_dnt']) ?></td>
+															<td><?php echo date(getDateTimeFormat(), $Draft['master_wo_gen_dnt']) ?></td>
 															<td><?php echo $action; ?></td>
 														</tr>
 												<?php

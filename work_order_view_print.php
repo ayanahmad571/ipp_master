@@ -73,6 +73,9 @@ $getWO = $getWO[0];
 
 
 $repeat = $getWO['mwo_type'] != 1;
+
+$checkConditional = mysqlSelect("SELECT * FROM `conditional_release_wo` WHERE `crw_wo_ref` = " . $getWO['master_wo_ref'] . " order by crw_dnt limit 1");
+
 ?>
 
 
@@ -209,6 +212,16 @@ $repeat = $getWO['mwo_type'] != 1;
           <!--*** CONTENT GOES HERE ***-->
           <div class="page">
             <table class="pure-table pure-table-bordered pure-table-striped">
+              <?php if (is_array($checkConditional)) {
+              ?>
+                <tr>
+                  <td style="background-color: red; color:white" colspan="12">
+                    <h3 align="center" style="margin:2px;">THIS WORK ORDER HAS BEEN RELEASED CONDITIONALLY</h3>
+                  </td>
+                </tr>
+              <?php
+              } ?>
+
 
               <tr>
                 <?php
@@ -503,7 +516,7 @@ $repeat = $getWO['mwo_type'] != 1;
                       $getWO["master_wo_lsd_copies"],
                       $colValLSD
                     );
-                  }else{
+                  } else {
                     getTableTD(
                       "LSD Required",
                       $getWO["master_wo_2_lsd_required"],
@@ -793,7 +806,7 @@ $repeat = $getWO['mwo_type'] != 1;
                                   <tr>
                                       <td>' . $OverallRem['lum_code'] . ' - ' . $OverallRem['lum_name'] . '</td>
                                       <td>' . $OverallRem['remark_text'] . '</td>
-                                      <td>' . date('d-m-Y @ h:i:s a', $OverallRem['remark_dnt']) . '</td>
+                                      <td>' . date(getDateTimeFormat(), $OverallRem['remark_dnt']) . '</td>
                                   </tr>
                                   
                                   ';
@@ -877,7 +890,7 @@ $repeat = $getWO['mwo_type'] != 1;
                                   <tr>
                                       <td>' . $OverallRem['lum_code'] . ' - ' . $OverallRem['lum_name'] . '</td>
                                       <td>' . $OverallRem['remark_text'] . '</td>
-                                      <td>' . date('d-m-Y @ h:i:s a', $OverallRem['remark_dnt']) . '</td>
+                                      <td>' . date(getDateTimeFormat(), $OverallRem['remark_dnt']) . '</td>
                                   </tr>
                                   
                                   ';
@@ -998,7 +1011,7 @@ $repeat = $getWO['mwo_type'] != 1;
                                   <tr>
                                       <td>' . $OverallRem['lum_code'] . ' - ' . $OverallRem['lum_name'] . '</td>
                                       <td>' . $OverallRem['remark_text'] . '</td>
-                                      <td>' . date('d-m-Y @ h:i:s a', $OverallRem['remark_dnt']) . '</td>
+                                      <td>' . date(getDateTimeFormat(), $OverallRem['remark_dnt']) . '</td>
                                   </tr>
                                   
                                   ';
@@ -1158,7 +1171,7 @@ $repeat = $getWO['mwo_type'] != 1;
                   <tr>
                       <td>' . $OverallRem['lum_code'] . ' - ' . $OverallRem['lum_name'] . '</td>
                       <td>' . $OverallRem['remark_text'] . '</td>
-                      <td>' . date('d-m-Y @ h:i:s a', $OverallRem['remark_dnt']) . '</td>
+                      <td>' . date(getDateTimeFormat(), $OverallRem['remark_dnt']) . '</td>
                   </tr>
                   
                   ';

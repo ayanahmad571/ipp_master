@@ -29,24 +29,41 @@ if (isset($_POST['WorkOrderGetDetails'])) {
     if (!is_array($getRecieved)) {
         die("<p style='color:red'>Invalid Work Order ID</p>");
     }
-    echo "<h3>Sales Order Verification Rejection Form</h3><br>";
-    echo '<p>WO#: <strong>' . $getRecieved[0]['master_wo_ref'] . '</strong></p><br>';
-    echo '<p>Client: <strong>' . $getRecieved[0]['client_code'] . ' - ' . $getRecieved[0]['client_name'] . '</strong></p><br>';
-    echo '<p>PO: <strong>' . $getRecieved[0]['master_wo_customer_po'] . '</strong></p><br>';
-
-
 ?>
+
+    <h3 align="center">Sales Order Verification Rejection</h3>
+    <hr>
+    <table class="table table-bordered">
+        <tbody>
+            <tr>
+                <td><?php echo '<p>WO#: <strong>' . $getRecieved[0]['master_wo_ref'] . '</strong></p>'; ?></td>
+                <td><?php echo '<p>Client: <strong>' . $getRecieved[0]['client_code'] . ' - ' . $getRecieved[0]['client_name'] . '</strong></p>'; ?></td>
+                <td><?php echo '<p>PO: <strong>' . $getRecieved[0]['master_wo_customer_po'] . '</strong></p>'; ?></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <hr>
+    <div id="success">
+        <p style='color:green'>Successfully Requested Work Order Release, Click below to continue</p>
+        <button class="btn btn-success" onclick="window.location.reload();">Continue..</button>
+    </div>
+
     <hr>
     <p id="ret"></p>
-    <input id="a" type="hidden" value="<?php echo $_POST['WorkOrderGetDetails'] ?>" />
 
-    <input id="c" class="form-control" type="text" placeholder="Reason for Rejection" /><br><br>
+    <div id="holderContainer">
+        <input id="a" type="hidden" value="<?php echo $_POST['WorkOrderGetDetails'] ?>" />
 
-    <button id="clickerFunction" type="submit" class="btn btn-success">Sales Order Verification Rejection Form</button>
+        <label><strong>Reason for Rejection</strong></label>
+        <input id="c" class="form-control" type="text" placeholder="Reason for Rejection" /><br><br>
 
+        <button id="clickerFunction" type="submit" class="btn btn-success">Sales Order Verification Rejection Form</button>
+    </div>
 
     <script>
         $(document).ready(function(e) {
+            $("#success").hide();
             $('#clickerFunction').click(function(e) {
                 var a = $("#a").val();
                 var c = $("#c").val();
@@ -56,7 +73,13 @@ if (isset($_POST['WorkOrderGetDetails'])) {
                         reasonRej: c
                     },
                     function(data, status) {
-                        $("#ret").html(data);
+                        if (data.includes("Success- Work Order Successfully Published")) {
+                            $("#holderContainer").hide();
+                            $("#ret").hide();
+                            $("#success").show();
+                        } else {
+                            $("#ret").html(data);
+                        }
                     });
 
             }); /* .pubslishDraft Click*/
@@ -84,24 +107,40 @@ if (isset($_POST['WorkOrderGetDetailsTech'])) {
     if (!is_array($getRecieved)) {
         die("<p style='color:red'>Invalid Work Order ID</p>");
     }
-    echo "<h3>Work Order Technical Verification Rejection Form</h3><br>";
-    echo '<p>WO#: <strong>' . $getRecieved[0]['master_wo_ref'] . '</strong></p><br>';
-    echo '<p>Client: <strong>' . $getRecieved[0]['client_code'] . ' - ' . $getRecieved[0]['client_name'] . '</strong></p><br>';
-    echo '<p>PO: <strong>' . $getRecieved[0]['master_wo_customer_po'] . '</strong></p><br>';
-
-
 ?>
+
+    <h3 align="center">Work Order Technical Verification Rejection Form</h3>
     <hr>
+    <table class="table table-bordered">
+        <tbody>
+            <tr>
+                <td><?php echo '<p>WO#: <strong>' . $getRecieved[0]['master_wo_ref'] . '</strong></p>'; ?></td>
+                <td><?php echo '<p>Client: <strong>' . $getRecieved[0]['client_code'] . ' - ' . $getRecieved[0]['client_name'] . '</strong></p>'; ?></td>
+                <td><?php echo '<p>PO: <strong>' . $getRecieved[0]['master_wo_customer_po'] . '</strong></p>'; ?></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <hr>
+    <div id="success">
+        <p style='color:green'>Successfully Requested Work Order Release, Click below to continue</p>
+        <button class="btn btn-success" onclick="window.location.reload();">Continue..</button>
+    </div>
+
     <p id="ret"></p>
-    <input id="a" type="hidden" value="<?php echo $_POST['WorkOrderGetDetailsTech'] ?>" />
 
-    <input id="c" class="form-control" type="text" placeholder="Reason for Rejection" /><br><br>
+    <div id="holderContainer">
+        <input id="a" type="hidden" value="<?php echo $_POST['WorkOrderGetDetailsTech'] ?>" />
 
-    <button id="clickerFunction" type="submit" class="btn btn-success">Send</button>
+        <label><strong>Rejection Reason</strong></label>
+        <input id="c" class="form-control" type="text" placeholder="Reason for Rejection" /><br><br>
 
+        <button id="clickerFunction" type="submit" class="btn btn-success">Send</button>
+    </div>
 
     <script>
         $(document).ready(function(e) {
+            $("#success").hide();
             $('#clickerFunction').click(function(e) {
                 var a = $("#a").val();
                 var c = $("#c").val();
@@ -111,7 +150,13 @@ if (isset($_POST['WorkOrderGetDetailsTech'])) {
                         reasonRejected: c
                     },
                     function(data, status) {
-                        $("#ret").html(data);
+                        if (data.includes("Success- Work Order Successfully Published")) {
+                            $("#holderContainer").hide();
+                            $("#ret").hide();
+                            $("#success").show();
+                        } else {
+                            $("#ret").html(data);
+                        }
                     });
 
             }); /* .pubslishDraft Click*/

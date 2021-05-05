@@ -86,7 +86,7 @@ getHead("WO Accounts");
                               echo getByForFromWO($getBy, $getFor);
                               ?>
                             </td>
-                            <td><?php echo date('d-m-Y @ h:i:s a', $Draft['master_wo_gen_dnt']); ?></td>
+                            <td><?php echo date(getDateTimeFormat(), $Draft['master_wo_gen_dnt']); ?></td>
                             <?php
                             $getCondRel = mysqlSelect("SELECT * FROM `conditional_release_wo` where
                             crw_wo_ref = " . $Draft['master_wo_ref'] . " order by crw_id desc limit 1");
@@ -172,7 +172,7 @@ getHead("WO Accounts");
                               echo getByForFromWO($getBy, $getFor);
                               ?>
                             </td>
-                            <td><?php echo date('d-m-Y @ h:i:s a', $Discard['master_wo_gen_dnt']); ?></td>
+                            <td><?php echo date(getDateTimeFormat(), $Discard['master_wo_gen_dnt']); ?></td>
                             <td><?php echo $Discard['mwoid_desc2'] ?></td>
                             <td>
                               <button onclick="openWindow(<?php echo $Discard['master_wo_ref'] ?>)" class="btn btn-warning mt-1">View</button>
@@ -235,11 +235,12 @@ getHead("WO Accounts");
     </div>
   </div>
 
-  <script>
-    $("#DraftsContainerTable").DataTable();
-    $("#PublishedContainerTable").DataTable();
-    $("#ReturnedContainerTable").DataTable();
-  </script>
+
+  <?php
+  getDataTableDefiner("DraftsContainerTable");
+  getDataTableDefiner("PublishedContainerTable");
+  getDataTableDefiner("ReturnedContainerTable");
+  ?>
 
   <script>
     $(document).ready(function(e) {
