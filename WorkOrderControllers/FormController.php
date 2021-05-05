@@ -1,6 +1,6 @@
 <?php
 
-function getChangeTypePills()
+function getChangeTypePills($isTechnical = false)
 {
 ?>
     <div class="row">
@@ -29,7 +29,7 @@ function getChangeTypePills()
 <?php
 }
 
-function getTransitionFields()
+function getTransitionFields($isTechnical = false)
 {
 ?>
     <div class="row">
@@ -54,7 +54,7 @@ function getTransitionFields()
 <?php
 }
 
-function getFormRepHead($lwo)
+function getFormRepHead($lwo, $isTechnical = false)
 {
 ?>
     <div class="row">
@@ -78,13 +78,13 @@ function getFormRepHead($lwo)
 }
 
 
-function getRow($getAttachedTreeSqlIn)
+function getRow($getAttachedTreeSqlIn, $isTechnical = false)
 {
 ?>
     <div class="row">
         <div class="form-group col-12 col-md-6 col-lg-3 col-xl-2">
             <label>IPP Sales Person Code</label>
-            <select class="form-control select_a" required name="work_order_2_sales_id">
+            <select <?php echo ($isTechnical ? " disabled " : "") ?> class="form-control select_a" required name="work_order_2_sales_id">
                 <?php
                 $getDrafts = mysqlSelect($getAttachedTreeSqlIn . " order by lum_code asc");
 
@@ -101,7 +101,7 @@ function getRow($getAttachedTreeSqlIn)
 
         <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-1">
             <label>Cust Code</label>
-            <select class="form-control select_a" required name="work_order_2_client_id">
+            <select <?php echo ($isTechnical ? " disabled " : "") ?> class="form-control select_a" required name="work_order_2_client_id">
                 <?php
                 $getClients = mysqlSelect("SELECT * FROM `clients_main` where `client_show` = 1 order by client_name asc ");
                 if (is_array($getClients)) {
@@ -117,37 +117,37 @@ function getRow($getAttachedTreeSqlIn)
 
         <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-3">
             <label>Customer Name</label>
-            <input type="text" disabled class="form-control" id="custNameGetter" placeholder="">
+            <input  type="text" disabled class="form-control" id="custNameGetter" placeholder="">
         </div>
 
         <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
             <label>RFP #</label>
-            <input type="text" class="form-control" name="work_order_rfp_no" placeholder="RFP Number">
+            <input <?php echo ($isTechnical ? " disabled " : "") ?> type="text" class="form-control" name="work_order_rfp_no" placeholder="RFP Number">
         </div>
 
         <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
             <label>RFP Date</label>
-            <input type="text" class="form-control" name="work_order_rfp_date" placeholder="DD-MM-YYYY">
+            <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="text" class="form-control" name="work_order_rfp_date" placeholder="DD-MM-YYYY">
         </div>
 
         <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
             <label>Customer's Design Name</label>
-            <input type="text" class="form-control" name="work_order_customer_design_name" placeholder="Customer Design Name">
+            <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="text" class="form-control" name="work_order_customer_design_name" placeholder="Customer Design Name">
         </div>
 
         <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
             <label>Customer's Item Code</label>
-            <input type="text" class="form-control" name="work_order_customer_item_code" placeholder="Customer Item Code">
+            <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="text" class="form-control" name="work_order_customer_item_code" placeholder="Customer Item Code">
         </div>
 
         <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
             <label>Customer P.O#</label>
-            <input type="text" class="form-control" name="work_order_customer_po" placeholder="Customer P.O#">
+            <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="text" class="form-control" name="work_order_customer_po" placeholder="Customer P.O#">
         </div>
 
         <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
             <label>Customer P.O Date</label>
-            <input onchange="getDif()" type="text" class="form-control" name="work_order_po_date" placeholder="DD-MM-YYYY">
+            <input <?php echo ($isTechnical ? " disabled " : "") ?>   onchange="getDif()" type="text" class="form-control" name="work_order_po_date" placeholder="DD-MM-YYYY">
         </div>
 
         <?php
@@ -157,18 +157,19 @@ function getRow($getAttachedTreeSqlIn)
             "work_order_2_partial_delivery",
             "SELECT * FROM `work_order_ui_partial_del` where partial_del_show = 1 order by partial_del_value",
             'partial_del_id',
-            'partial_del_value'
+            'partial_del_value',
+            $isTechnical
         );
         ?>
 
         <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
             <label>Required Delivery Date</label>
-            <input onchange="getDif()" type="text" class="form-control" name="work_order_delivery_date" placeholder="DD-MM-YYYY">
+            <input <?php echo ($isTechnical ? " disabled " : "") ?>   onchange="getDif()" type="text" class="form-control" name="work_order_delivery_date" placeholder="DD-MM-YYYY">
         </div>
 
         <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
             <label>Delivery Required In</label>
-            <input id="numberOfDays" type="text" disabled class="form-control" name="">
+            <input <?php echo ($isTechnical ? " disabled " : "") ?>   id="numberOfDays" type="text" disabled class="form-control" name="">
         </div>
 
         <div class="form-group col-sm-12 col-md-6 col-lg-3 col-xl-3">
@@ -181,7 +182,7 @@ function getRow($getAttachedTreeSqlIn)
                     foreach ($getSlitCustomrs as $SingularOP) {
                         echo '
                         <label class="selectgroup-item">
-                          <input type="checkbox" name="work_order_3_customer_loc[]" value="' . $SingularOP['customer_location_id'] . '" class="selectgroup-input" ' . ($SingularOP['customer_location_id'] == 1 ? 'checked' : '') . '>
+                          <input '.($isTechnical ? " disabled " : "") .' type="checkbox" name="work_order_3_customer_loc[]" value="' . $SingularOP['customer_location_id'] . '" class="selectgroup-input" ' . ($SingularOP['customer_location_id'] == 1 ? 'checked' : '') . '>
                           <span class="selectgroup-button">' . $SingularOP['customer_location_value'] . '</span>
                         </label>';
                     }
@@ -193,11 +194,11 @@ function getRow($getAttachedTreeSqlIn)
 
         <div class="form-group col-sm-12 col-lg-6 col-xl-2">
             <label>Approved Sample WO No.</label>
-            <input type="text" class="form-control" name="work_order_approved_sample_wo_no" placeholder="Approved Sample WO NO">
+            <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="text" class="form-control" name="work_order_approved_sample_wo_no" placeholder="Approved Sample WO NO">
         </div>
         <div class="form-group col-8 col-xl-2">
             <label>Order Qty</label>
-            <input placeholder="Order Quantity" name="work_order_quantity" type="number" step="0.01" class="form-control" min="0.10">
+            <input <?php echo ($isTechnical ? " disabled " : "") ?>   placeholder="Order Quantity" name="work_order_quantity" type="number" step="0.01" class="form-control" min="0.10">
         </div>
 
 
@@ -208,13 +209,14 @@ function getRow($getAttachedTreeSqlIn)
             "work_order_2_units",
             "SELECT * FROM `work_order_qty_units` where unit_show =1",
             'unit_id',
-            'unit_value'
+            'unit_value',
+            $isTechnical
         );
         ?>
 
         <div class="form-group col-4 col-xl-2">
             <label>Tolerance % +/-</label>
-            <input placeholder="Tolerance +/-" name="work_order_quantity_tolerance" type="number" step="0.01" class="form-control" />
+            <input <?php echo ($isTechnical ? " disabled " : "") ?>   placeholder="Tolerance +/-" name="work_order_quantity_tolerance" type="number" step="0.01" class="form-control" />
         </div>
 
 
@@ -225,7 +227,8 @@ function getRow($getAttachedTreeSqlIn)
             "work_order_2_structure",
             "SELECT * FROM `work_order_ui_structure` ",
             'structure_id',
-            'structure_value'
+            'structure_value',
+            $isTechnical
         );
         ?>
 
@@ -236,7 +239,8 @@ function getRow($getAttachedTreeSqlIn)
             "work_order_2_application",
             "SELECT * FROM `work_order_applications` where application_show =1 order by application_value asc ",
             'application_id',
-            'application_value'
+            'application_value',
+            $isTechnical
         );
         ?>
         <div class="classPouchRoll col-sm-12 col-xl-2">
@@ -248,18 +252,19 @@ function getRow($getAttachedTreeSqlIn)
                 "work_order_2_laser_config",
                 "SELECT * FROM `work_order_ui_slitting_laser_config` where laser_show =1 order by laser_value asc ",
                 'laser_id',
-                'laser_value'
+                'laser_value',
+                $isTechnical
             );
             ?>
         </div>
         <div class="form-group  col-12 col-md-6 col-xl-3">
             <label>Customer Specified Total Laminate GSM</label>
-            <input placeholder="Customer Specified Total Laminate GSM" name="work_order_total_gsm" type="number" step="0.01" class="form-control" min="0.10">
+            <input <?php echo ($isTechnical ? " disabled " : "") ?>   placeholder="Customer Specified Total Laminate GSM" name="work_order_total_gsm" type="number" step="0.01" class="form-control" min="0.10">
         </div>
 
         <div class="form-group  col-12 col-md-6 col-xl-2">
             <label>Laminate GSM Tolerance % +/-</label>
-            <input placeholder="Tolerance +/-" name="work_order_total_gsm_tolerance" type="number" step="0.01" class="form-control" min="0">
+            <input <?php echo ($isTechnical ? " disabled " : "") ?>   placeholder="Tolerance +/-" name="work_order_total_gsm_tolerance" type="number" step="0.01" class="form-control" min="0">
         </div>
 
 
@@ -281,7 +286,8 @@ function getPrintedSection($isTechnical = false)
             "work_order_2_type_printed",
             "SELECT * FROM `work_order_product_type_printed` where ptp_show = 1 order by ptp_value asc ",
             'ptp_id',
-            'ptp_value'
+            'ptp_value',
+            $isTechnical
         );
         ?>
 
@@ -294,7 +300,8 @@ function getPrintedSection($isTechnical = false)
             "work_order_2_printing_method",
             "SELECT * FROM `work_order_ui_print_surfrev` where surfrev_show = 1 ",
             'surfrev_id',
-            'surfrev_value'
+            'surfrev_value',
+            $isTechnical
         );
         ?>
 
@@ -305,7 +312,8 @@ function getPrintedSection($isTechnical = false)
             "work_order_2_printing_shade_card_needed",
             "SELECT * FROM `work_order_ui_print_shadecardreq` where shadecardreq_show = 1 ",
             'shadecardreq_id',
-            'shadecardreq_value'
+            'shadecardreq_value',
+            $isTechnical
         );
         ?>
         <?php
@@ -315,7 +323,8 @@ function getPrintedSection($isTechnical = false)
             "work_order_2_printing_color_ref_type",
             "SELECT * FROM `work_order_ui_print_shadecard_ref_type` where shadecard_ref_type_show = 1 and  shadecard_ref_type_id not in (1,5)",
             'shadecard_ref_type_id',
-            'shadecard_ref_type_value'
+            'shadecard_ref_type_value',
+            $isTechnical
         );
         ?>
 
@@ -326,24 +335,25 @@ function getPrintedSection($isTechnical = false)
             "work_order_2_printing_approvalby",
             "SELECT * FROM `work_order_ui_print_options` where print_options_show = 1  ",
             'print_options_id',
-            'print_options_value'
+            'print_options_value',
+            $isTechnical
         );
         ?>
 
         <div class="whenPrintedClickedGO form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
             <label>Ink GSM as per PRE-COSTING</label>
-            <input type="text" class="form-control" name="work_order_ink_gsm_pre_c" placeholder="Ink GSM">
+            <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="text" class="form-control" name="work_order_ink_gsm_pre_c" placeholder="Ink GSM">
         </div>
 
         <div class="col-12 col-md-6 col-xl-3 whenPrintedClickedGO">
             <div class="row">
                 <div class="form-group col-sm-12 col-md-8">
                     <label>IPP Design ID</label>
-                    <input type="text" class="form-control" name="work_order_design_id" placeholder="IPP Design ID">
+                    <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="text" class="form-control" name="work_order_design_id" placeholder="IPP Design ID">
                 </div>
                 <div class="form-group col-sm-12 col-md-4">
                     <label>Rev No</label>
-                    <input type="number" min="0" value="0" class="form-control" name="work_order_rev_no" placeholder="Rev">
+                    <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="number" min="0" value="0" class="form-control" name="work_order_rev_no" placeholder="Rev">
                 </div>
             </div>
         </div>
@@ -356,13 +366,14 @@ function getPrintedSection($isTechnical = false)
             "work_order_2_lsd_required",
             "SELECT * FROM `work_order_ui_lsd_required` where lsd_required_show = 1  order by lsd_required_value asc",
             'lsd_required_id',
-            'lsd_required_value'
+            'lsd_required_value',
+            $isTechnical
         );
         ?>
 
         <div class="whenPrintedAndLSDClicked form-group col-sm-12 col-md-6 col-lg-3 col-xl-2">
             <label>Number of LSD Copies</label>
-            <input type="text" class="form-control" name="work_order_lsd_copies" placeholder="LSD Copies">
+            <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="text" class="form-control" name="work_order_lsd_copies" placeholder="LSD Copies">
         </div>
 
 
@@ -402,7 +413,7 @@ function getPrintedSection($isTechnical = false)
 }
 
 
-function getCoatingSection()
+function getCoatingSection($isTechnical = false)
 {
 ?>
     <div class="row">
@@ -413,12 +424,13 @@ function getCoatingSection()
             "work_order_2_coating_options",
             "SELECT * FROM `work_order_ui_lam_options` where lamo_show =1 order by lamo_value asc ",
             'lamo_id',
-            'lamo_value'
+            'lamo_value',
+            $isTechnical
         );
         ?>
         <div class="showCoatingClick form-group col-sm-12 col-md-6 col-lg-2">
             <label>Coating GSM</label>
-            <input type="text" class="form-control" name="work_order_coating_gsm" placeholder="Coating GSM">
+            <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="text" class="form-control" name="work_order_coating_gsm" placeholder="Coating GSM">
         </div>
 
     </div>
@@ -428,7 +440,7 @@ function getCoatingSection()
 }
 
 
-function getFill()
+function getFill($isTechnical = false)
 {
 ?>
     <div class="row">
@@ -440,7 +452,8 @@ function getFill()
             "work_order_2_roll_fill_opts",
             "SELECT * FROM `work_order_ui_roll_options` where rollopts_show =1 order by rollopts_value asc ",
             'rollopts_id',
-            'rollopts_value'
+            'rollopts_value',
+            $isTechnical
         );
         ?>
         <?php
@@ -450,7 +463,8 @@ function getFill()
             "work_order_2_pouchbag_fillops",
             "SELECT * FROM `work_order_ui_pouch_bag_fill_opts` where pbfo_show =1 order by pbfo_value asc ",
             'pbfo_id',
-            'pbfo_value'
+            'pbfo_value',
+            $isTechnical
         );
         ?>
 
@@ -461,38 +475,39 @@ function getFill()
             "work_order_2_fill_temp",
             "SELECT * FROM `work_order_ui_filling_temp` where filling_temp_show =1 order by filling_temp_value asc ",
             'filling_temp_id',
-            'filling_temp_value'
+            'filling_temp_value',
+            $isTechnical
         );
         ?>
         <div class="form-group col-sm-12 col-md-6 col-lg-2 nonPastRetShow">
             <label>Filling Temperature</label>
-            <input type="text" class="form-control" name="work_order_fill_temp" placeholder="Filling Temperature">
+            <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="text" class="form-control" name="work_order_fill_temp" placeholder="Filling Temperature">
         </div>
         <div class="form-group col-sm-12 col-md-6 col-lg-2 pastRetShow">
             <label>Submersion Temperature</label>
-            <input type="text" class="form-control" name="work_order_submersion_temp" placeholder="Submersion Temperature">
+            <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="text" class="form-control" name="work_order_submersion_temp" placeholder="Submersion Temperature">
         </div>
         <div class="form-group col-sm-12 col-md-6 col-lg-2 pastRetShow">
             <label>Submersion Duration</label>
-            <input type="text" class="form-control" name="work_order_submersion_duration" placeholder="Submersion Duration">
+            <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="text" class="form-control" name="work_order_submersion_duration" placeholder="Submersion Duration">
         </div>
 
 
         <div class="form-group col-sm-12 col-md-6 col-lg-2">
             <label>Line Speed</label>
-            <input type="text" class="form-control" name="work_order_line_speed" placeholder="Line Speed">
+            <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="text" class="form-control" name="work_order_line_speed" placeholder="Line Speed">
         </div>
         <div class="form-group col-sm-12 col-md-6 col-lg-2">
             <label>Dwell Time</label>
-            <input type="text" class="form-control" name="work_order_dwell_time" placeholder="Dwell Time">
+            <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="text" class="form-control" name="work_order_dwell_time" placeholder="Dwell Time">
         </div>
         <div class="form-group col-sm-12 col-md-6 col-lg-2">
             <label>Seal Temperature</label>
-            <input type="text" class="form-control" name="work_order_seal_temp" placeholder="Seal Temperature">
+            <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="text" class="form-control" name="work_order_seal_temp" placeholder="Seal Temperature">
         </div>
         <div class="form-group col-sm-12 col-lg-6 col-xl-2">
             <label>Pack Weight </label>
-            <input type="number" min="1" max="999999" step="0.01" class="form-control" name="work_order_pack_weight" placeholder="Pack Weight ">
+            <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="number" min="1" max="999999" step="0.01" class="form-control" name="work_order_pack_weight" placeholder="Pack Weight ">
         </div>
 
 
@@ -504,13 +519,14 @@ function getFill()
             "work_order_2_pack_weight_unit",
             "SELECT * FROM `work_order_pack_size_unit` where psu_show = 1",
             'psu_id',
-            'psu_value'
+            'psu_value',
+            $isTechnical
         );
         ?>
 
         <div class="form-group col-sm-12 col-lg-6 col-xl-2">
             <label>Cust Specified COF</label>
-            <input type="text" class="form-control" name="work_order_cof_val" placeholder="COF">
+            <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="text" class="form-control" name="work_order_cof_val" placeholder="COF">
         </div>
 
     </div>
@@ -519,32 +535,32 @@ function getFill()
 }
 
 
-function getLayer()
+function getLayer($isTechnical = false)
 {
 ?>
 
     <div class="row">
         <div class="form-group col-sm-12 col-lg-6 col-xl-2">
             <label>Number of Layers</label>
-            <input id="plyValueInput" type="number" min="1" max="5" class="form-control" name="work_order_ply" value="2" placeholder="Ply">
+            <input <?php echo ($isTechnical ? " disabled " : "") ?>   id="plyValueInput" type="number" min="1" max="5" class="form-control" name="work_order_ply" value="2" placeholder="Ply">
         </div>
         <div class="form-group col-sm-12 col-lg-6 col-xl-10">
             <div class="row">
                 <div class="form-group  col-12 col-md-6 col-xl-3">
                     <label>Combined Film GSM</label>
-                    <input id="calcLamGSM" value="0" disabled class="form-control">
+                    <input <?php echo ($isTechnical ? " disabled " : "") ?>   id="calcLamGSM" value="0" disabled class="form-control">
                 </div>
                 <div class="form-group  col-12 col-md-6 col-xl-3">
                     <label>INK GSM</label>
-                    <input id="calcInkGSM" value="0" disabled class="form-control">
+                    <input <?php echo ($isTechnical ? " disabled " : "") ?>   id="calcInkGSM" value="0" disabled class="form-control">
                 </div>
                 <div class="form-group  col-12 col-md-6 col-xl-3">
                     <label>Total Adhesive GSM</label>
-                    <input id="calcAdhGSM" value="0" disabled class="form-control">
+                    <input <?php echo ($isTechnical ? " disabled " : "") ?>   id="calcAdhGSM" value="0" disabled class="form-control">
                 </div>
                 <div class="form-group  col-12 col-md-6 col-xl-3">
                     <label>Total Laminate GSM</label>
-                    <input id="calcTotGSM" disabled class="form-control">
+                    <input <?php echo ($isTechnical ? " disabled " : "") ?>   id="calcTotGSM" disabled class="form-control">
                 </div>
             </div>
         </div>
@@ -576,7 +592,7 @@ function getLayer()
 }
 
 
-function getRoll($itisEdit, $woid = 0)
+function getRoll($itisEdit, $woid = 0, $isTechnical = false)
 {
     # $itisEdit = Show Remarks Box with Usernames and Text
 ?>
@@ -596,7 +612,7 @@ function getRoll($itisEdit, $woid = 0)
                 <div class="row">
                     <div class="showPrintedRoll form-group col-12 col-lg-3">
                         <label>Wind DIR</label>
-                        <select class="form-control select_a" required name="work_order_2_wind_dir">
+                        <select <?php echo ($isTechnical ? " disabled " : "") ?> class="form-control select_a" required name="work_order_2_wind_dir">
                             <?php
                             $getWinds = mysqlSelect("SELECT * FROM `work_order_wind_dir` where wind_show =1 order by wind_value asc");
                             if (is_array($getWinds)) {
@@ -611,31 +627,31 @@ function getRoll($itisEdit, $woid = 0)
 
                     <div class="form-group col-12 col-lg-3">
                         <label>Customer Roll OD(mm)</label>
-                        <input type="number" min="1" max="999999999" step="0.01" class="form-control" name="work_order_roll_od" placeholder="Customer Roll OD">
+                        <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="number" min="1" max="999999999" step="0.01" class="form-control" name="work_order_roll_od" placeholder="Customer Roll OD">
                     </div>
                     <div class="form-group col-12 col-md-6 col-lg-3 col-xl-3">
                         <label>Roll Width</label>
-                        <input type="text" class="form-control" name="work_order_roll_width" placeholder="Roll Width">
+                        <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="text" class="form-control" name="work_order_roll_width" placeholder="Roll Width">
                     </div>
 
                     <div class="form-group col-12 col-md-6 col-lg-3 col-xl-3">
                         <label>Roll Cut Off Length</label>
-                        <input type="text" class="form-control" name="work_order_roll_cutoff_len" placeholder="Roll Cut Off Length">
+                        <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="text" class="form-control" name="work_order_roll_cutoff_len" placeholder="Roll Cut Off Length">
                     </div>
 
 
 
                     <div class="form-group col-12 col-lg-4">
                         <label>Max Weight per Roll</label>
-                        <input type="number" min="1" max="999999999" step="0.01" class="form-control" name="work_order_max_w_p_r" placeholder="Max Weight per Roll">
+                        <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="number" min="1" max="999999999" step="0.01" class="form-control" name="work_order_max_w_p_r" placeholder="Max Weight per Roll">
                     </div>
                     <div class="form-group col-12 col-lg-4">
                         <label>Max L.MTR per Roll</label>
-                        <input type="number" min="1" max="999999999" step="0.01" class="form-control" name="work_order_max_lmtr_p_r" placeholder="Max L.MTR per Roll">
+                        <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="number" min="1" max="999999999" step="0.01" class="form-control" name="work_order_max_lmtr_p_r" placeholder="Max L.MTR per Roll">
                     </div>
                     <div class="form-group col-12 col-lg-4">
                         <label>Max IMPs per Roll</label>
-                        <input type="number" min="1" max="999999999" step="0.01" class="form-control" name="work_order_max_imps_p_r" placeholder="Max IMPs per Roll">
+                        <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="number" min="1" max="999999999" step="0.01" class="form-control" name="work_order_max_imps_p_r" placeholder="Max IMPs per Roll">
                     </div>
 
                     <?php
@@ -645,7 +661,8 @@ function getRoll($itisEdit, $woid = 0)
                         "work_order_2_slitting_core_id",
                         "SELECT * FROM `work_order_ui_slitting_core_id_length` where slitting_core_id_length_show = 1 ",
                         'slitting_core_id_length_id',
-                        'slitting_core_id_length_value'
+                        'slitting_core_id_length_value',
+                        $isTechnical
                     );
                     ?>
 
@@ -656,7 +673,8 @@ function getRoll($itisEdit, $woid = 0)
                         "work_order_2_slitting_core_material",
                         "SELECT * FROM `work_order_ui_slitting_core_id_type` where slitting_core_id_type_show = 1  ",
                         'slitting_core_id_type_id',
-                        'slitting_core_id_type_value'
+                        'slitting_core_id_type_value',
+                        $isTechnical
                     );
                     ?>
 
@@ -667,7 +685,8 @@ function getRoll($itisEdit, $woid = 0)
                         "work_order_2_slitting_core_plugs",
                         "SELECT * FROM `work_order_ui_slitting_core_plugs` where core_plugs_show = 1  ",
                         'core_plugs_id',
-                        'core_plugs_value'
+                        'core_plugs_value',
+                        $isTechnical
                     );
                     ?>
 
@@ -680,14 +699,15 @@ function getRoll($itisEdit, $woid = 0)
                         "work_order_2_slitting_qc_ins",
                         "SELECT * FROM `work_order_ui_slitting_qc_ins` where slitting_qc_ins_show = 1 ",
                         'slitting_qc_ins_id',
-                        'slitting_qc_ins_value'
+                        'slitting_qc_ins_value',
+                        $isTechnical
                     );
                     ?>
 
 
                     <div class="form-group col-12 col-lg-4">
                         <label>Max No of Joints per Roll</label>
-                        <input type="number" min="0" max="3" class="form-control" name="work_order_max_joints" placeholder="Max Joints/Roll">
+                        <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="number" min="0" max="3" class="form-control" name="work_order_max_joints" placeholder="Max Joints/Roll">
                     </div>
 
 
@@ -741,7 +761,7 @@ function getRoll($itisEdit, $woid = 0)
 }
 
 
-function getPouch($itisEdit, $woid = 0)
+function getPouch($itisEdit, $woid = 0, $isTechnical = false)
 {
 ?>
     <div class="classOnlyPouch">
@@ -784,7 +804,8 @@ function getPouch($itisEdit, $woid = 0)
                         "work_order_2_pouch_punch_type",
                         "SELECT * FROM `work_order_ui_pouch_punch_type` where punch_show =1 order by punch_value asc ",
                         'punch_id',
-                        'punch_value'
+                        'punch_value',
+                        $isTechnical
                     );
                     ?>
                     <!-- Only If Punch Type is Euro punch, or ID is 10 -->
@@ -795,12 +816,13 @@ function getPouch($itisEdit, $woid = 0)
                         "work_order_2_pouch_euro_punch",
                         "SELECT * FROM `work_order_ui_pouch_euro_punch` where euro_show =1 ",
                         'euro_id',
-                        'euro_value'
+                        'euro_value',
+                        $isTechnical
                     );
                     ?>
                     <div class="form-group col-xs-12 col-sm-6">
                         <label>Distance from Top</label>
-                        <input type="text" class="form-control" name="work_order_pouch_distance_top_extra" placeholder="Distance from Top">
+                        <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="text" class="form-control" name="work_order_pouch_distance_top_extra" placeholder="Distance from Top">
                     </div>
 
                     <?php
@@ -810,12 +832,13 @@ function getPouch($itisEdit, $woid = 0)
                         "work_order_2_pouch_perforation",
                         "SELECT * FROM `work_order_ui_pouch_perforation` where pouch_perforation_show =1 order by pouch_perforation_value asc ",
                         'pouch_perforation_id',
-                        'pouch_perforation_value'
+                        'pouch_perforation_value',
+                        $isTechnical
                     );
                     ?>
                     <div class="PerforationClickedShow form-group col-xs-12 col-sm-6">
                         <label>Perforation Distance from Top</label>
-                        <input type="text" class="form-control" name="work_order_pouch_perforation_distance_top" placeholder="Perforation Distance from Top">
+                        <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="text" class="form-control" name="work_order_pouch_perforation_distance_top" placeholder="Perforation Distance from Top">
                     </div>
 
                 </div>
@@ -829,7 +852,8 @@ function getPouch($itisEdit, $woid = 0)
                         "work_order_2_pouch_round_corner",
                         "SELECT * FROM `work_order_ui_pouch_round_corner` where round_corner_show =1 order by round_corner_value asc ",
                         'round_corner_id',
-                        'round_corner_value'
+                        'round_corner_value',
+                        $isTechnical
                     );
                     ?>
 
@@ -845,7 +869,8 @@ function getPouch($itisEdit, $woid = 0)
                         "work_order_2_pouch_zipper",
                         "SELECT * FROM `work_order_ui_pouch_zipper` where zipper_show =1 order by zipper_value asc ",
                         'zipper_id',
-                        'zipper_value'
+                        'zipper_value',
+                        $isTechnical
                     );
                     ?>
                     <?php
@@ -855,7 +880,8 @@ function getPouch($itisEdit, $woid = 0)
                         "work_order_2_pouch_zipper_opc",
                         "SELECT * FROM `work_order_ui_pouch_zipper_opc` where zipopc_show =1 order by zipopc_value asc ",
                         'zipopc_id',
-                        'zipopc_value'
+                        'zipopc_value',
+                        $isTechnical
                     );
                     ?>
                     <?php
@@ -865,13 +891,14 @@ function getPouch($itisEdit, $woid = 0)
                         "work_order_2_pouch_pestrip",
                         "SELECT * FROM `work_order_ui_pouch_pe_strip` where pestrip_show =1 order by pestrip_value asc ",
                         'pestrip_id',
-                        'pestrip_value'
+                        'pestrip_value',
+                        $isTechnical
                     );
                     ?>
 
                     <div class="zipperYes form-group col-xs-12 col-sm-6">
                         <label>Distance From Top</label>
-                        <input type="text" class="form-control" name="work_order_pouch_top_dist" placeholder="Distance From Top">
+                        <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="text" class="form-control" name="work_order_pouch_top_dist" placeholder="Distance From Top">
                     </div>
 
                 </div>
@@ -887,7 +914,8 @@ function getPouch($itisEdit, $woid = 0)
                         "work_order_2_pouch_tear_notch",
                         "SELECT * FROM `work_order_ui_pouch_tear_notch` where tear_notch_show =1 order by tear_notch_value asc ",
                         'tear_notch_id',
-                        'tear_notch_value'
+                        'tear_notch_value',
+                        $isTechnical
                     );
                     ?>
                     <?php
@@ -897,7 +925,8 @@ function getPouch($itisEdit, $woid = 0)
                         "work_order_2_pouch_tear_notch_qty",
                         "SELECT * FROM `work_order_ui_pouch_tear_notch_qty` where tear_notch_qty_show =1 order by tear_notch_qty_value asc ",
                         'tear_notch_qty_id',
-                        'tear_notch_qty_value'
+                        'tear_notch_qty_value',
+                        $isTechnical
                     );
                     ?>
                     <?php
@@ -907,7 +936,8 @@ function getPouch($itisEdit, $woid = 0)
                         "work_order_2_pouch_tear_notch_side",
                         "SELECT * FROM `work_order_ui_pouch_tear_notch_side` where tear_notch_side_show =1 order by tear_notch_side_value asc ",
                         'tear_notch_side_id',
-                        'tear_notch_side_value'
+                        'tear_notch_side_value',
+                        $isTechnical
                     );
                     ?>
 
@@ -960,7 +990,7 @@ function getPouch($itisEdit, $woid = 0)
 }
 
 
-function getBag($itisEdit, $woid = 0)
+function getBag($itisEdit, $woid = 0, $isTechnical = false)
 {
 ?>
     <div class="classOnlyBag">
@@ -995,24 +1025,25 @@ function getBag($itisEdit, $woid = 0)
                         "work_order_2_bags_handle",
                         "SELECT * FROM `work_order_ui_bag_handle` where bag_handle_show =1 order by bag_handle_value asc ",
                         'bag_handle_id',
-                        'bag_handle_value'
+                        'bag_handle_value',
+                        $isTechnical
                     );
                     ?>
                     <div class="form-group col-xs-12 col-sm-6">
                         <label>Top Fold</label>
-                        <input type="text" class="form-control" name="work_order_bags_top_fold" placeholder="Top Fold">
+                        <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="text" class="form-control" name="work_order_bags_top_fold" placeholder="Top Fold">
                     </div>
                     <div class="form-group col-xs-12 col-sm-6">
                         <label>Flap</label>
-                        <input type="text" class="form-control" name="work_order_bags_flap" placeholder="Flap">
+                        <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="text" class="form-control" name="work_order_bags_flap" placeholder="Flap">
                     </div>
                     <div class="form-group col-xs-12 col-sm-6">
                         <label>Lip</label>
-                        <input type="text" class="form-control" name="work_order_bags_lip" placeholder="Lip">
+                        <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="text" class="form-control" name="work_order_bags_lip" placeholder="Lip">
                     </div>
                     <div class="form-group col-xs-12 col-sm-6">
                         <label>Distance from Top</label>
-                        <input type="text" class="form-control" name="work_order_bags_distance_top_extra" placeholder="Distance from Top">
+                        <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="text" class="form-control" name="work_order_bags_distance_top_extra" placeholder="Distance from Top">
                     </div>
                 </div>
 
@@ -1063,7 +1094,7 @@ function getBag($itisEdit, $woid = 0)
 }
 
 
-function getSlit($itisEdit, $woid = 0)
+function getSlit($itisEdit, $woid = 0, $isTechnical = false)
 {
 ?>
     <div id="workOrderSlitProcess">
@@ -1077,7 +1108,8 @@ function getSlit($itisEdit, $woid = 0)
                     "work_order_2_roll_pack_ins",
                     "SELECT * FROM `work_order_ui_slitting_pack_ins` where pack_ins_show = 1  ",
                     'pack_ins_id',
-                    'pack_ins_value'
+                    'pack_ins_value',
+                    $isTechnical
                 );
                 ?>
             </div>
@@ -1090,7 +1122,8 @@ function getSlit($itisEdit, $woid = 0)
                     "work_order_2_carton_pack_ins",
                     "SELECT * FROM `work_order_ui_pouch_pack_ins` where pouch_pack_ins_show = 1  ",
                     'pouch_pack_ins_id',
-                    'pouch_pack_ins_value'
+                    'pouch_pack_ins_value',
+                    $isTechnical
                 );
                 ?>
             </div>
@@ -1101,22 +1134,23 @@ function getSlit($itisEdit, $woid = 0)
                 "work_order_2_pallet_mark_ins",
                 "SELECT * FROM `work_order_ui_slitting_pallet_instructions` where pallet_instructions_show = 1  ",
                 'pallet_instructions_id',
-                'pallet_instructions_value'
+                'pallet_instructions_value',
+                $isTechnical
             );
             ?>
 
             <div class="classBagPouch form-group col-12 col-sm-6 col-lg-6 col-xl-2">
                 <label>No. Pouches per Bundle</label>
-                <input id="pouchPerBundle" min="1" max="99999999999" type="number" class="form-control" name="work_order_pouch_per_bund" placeholder="Pouches per Bundle">
+                <input <?php echo ($isTechnical ? " disabled " : "") ?>   id="pouchPerBundle" min="1" max="99999999999" type="number" class="form-control" name="work_order_pouch_per_bund" placeholder="Pouches per Bundle">
             </div>
 
             <div class="classBagPouch form-group col-12 col-sm-6 col-lg-6 col-xl-2">
                 <label>No. Bundles per Box</label>
-                <input id="bundlePerBox" min="1" max="99999999999" type="number" class="form-control" name="work_order_bund_per_box" placeholder="Bundles per Box">
+                <input <?php echo ($isTechnical ? " disabled " : "") ?>   id="bundlePerBox" min="1" max="99999999999" type="number" class="form-control" name="work_order_bund_per_box" placeholder="Bundles per Box">
             </div>
             <div class="classBagPouch form-group col-12 col-sm-6 col-lg-6 col-xl-2">
                 <label>Max Pouches in a BOX</label>
-                <input type="text" class="form-control" id="piecePerBox" placeholder="" disabled>
+                <input <?php echo ($isTechnical ? " disabled " : "") ?>   type="text" class="form-control" id="piecePerBox" placeholder="" disabled>
             </div>
 
         </div>
@@ -1129,7 +1163,8 @@ function getSlit($itisEdit, $woid = 0)
                 "work_order_2_pallet_type",
                 "SELECT * FROM `work_order_ui_slitting_pallet` where slitting_pallet_show = 1  ",
                 'slitting_pallet_id',
-                'slitting_pallet_value'
+                'slitting_pallet_value',
+                $isTechnical
             );
             ?>
             <?php
@@ -1139,13 +1174,14 @@ function getSlit($itisEdit, $woid = 0)
                 "work_order_2_cont_stuff",
                 "SELECT * FROM `work_order_ui_slitting_shipping_dets` where shipping_dets_show = 1 ",
                 'shipping_dets_id',
-                'shipping_dets_value'
+                'shipping_dets_value',
+                $isTechnical
             );
             ?>
 
             <div class="form-group col-12 col-sm-6 col-lg-6 col-xl-2">
                 <label>Max Gross Weight per Pallet (KG)</label>
-                <input min="1" max="99999999999" type="number" class="form-control" name="work_order_max_gross_pallet_weight" placeholder="Max Gross Weight per Pallet">
+                <input <?php echo ($isTechnical ? " disabled " : "") ?>   min="1" max="99999999999" type="number" class="form-control" name="work_order_max_gross_pallet_weight" placeholder="Max Gross Weight per Pallet">
             </div>
 
             <?php
@@ -1155,7 +1191,8 @@ function getSlit($itisEdit, $woid = 0)
                 "work_order_2_pallet_dim",
                 "SELECT * FROM `work_order_ui_pallet_size` where pallet_size_show = 1 order by pallet_size_value asc ",
                 'pallet_size_id',
-                'pallet_size_value'
+                'pallet_size_value',
+                $isTechnical
             );
             ?>
 
@@ -1166,13 +1203,14 @@ function getSlit($itisEdit, $woid = 0)
                 "work_order_2_freight_type",
                 "SELECT * FROM `work_order_ui_slitting_freight_ins` where freight_show = 1 ",
                 'freight_id',
-                'freight_value'
+                'freight_value',
+                $isTechnical
             );
             ?>
 
             <div id="cartonPly" class="form-group col-12 col-sm-6 col-lg-6 col-xl-2">
                 <label>Carton Thickness</label>
-                <input name="work_order_cart_thick" type="number" min="3" max="7" class="form-control" value="3" placeholder="Ply">
+                <input <?php echo ($isTechnical ? " disabled " : "") ?>   name="work_order_cart_thick" type="number" min="3" max="7" class="form-control" value="3" placeholder="Ply">
             </div>
         </div>
 
@@ -1187,7 +1225,7 @@ function getSlit($itisEdit, $woid = 0)
                         foreach ($getSlitCustomrs as $SingularOP) {
                             echo '
   <label class="selectgroup-item">
-    <input type="checkbox" name="work_order_3_docs[]" value="' . $SingularOP['shipment_id'] . '" class="selectgroup-input" ' . ($SingularOP['shipment_id'] == 4 ? 'checked' : '') . '>
+    <input '.($isTechnical ? " disabled " : "") .' type="checkbox" name="work_order_3_docs[]" value="' . $SingularOP['shipment_id'] . '" class="selectgroup-input" ' . ($SingularOP['shipment_id'] == 4 ? 'checked' : '') . '>
     <span class="selectgroup-button">' . $SingularOP['shipment_value'] . '</span>
   </label>';
                         }
@@ -1199,7 +1237,7 @@ function getSlit($itisEdit, $woid = 0)
 
             <div class="form-group col-12 col-sm-2">
                 <label>Port Name</label>
-                <input name="work_order_ship_port_name" type="text" class="form-control" placeholder="Port Name">
+                <input <?php echo ($isTechnical ? " disabled " : "") ?>   name="work_order_ship_port_name" type="text" class="form-control" placeholder="Port Name">
             </div>
 
 
@@ -1524,7 +1562,7 @@ function getScriptTriggers()
 <?php
 }
 
-function getScriptFunctionalSetup()
+function getScriptFunctionalSetup($isTechnical=false)
 {
 ?>
     <script>
@@ -1757,11 +1795,11 @@ function getScriptFunctionalSetup()
                     "       <div class=\"row\">",
                     "           <div class=\"form-group col-6\">",
                     "            <label>Micron</label>",
-                    "             <input type=\"number\" class=\"form-control\" min='0' step='0.01' required name=\"work_order_layer_" + l + "_micron\" placeholder=\"Film Micron\">",
+                    "             <input <?php echo ($isTechnical ? " disabled " : "") ?> type=\"number\" class=\"form-control\" min='0' step='0.01' required name=\"work_order_layer_" + l + "_micron\" placeholder=\"Film Micron\">",
                     "           </div>",
                     "           <div class=\"form-group col-6\">",
                     "             <label>Film</label>",
-                    "             <select class=\"form-control select_a\" required name=\"work_order_5_layer_" + l + "_material\">",
+                    "             <select <?php echo ($isTechnical ? " disabled " : "") ?>  class=\"form-control select_a\" required name=\"work_order_5_layer_" + l + "_material\">",
                     <?php
                     $getMaterials = mysqlSelect("SELECT * FROM `materials_main` order by material_position,material_value asc ");
                     if (is_array($getMaterials)) {
@@ -1788,7 +1826,7 @@ function getScriptFunctionalSetup()
                 varOutString = varOutString.concat("",
                     '<div class="form-group  col-12 col-md-6 col-xl-3">',
                     "<label>Adhesive Pass " + l2 + " GSM</label>",
-                    '<input type="number" step="0.01" class="form-control" name="work_order_adh' + l2 + '" placeholder="Adhesive ' + l2 + ' GSM">',
+                    '<input <?php echo ($isTechnical ? " disabled " : "") ?> type="number" step="0.01" class="form-control" name="work_order_adh' + l2 + '" placeholder="Adhesive ' + l2 + ' GSM">',
                     "</div>");
 
             }

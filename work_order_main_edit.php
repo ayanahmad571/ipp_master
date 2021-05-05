@@ -70,7 +70,7 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
             <div class="col-12 ">
               <div class="card card-warning">
                 <div class="card-header">
-                  <h4><?php echo (isset($_GET['techID']) ? "Techincal - " : "") ?><?php echo ($WorkOrderRepPub['mwo_type'] == 1 ? "New Work Order" : ($WorkOrderRepPub['mwo_type'] == 2 ? "Repeat Work Order":"Repeat with Change Work Order")) ?></h4>
+                  <h4><?php echo (isset($_GET['techID']) ? "Techincal - " : "") ?><?php echo ($WorkOrderRepPub['mwo_type'] == 1 ? "New Work Order" : ($WorkOrderRepPub['mwo_type'] == 2 ? "Repeat Work Order" : "Repeat with Change Work Order")) ?></h4>
                 </div>
 
                 <div class="card-body text-justify">
@@ -90,58 +90,58 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
 
                     <?php
                     if ($WorkOrderRepPub['mwo_type'] != 1) {
-                      getChangeTypePills();
+                      getChangeTypePills(true);
 
-                      getFormRepHead($WorkOrderRepPub['mwo_repeat_wo_id']);
+                      getFormRepHead($WorkOrderRepPub['mwo_repeat_wo_id'], true);
                     }
 
-                    getRow("select * from user_main where lum_valid =1");
+                    getRow("select * from user_main where lum_valid =1", true);
 
                     getPrintedSection(true);
 
-                    getCoatingSection();
+                    getCoatingSection(true);
 
-                    getFill();
+                    getFill(true);
 
-                    getLayer();
+                    getLayer(true);
 
-                    getRoll(true,$_GET['techID']);
+                    getRoll(true, $_GET['techID'], true);
 
-                    getPouch(true,$_GET['techID']);
+                    getPouch(true, $_GET['techID'], true);
 
-                    getBag(true,$_GET['techID']);
+                    getBag(true, $_GET['techID'], true);
 
-                    getSlit(true,$_GET['techID']);
+                    getSlit(true, $_GET['techID'], true);
                     ?>
 
 
-                  <div class="form-group" align="center">
-                    <button type="submit" class="btn btn-success">Save</button>
-                  </div>
+                    <div class="form-group" align="center">
+                      <button type="submit" class="btn btn-success">Save</button>
+                    </div>
 
 
-                </form>
+                  </form>
+                </div>
               </div>
             </div>
           </div>
-      </div>
 
 
 
 
 
 
-      </section>
+        </section>
 
 
 
-    </div><!-- Main Content  -->
+      </div><!-- Main Content  -->
 
-    <?php
-    getFooter();
-    ?>
+      <?php
+      getFooter();
+      ?>
 
-  </div><!-- Main Wrapper  -->
+    </div><!-- Main Wrapper  -->
   </div><!-- App -->
   <?php
 
@@ -162,7 +162,7 @@ $typeWO = ($WorkOrderRepPub['mwo_type']);
 
   <?php getScriptTriggers(); ?>
 
-  <?php getScriptFunctionalSetup(); ?>
+  <?php getScriptFunctionalSetup(true); ?>
 
   <script>
     $(document).ready(async function(e) {

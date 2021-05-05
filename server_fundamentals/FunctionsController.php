@@ -464,12 +464,12 @@ function logInsert($page, $session, $user, $ip, $text, $func)
 	}
 }
 
-function getSelectBox($masterclass, $nameIn, $postIn, $sql, $id, $val)
+function getSelectBox($masterclass, $nameIn, $postIn, $sql, $id, $val, $disabled=false)
 {
 ?>
 	<div class="<?php echo $masterclass; ?>">
 		<label><?php echo $nameIn; ?></label>
-		<select class="form-control select_a" required name="<?php echo $postIn; ?>">
+		<select <?php echo ($disabled ? "disabled" : ""); ?> class="form-control select_a" required name="<?php echo $postIn; ?>">
 			<?php
 			$getDrafts = mysqlSelect($sql);
 
