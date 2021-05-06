@@ -75,4 +75,16 @@ function getDataTableDefiner($id, $pos = 4, $sort = "desc")
       ';
 }
 
+function getAmendmentWrapped($pubQuery, $id, $not = false, $all = false)
+{
+    return "select * from (" . $pubQuery . ") wp 
+    where wp.master_wo_ref " . ($all ? " not in " : "in") . "
+      (select a.afm_rel_wo_ref from amendment_form_main a where a.afm_id = 
+        (SELECT c.afm_id FROM `amendment_form_main` c 
+        where c.afm_rel_wo_ref = a.afm_rel_wo_ref
+        order by c.afm_id desc 
+        limit 1) 
+        " . ($all ? " )" : "and a.afm_status " . ($not ? "!=" : "=") . " " . $id . " )");
+}
+
 ?>

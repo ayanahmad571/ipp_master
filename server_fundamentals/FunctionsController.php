@@ -464,7 +464,7 @@ function logInsert($page, $session, $user, $ip, $text, $func)
 	}
 }
 
-function getSelectBox($masterclass, $nameIn, $postIn, $sql, $id, $val, $disabled=false)
+function getSelectBox($masterclass, $nameIn, $postIn, $sql, $id, $val, $disabled = false)
 {
 ?>
 	<div class="<?php echo $masterclass; ?>">
@@ -519,6 +519,10 @@ function getPrintJS()
 	<script>
 		function openWindow(woID) {
 			var newWin = window.open(`work_order_view_print?id=${woID}`, `Print View ${woID}`, 'width=800,height=750');
+		}
+
+		function openWindowAmend(woID) {
+			var newWin = window.open(`amendment_form_new?id=${woID}`, `New Amendment Form ${woID}`, 'width=800,height=750');
 		}
 	</script>
 <?php
