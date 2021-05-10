@@ -99,7 +99,7 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
                     <thead>
                       <tr>
                         <th>WO#</th>
-                        
+
                         <th>Client</th>
                         <th>Design ID</th>
                         <th>User</th>
@@ -113,7 +113,88 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
 
                     <tbody>
                       <?php
-                      $finalWrap = getAmendmentWrapped($pubQuery, 10, true);
+                      $finalWrap = getAmendmentWrapped($pubQuery, "10,3,5,7,9", true);
+                      $getDrafts = mysqlSelect($finalWrap);
+
+                      if (is_array($getDrafts)) {
+                        foreach ($getDrafts as $Draft) {
+                      ?>
+                          <tr>
+                            <td><?php echo $Draft['master_wo_ref'] ?></td>
+                            <td><?php echo $Draft['master_wo_id'] ?></td>
+                            <td><?php echo $Draft['client_code'] . " - " . $Draft['client_name']; ?></td>
+                            <td><?php echo $Draft['master_wo_design_id']; ?></td>
+                            <td>
+                              <?php
+                              $getBy = mysqlSelect("select * from user_main where lum_id = " . $Draft['mwo_gen_lum_id'] . " and lum_valid =1");
+                              $getFor = mysqlSelect("select * from user_main where lum_id = " . $Draft['mwo_gen_on_behalf_lum_id'] . " and lum_valid =1");
+
+                              echo getByForFromWO($getBy, $getFor);
+                              ?>
+                            </td>
+                            <td><?php echo date(getDateTimeFormat(), $Draft['master_wo_gen_dnt']); ?></td>
+                            <td><?php echo $Draft['mwoid_desc2']; ?></td>
+                            <td>
+                              <?php
+                              $getNumberAmendment = mysqlSelect("select count(afm_id) as total 
+                              from amendment_form_main 
+                              where afm_rel_wo_ref = " . $Draft["master_wo_ref"] . " and afm_status = 1 ");
+
+                              $totPrint = 0;
+                              if (is_array($getNumberAmendment)) {
+                                $totPrint = $getNumberAmendment[0]["total"];
+                              }
+                              echo $totPrint;
+                              ?>
+                            </td>
+                            <td>
+
+                              <button onclick="openWindow(<?php echo $Draft['master_wo_ref'] ?>)" class="btn btn-primary mt-1">View</button>
+                              <button class="btn btn-danger mt-1">Discard</button>
+
+                            </td>
+                          </tr>
+                      <?php
+                        }
+                      }
+                      ?>
+                    </tbody>
+
+                  </table>
+
+                  <p>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12 ">
+              <div class="card card-primary">
+                <div class="card-header">
+                  <h4>Rejected Forms</h4>
+                </div>
+                <div class="card-body text-justify">
+                  <table class="table table-striped table-bordered " id="TableTwo">
+                    <thead>
+                      <tr>
+                        <th>WO#</th>
+
+                        <th>Client</th>
+                        <th>Design ID</th>
+                        <th>User</th>
+                        <th>TimeStamp</th>
+                        <th>Status</th>
+                        <th>Amendment #</th>
+                        <th>Amendment Status</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <?php
+                      $finalWrap = getAmendmentWrapped($pubQuery, "3,5,7,9");
                       $getDrafts = mysqlSelect($finalWrap);
 
                       if (is_array($getDrafts)) {
@@ -176,7 +257,7 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
                   <h4>Approved</h4>
                 </div>
                 <div class="card-body text-justify">
-                  <table class="table table-striped table-bordered " id="TableTwo">
+                  <table class="table table-striped table-bordered " id="TableThree">
                     <thead>
                       <tr>
                         <th>WO#</th>
@@ -244,7 +325,7 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
                   <h4>Others</h4>
                 </div>
                 <div class="card-body text-justify">
-                  <table class="table table-striped table-bordered " id="TableThree">
+                  <table class="table table-striped table-bordered " id="TableFour">
                     <thead>
                       <tr>
                         <th>WO#</th>
@@ -319,6 +400,9 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
     </div><!-- Main Wrapper  -->
   </div><!-- App -->
 
+  <?php
+  getScripts();
+  ?>
 
   <script src="assets/js/bootbox.min.js"></script>
 
@@ -328,11 +412,12 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
 
   <?php
 
-  getScripts();
+
   getPrintJS();
-  getDataTableDefiner("TableOne");
-  getDataTableDefiner("TableTwo");
-  getDataTableDefiner("TableThree");
+  getDataTableDefiner("TableOne", 5);
+  getDataTableDefiner("TableTwo", 5);
+  getDataTableDefiner("TableThree", 5);
+  getDataTableDefiner("TableFour", 5);
   ?>
 
 

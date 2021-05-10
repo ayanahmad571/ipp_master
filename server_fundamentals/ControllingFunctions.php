@@ -84,7 +84,7 @@ function getAmendmentWrapped($pubQuery, $id, $not = false, $all = false)
         where c.afm_rel_wo_ref = a.afm_rel_wo_ref
         order by c.afm_id desc 
         limit 1) 
-        " . ($all ? " )" : "and a.afm_status " . ($not ? "!=" : "=") . " " . $id . " )");
+        " . ($all ? " )" : "and a.afm_status " . ($not ? "not in " : " in ") . " (" . $id . ") )");
 }
 
 ?>
