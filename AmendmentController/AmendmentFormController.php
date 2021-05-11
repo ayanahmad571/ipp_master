@@ -73,9 +73,19 @@ if (!is_array($checkIn)) {
 if ($_POST['to'] < 1 || ($_POST['to'] > 10 && $_POST['to'] != 99)) {
     die("Invalid Landing Status Selected");
 }
+$extraCol = "";
+$extraRow = "";
 
+if ($_POST['to'] == 3 || $_POST['to'] == 5 || $_POST['to'] == 7 || $_POST['to'] == 9) {
+    echo "<p style='color:red;'>";
+    checkPost("reason", true);
+    echo "</p>";
+
+    $extraCol = "`afm_reject_lum_id`, `afm_reject_text`, ";
+    $extraRow = " '" . $USER_ARRAY['lum_id'] . "','" . $_POST['reason'] . "', ";
+}
 $insertSQL = mysqlInsertData("INSERT INTO `amendment_form_main`(`afm_rel_wo_ref`, `afm_reason`, `afm_mod_1`, `afm_mod_2`, `afm_mod_3`, 
-    `afm_notes`, `afm_gen_lum_id`, `afm_gen_dnt`, `afm_status`)
+    `afm_notes`, `afm_gen_lum_id`, `afm_gen_dnt`, " . $extraCol . " `afm_status`)
      VALUES (
          " . $_POST['afm_ref'] . ",
          '" . $checkIn[0]['afm_reason'] . "',
@@ -85,6 +95,7 @@ $insertSQL = mysqlInsertData("INSERT INTO `amendment_form_main`(`afm_rel_wo_ref`
          '" . $checkIn[0]['afm_notes'] . "',
          '" . $USER_ARRAY['lum_id'] . "',
          '" . time() . "',
+         " . $extraRow . "
          '" . $_POST['to'] . "'
 
      )", true);

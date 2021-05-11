@@ -29,7 +29,7 @@ function checkPost($htmlname, $notEmptyCheck = false)
 			die("Invalid " . $htmlname);
 		} else {
 			if ($notEmptyCheck) {
-				if ($_POST[$htmlname] == "") {
+				if (trim($_POST[$htmlname]) == "") {
 					die("Blank values for " . $htmlname . " not allowed");
 				}
 			}
@@ -540,7 +540,6 @@ function getPrintJS()
 
 		function openWindowAmendRaw(woID) {
 			var newWin = window.open(`amendment_view_print?id=${woID}`, `Print View Amendment ${woID}`, 'width=800,height=750');
-
 		}
 
 		function openWindowAmend(woID) {
