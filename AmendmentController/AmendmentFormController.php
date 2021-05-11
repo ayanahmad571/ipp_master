@@ -53,6 +53,9 @@ if (!is_array($checkIn)) {
 
 # PRE FORM CREATION CHECKS END
 
+$logText = $USER_ARRAY['lum_code'] . " - " . $USER_ARRAY['lum_name'] . " has published amendment form with ID: " .
+    $checkIn[0]['afm_id'] . " and REF:" . $_POST['afm_ref'] . " STATUS (" . $checkIn[0]['afm_status'] . ", " . $_POST['to'] . ")";
+
 # TODO add user account checks
 
 
@@ -69,6 +72,9 @@ if ($_POST['to'] == 3 || $_POST['to'] == 5 || $_POST['to'] == 7 || $_POST['to'] 
 
     $extraCol = "`afm_reject_lum_id`, `afm_reject_text`, ";
     $extraRow = " '" . $USER_ARRAY['lum_id'] . "','" . $_POST['reason'] . "', ";
+    $logText = $USER_ARRAY['lum_code'] . " - " . $USER_ARRAY['lum_name'] .
+        " rejected amendment form with ID: " . $checkIn[0]['afm_id'] . " and REF:" . $_POST['afm_ref'] . " reason :" . $_POST['reason'] 
+        . " STATUS (" . $checkIn[0]['afm_status'] . ", " . $_POST['to'] . ")";
 }
 $insertSQL = mysqlInsertData("INSERT INTO `amendment_form_main`(`afm_rel_wo_ref`, `afm_reason`, `afm_mod_1`, `afm_mod_2`, `afm_mod_3`, 
     `afm_notes`, `afm_gen_lum_id`, `afm_gen_dnt`, " . $extraCol . " `afm_status`)
@@ -89,5 +95,13 @@ $insertSQL = mysqlInsertData("INSERT INTO `amendment_form_main`(`afm_rel_wo_ref`
 if (!is_numeric($insertSQL)) {
     die("Could not publish this amendment form, contact Admin");
 }
+logInsert(
+    basename($_SERVER['PHP_SELF']),
+    $_SESSION[SESSION_HASH_NAME],
+    $USER_ARRAY['lum_id'],
+    $_SERVER['REMOTE_ADDR'],
+    $logText,
+    "mysqlInsertData"
+);
 
 die("This action has been successfully completed.");
