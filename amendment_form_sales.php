@@ -334,6 +334,7 @@ $pubQuery = getWOSales($USER_ARRAY);
   <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
 
   <?php
+  getUpdater($pubQuery, "1,3,5,7,9", 1);
   getBootboxScript("sendSalesVerify", "Are you sure you want to Publish this Amendment Form", 1, 2);
   getBootboxScript("discardDraft", "Are you sure you want to discard this Amendment Form ", 1, 99);
   getBootboxScript("discardRej", "Are you sure you want to discard this Amendment Form ", 'datafrom', 99, true);

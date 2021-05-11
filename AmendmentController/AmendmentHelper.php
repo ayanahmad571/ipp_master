@@ -278,4 +278,44 @@ function getDiscardScript($classIn, $pathIn)
     </script>
 <?php
 }
+
+function getUpdater($pubQuery, $mainID, $sales = 0)
+{
+    $finalWrap = getAmendmentWrapped($pubQuery, $mainID);
+    $getAll = mysqlSelect($finalWrap);
+?>
+    <script src="assets/modules/iZiToast.js"></script>
+    <input type="hidden" id="rowDiff" value="<?php echo (is_array($getAll) ? count($getAll) : "0"); ?>" />
+    <script>
+        function fetchdata() {
+            var rowD = $("#rowDiff").val();
+            $.ajax({
+                url: 'WorkOrderControllers/AllController',
+                type: 'post',
+                data: {
+                    amendRowDiffChecker: rowD,
+                    ids: "<?php echo $mainID; ?>",
+                    not_ski: "0",
+                    sales: "<?php echo $sales; ?>"
+                },
+                success: function(response) {
+                    // Perform operation on the return value
+                    if (response != "0") {
+                        iziToast.success({
+                            title: 'Amendment Update!',
+                            message: 'New Updates, Refresh the page to see them',
+                            position: 'topRight'
+                        });
+                        $("#rowDiff").val(response);
+                    }
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            setInterval(fetchdata, 5000);
+        });
+    </script>
+<?php
+}
 ?>

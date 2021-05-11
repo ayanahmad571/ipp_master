@@ -60,6 +60,7 @@ $pubQuery = getPubQuery();
   <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
 
   <?php
+  getUpdater($pubQuery, 8);
   getBootboxScript("sendAmendment", "Are you sure you want to Approve this Amendment Form ", 8, 10);
   getDiscardScript("discardDraft", "AmendmentPlanningController");
   getPrintJS();

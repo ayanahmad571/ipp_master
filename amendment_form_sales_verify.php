@@ -61,6 +61,7 @@ $pubQuery = getWOSales($USER_ARRAY);
   <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
 
   <?php
+  getUpdater($pubQuery, 2, 1);
   getBootboxScript("sendAmendment", "Are you sure you want to Approve this Amendment Form ", 2, 4);
   getDiscardScript("discardDraft", "AmendmentSalesVerifyController");
   getPrintJS();
