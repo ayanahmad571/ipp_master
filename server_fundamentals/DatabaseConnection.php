@@ -92,11 +92,14 @@ function mysqlSelect($sql)
 
 function getLum($id)
 {
+	if (is_null($id)) {
+		return array("lum_name" => "User Not Found", "lum_code" => "UNF");
+	}
 	$lum = mysqlSelect("SELECT * FROM `user_main` where lum_valid = 1 and lum_id =" . $id);
 	if (is_array($lum)) {
 		return $lum[0];
 	} else {
-		return array("lum_name" => "User Not Found");
+		return array("lum_name" => "User Not Found", "lum_code" => "UNF");
 	}
 }
 

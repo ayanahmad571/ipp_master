@@ -61,8 +61,13 @@ if (is_array($getNumberAmendment)) {
     $totPrint = 1 + $getNumberAmendment[0]["total"];
 }
 
-$viewOnly = ($checkIn[0]["afm_status"] != 1);
-getHead("New Amendment Form - WO#" . $WorkOrderMain['master_wo_ref']);
+$viewOnly = !($checkIn[0]["afm_status"] == 1 || 
+$checkIn[0]["afm_status"] == 3 || 
+$checkIn[0]["afm_status"] == 5 || 
+$checkIn[0]["afm_status"] == 7 || 
+$checkIn[0]["afm_status"] == 9);
+
+getHead("Amendment Form - WO#" . $WorkOrderMain['master_wo_ref']);
 
 ?>
 <style>

@@ -148,10 +148,10 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
                             <td><?php echo date(getDateTimeFormat(), $Draft['afm_gen_dnt']); ?></td>
                             <td>
 
-                              <button onclick="openWindowAmendRaw(<?php echo $Draft['master_wo_ref'] ?>)" class="btn btn-success mt-1">Publish</button><br>
+                              <button data-id="<?php echo $Draft['master_wo_ref'] ?>" class="sendSalesVerify btn btn-success mt-1">Publish</button><br>
                               <button onclick="openWindowAmendRaw(<?php echo $Draft['master_wo_ref'] ?>)" class="btn btn-primary mt-1">Edit Form</button><br>
                               <button onclick="openWindow(<?php echo $Draft['master_wo_ref'] ?>)" class="btn btn-warning mt-1">View WO</button><br>
-                              <button class="btn btn-danger mt-1">Discard</button>
+                              <button data-id="<?php echo $Draft['master_wo_ref'] ?>" class="discardDraft btn btn-danger mt-1">Discard</button>
 
                             </td>
                           </tr>
@@ -194,7 +194,7 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
 
                     <tbody>
                       <?php
-                      $finalWrap = getAmendmentWrapped($pubQuery, "1,10,3,5,7,9", true);
+                      $finalWrap = getAmendmentWrapped($pubQuery, "2,4,6,8");
                       $getDrafts = mysqlSelect($finalWrap);
 
                       if (is_array($getDrafts)) {
@@ -232,7 +232,6 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
 
                               <button onclick="openWindowAmendRaw(<?php echo $Draft['master_wo_ref'] ?>)" class="btn btn-primary mt-1">View Form</button><br>
                               <button onclick="openWindow(<?php echo $Draft['master_wo_ref'] ?>)" class="btn btn-warning mt-1">View WO</button><br>
-                              <button class="btn btn-danger mt-1">Discard</button>
 
                             </td>
                           </tr>
@@ -262,14 +261,12 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
                     <thead>
                       <tr>
                         <th>WO#</th>
-
                         <th>Client</th>
-                        <th>Design ID</th>
-                        <th>User</th>
-                        <th>TimeStamp</th>
-                        <th>Status</th>
+                        <th>Rejection User</th>
+                        <th>Rejection Notes</th>
                         <th>Amendment #</th>
                         <th>Amendment Status</th>
+                        <th>TimeStamp</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -284,19 +281,12 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
                       ?>
                           <tr>
                             <td><?php echo $Draft['master_wo_ref'] ?></td>
-                            <td><?php echo $Draft['master_wo_id'] ?></td>
                             <td><?php echo $Draft['client_code'] . " - " . $Draft['client_name']; ?></td>
-                            <td><?php echo $Draft['master_wo_design_id']; ?></td>
                             <td>
-                              <?php
-                              $getBy = mysqlSelect("select * from user_main where lum_id = " . $Draft['mwo_gen_lum_id'] . " and lum_valid =1");
-                              $getFor = mysqlSelect("select * from user_main where lum_id = " . $Draft['mwo_gen_on_behalf_lum_id'] . " and lum_valid =1");
-
-                              echo getByForFromWO($getBy, $getFor);
-                              ?>
+                              <?php $lum = getLum($Draft['afm_reject_lum_id']);
+                              echo $lum['lum_code'] . " - " . $lum['lum_name']; ?>
                             </td>
-                            <td><?php echo date(getDateTimeFormat(), $Draft['master_wo_gen_dnt']); ?></td>
-                            <td><?php echo $Draft['mwoid_desc2']; ?></td>
+                            <td><?php echo $Draft['afm_reject_text']; ?></td>
                             <td>
                               <?php
                               $getNumberAmendment = mysqlSelect("select count(afm_id) as total 
@@ -310,10 +300,14 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
                               echo $totPrint;
                               ?>
                             </td>
+                            <td><?php echo $Draft['afi_text']; ?></td>
+                            <td><?php echo date(getDateTimeFormat(), $Draft['afm_gen_dnt']); ?></td>
                             <td>
 
-                              <button onclick="openWindow(<?php echo $Draft['master_wo_ref'] ?>)" class="btn btn-primary mt-1">View</button>
-                              <button class="btn btn-danger mt-1">Discard</button>
+                              <button data-from="<?php echo $Draft['afm_status'] ?>" data-id="<?php echo $Draft['master_wo_ref'] ?>" class="sendRejSalesVerify btn btn-success mt-1">Re-Publish</button><br>
+                              <button onclick="openWindowAmendRaw(<?php echo $Draft['master_wo_ref'] ?>)" class="btn btn-primary mt-1">Edit Form</button><br>
+                              <button onclick="openWindow(<?php echo $Draft['master_wo_ref'] ?>)" class="btn btn-warning mt-1">View WO</button><br>
+                              <button data-from="<?php echo $Draft['afm_status'] ?>" data-id="<?php echo $Draft['master_wo_ref'] ?>" class="discardRej btn btn-danger mt-1">Discard</button>
 
                             </td>
                           </tr>
@@ -336,94 +330,27 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
             <div class="col-12 ">
               <div class="card card-primary">
                 <div class="card-header">
-                  <h4>Approved</h4>
-                </div>
-                <div class="card-body text-justify">
-                  <table class="table table-striped table-bordered " id="TableThree">
-                    <thead>
-                      <tr>
-                        <th>WO#</th>
-                        <th>SUB#</th>
-                        <th>Client</th>
-                        <th>Design ID</th>
-                        <th>User</th>
-                        <th>TimeStamp</th>
-                        <th>Status</th>
-
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-
-                    <tbody>
-                      <?php
-                      $finalWrap = getAmendmentWrapped($pubQuery, 10);
-                      $getDrafts = mysqlSelect($finalWrap);
-
-                      if (is_array($getDrafts)) {
-                        foreach ($getDrafts as $Draft) {
-                      ?>
-                          <tr>
-                            <td><?php echo $Draft['master_wo_ref'] ?></td>
-                            <td><?php echo $Draft['master_wo_id'] ?></td>
-                            <td><?php echo $Draft['client_code'] . " - " . $Draft['client_name']; ?></td>
-                            <td><?php echo $Draft['master_wo_design_id']; ?></td>
-                            <td>
-                              <?php
-                              $getBy = mysqlSelect("select * from user_main where lum_id = " . $Draft['mwo_gen_lum_id'] . " and lum_valid =1");
-                              $getFor = mysqlSelect("select * from user_main where lum_id = " . $Draft['mwo_gen_on_behalf_lum_id'] . " and lum_valid =1");
-
-                              echo getByForFromWO($getBy, $getFor);
-                              ?>
-                            </td>
-                            <td><?php echo date(getDateTimeFormat(), $Draft['master_wo_gen_dnt']); ?></td>
-                            <td><?php echo $Draft['mwoid_desc2']; ?></td>
-
-                            <td>
-
-                              <button class="publishDraft btn btn-success mt-1" onclick="openWindowAmend(<?php echo $Draft['master_wo_ref'] ?>)">New Amendment Form</button>
-                              <button onclick="openWindow(<?php echo $Draft['master_wo_ref'] ?>)" class="btn btn-primary mt-1">View</button>
-
-                            </td>
-                          </tr>
-                      <?php
-                        }
-                      }
-                      ?>
-                    </tbody>
-
-                  </table>
-
-                  <p>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-12 ">
-              <div class="card card-primary">
-                <div class="card-header">
-                  <h4>Current Orders - (All work orders for which amendment forms have never been requested)</h4>
+                  <h4>Current Orders - (All work orders for which amendment forms have not been requested)</h4>
                 </div>
                 <div class="card-body text-justify">
                   <table class="table table-striped table-bordered " id="TableFour">
                     <thead>
                       <tr>
                         <th>WO#</th>
-                        <th>SUB#</th>
                         <th>Client</th>
                         <th>Design ID</th>
                         <th>User</th>
                         <th>TimeStamp</th>
                         <th>WO Status</th>
+                        <th>Amendments</th>
+                        <th>Status</th>
                         <th>Action</th>
                       </tr>
                     </thead>
 
                     <tbody>
                       <?php
-                      $finalWrap = getAmendmentWrapped($pubQuery, "10 , 99", true, true);
+                      $finalWrap = getAmendmentWrapped($pubQuery, "10,99", true, true);
                       $getDrafts = mysqlSelect($finalWrap);
 
                       if (is_array($getDrafts)) {
@@ -431,7 +358,6 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
                       ?>
                           <tr>
                             <td><?php echo $Draft['master_wo_ref'] ?></td>
-                            <td><?php echo $Draft['master_wo_id'] ?></td>
                             <td><?php echo $Draft['client_code'] . " - " . $Draft['client_name']; ?></td>
                             <td><?php echo $Draft['master_wo_design_id']; ?></td>
                             <td>
@@ -442,8 +368,23 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
                               echo getByForFromWO($getBy, $getFor);
                               ?>
                             </td>
+
                             <td><?php echo date(getDateTimeFormat(), $Draft['master_wo_gen_dnt']); ?></td>
                             <td><?php echo $Draft['mwoid_desc2']; ?></td>
+                            <td>
+                              <?php
+                              $getNumberAmendment = mysqlSelect("select count(afm_id) as total 
+                              from amendment_form_main 
+                              where afm_rel_wo_ref = " . $Draft["master_wo_ref"] . " and afm_status = 10 ");
+
+                              $totPrint = 0;
+                              if (is_array($getNumberAmendment)) {
+                                $totPrint += $getNumberAmendment[0]["total"];
+                              }
+                              echo $totPrint;
+                              ?>
+                            </td>
+                            <td><?php echo $Draft['afi_text']; ?></td>
 
                             <td>
 
@@ -486,12 +427,140 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
   getScripts();
   ?>
 
+
   <script src="assets/js/bootbox.min.js"></script>
 
   <script type="text/javascript" src="assets/Datatables/datatables.min.js"></script>
 
   <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
 
+  <script>
+    $(document).ready(function(e) {
+      $('.sendSalesVerify').click(function(e) {
+        var dataId = ($(this).data("id"));
+
+        bootbox.confirm("Are you sure you want to Publish this Amendment Form for Work Order Number " + dataId + " ?", function(result) {
+          if (result) {
+
+
+            $.post("AmendmentController/AmendmentFormController", {
+                afm_ref: dataId,
+                from: 1,
+                to: 2
+              },
+              function(data, status) {
+                if (data.includes("This action has been successfully completed")) {
+                  bootbox.alert(data);
+                  setTimeout(function() {
+                    window.location.reload();
+                  }, 1000);
+
+                } else {
+                  bootbox.alert(data);
+                }
+              });
+
+
+          }
+        });
+      });
+    }); /*Doc Ready*/
+
+    $(document).ready(function(e) {
+
+      $('.discardDraft').click(function(e) {
+        var dataId = ($(this).data("id"));
+
+        bootbox.confirm("Are you sure you want to discard this Amendment Form for Work Order Number " + dataId + " ?", function(result) {
+          if (result) {
+
+            $.post("AmendmentController/AmendmentFormController", {
+                afm_ref: dataId,
+                from: 1,
+                to: 99
+              },
+              function(data, status) {
+                if (data.includes("This action has been successfully completed")) {
+                  bootbox.alert(data);
+                  setTimeout(function() {
+                    window.location.reload();
+                  }, 1000);
+
+                } else {
+                  bootbox.alert(data);
+                }
+
+              });
+
+          }
+        });
+      });
+    }); /*Doc Ready*/
+
+    $(document).ready(function(e) {
+
+      $('.discardRej').click(function(e) {
+        var dataId = ($(this).data("id"));
+        var datafrom = ($(this).data("from"));
+
+        bootbox.confirm("Are you sure you want to discard this Amendment Form for Work Order Number " + dataId + " ?", function(result) {
+          if (result) {
+
+            $.post("AmendmentController/AmendmentFormController", {
+                afm_ref: dataId,
+                from: datafrom,
+                to: 99
+              },
+              function(data, status) {
+                if (data.includes("This action has been successfully completed")) {
+                  bootbox.alert(data);
+                  setTimeout(function() {
+                    window.location.reload();
+                  }, 1000);
+
+                } else {
+                  bootbox.alert(data);
+                }
+
+              });
+
+          }
+        });
+      });
+    }); /*Doc Ready*/
+
+    $(document).ready(function(e) {
+      $('.sendRejSalesVerify').click(function(e) {
+        var dataId = ($(this).data("id"));
+        var datafrom = ($(this).data("from"));
+
+        bootbox.confirm("Are you sure you want to Re-Publish this Amendment Form for verification ?  -  Work Order Number " + dataId + " ?", function(result) {
+          if (result) {
+
+
+            $.post("AmendmentController/AmendmentFormController", {
+                afm_ref: dataId,
+                from: datafrom,
+                to: 2
+              },
+              function(data, status) {
+                if (data.includes("This action has been successfully completed")) {
+                  bootbox.alert(data);
+                  setTimeout(function() {
+                    window.location.reload();
+                  }, 1000);
+
+                } else {
+                  bootbox.alert(data);
+                }
+              });
+
+
+          }
+        });
+      });
+    }); /*Doc Ready*/
+  </script>
   <?php
 
 

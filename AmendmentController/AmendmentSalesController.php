@@ -116,7 +116,7 @@ if (isset($_POST['edit_amend_work_order_id']) || isset($_POST['edit_amend_reason
     where c.afm_rel_wo_ref = a.afm_rel_wo_ref
     order by c.afm_id desc 
     limit 1) ) ap where 
-    ap.afm_status in (1) and ap.afm_rel_wo_ref = " . $_POST['edit_amend_work_order_id']);
+    ap.afm_status in (1,3,5,7,9) and ap.afm_rel_wo_ref = " . $_POST['edit_amend_work_order_id']);
 
     if (!is_array($checkIn)) {
         die("Amendment Form not found");
