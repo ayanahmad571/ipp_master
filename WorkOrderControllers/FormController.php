@@ -103,7 +103,7 @@ function getRow($getAttachedTreeSqlIn, $isTechnical = false)
             <label>Cust Code</label>
             <select <?php echo ($isTechnical ? " disabled " : "") ?> class="form-control select_a" required name="work_order_2_client_id">
                 <?php
-                $getClients = mysqlSelect("SELECT * FROM `clients_main` where `client_show` = 1 order by client_name asc ");
+                $getClients = mysqlSelect("SELECT * FROM `clients_main` where `client_show` = 1 order by client_code asc ");
                 if (is_array($getClients)) {
                     foreach ($getClients as $Client) {
                         echo '<option data-name="' . $Client['client_name'] . '" value="' . $Client['client_id'] . '">' . $Client['client_code'] . '</option>';

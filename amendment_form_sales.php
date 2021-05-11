@@ -76,7 +76,7 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
       <!-- Main Content -->
       <div class="main-content">
         <section class="section">
-          <?php getPageTitle("Amendments Work Order - Sales"); ?>
+          <?php getPageTitle("Amendments Form - Sales"); ?>
           <!-- TOP CONTENT BLOCKS -->
           <div class="row">
             <?php
@@ -92,28 +92,27 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
             <div class="col-12 ">
               <div class="card card-primary">
                 <div class="card-header">
-                  <h4>Open Forms</h4>
+                  <h4>Drafts</h4>
                 </div>
                 <div class="card-body text-justify">
-                  <table class="table table-striped table-bordered " id="TableOne">
+                  <table class="table table-striped table-bordered " id="TableZero">
                     <thead>
                       <tr>
                         <th>WO#</th>
-
                         <th>Client</th>
                         <th>Design ID</th>
                         <th>User</th>
-                        <th>TimeStamp</th>
-                        <th>Status</th>
+                        <th>WO Status</th>
                         <th>Amendment #</th>
                         <th>Amendment Status</th>
+                        <th>TimeStamp</th>
                         <th>Action</th>
                       </tr>
                     </thead>
 
                     <tbody>
                       <?php
-                      $finalWrap = getAmendmentWrapped($pubQuery, "10,3,5,7,9", true);
+                      $finalWrap = getAmendmentWrapped($pubQuery, "1");
                       $getDrafts = mysqlSelect($finalWrap);
 
                       if (is_array($getDrafts)) {
@@ -121,7 +120,6 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
                       ?>
                           <tr>
                             <td><?php echo $Draft['master_wo_ref'] ?></td>
-                            <td><?php echo $Draft['master_wo_id'] ?></td>
                             <td><?php echo $Draft['client_code'] . " - " . $Draft['client_name']; ?></td>
                             <td><?php echo $Draft['master_wo_design_id']; ?></td>
                             <td>
@@ -132,24 +130,108 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
                               echo getByForFromWO($getBy, $getFor);
                               ?>
                             </td>
-                            <td><?php echo date(getDateTimeFormat(), $Draft['master_wo_gen_dnt']); ?></td>
                             <td><?php echo $Draft['mwoid_desc2']; ?></td>
                             <td>
                               <?php
                               $getNumberAmendment = mysqlSelect("select count(afm_id) as total 
                               from amendment_form_main 
-                              where afm_rel_wo_ref = " . $Draft["master_wo_ref"] . " and afm_status = 1 ");
+                              where afm_rel_wo_ref = " . $Draft["master_wo_ref"] . " and afm_status = 10 ");
 
-                              $totPrint = 0;
+                              $totPrint = 1;
                               if (is_array($getNumberAmendment)) {
-                                $totPrint = $getNumberAmendment[0]["total"];
+                                $totPrint = 1 + $getNumberAmendment[0]["total"];
                               }
                               echo $totPrint;
                               ?>
                             </td>
+                            <td><?php echo $Draft['afi_text']; ?></td>
+                            <td><?php echo date(getDateTimeFormat(), $Draft['afm_gen_dnt']); ?></td>
                             <td>
 
-                              <button onclick="openWindow(<?php echo $Draft['master_wo_ref'] ?>)" class="btn btn-primary mt-1">View</button>
+                              <button onclick="openWindowAmendRaw(<?php echo $Draft['master_wo_ref'] ?>)" class="btn btn-success mt-1">Publish</button><br>
+                              <button onclick="openWindowAmendRaw(<?php echo $Draft['master_wo_ref'] ?>)" class="btn btn-primary mt-1">Edit Form</button><br>
+                              <button onclick="openWindow(<?php echo $Draft['master_wo_ref'] ?>)" class="btn btn-warning mt-1">View WO</button><br>
+                              <button class="btn btn-danger mt-1">Discard</button>
+
+                            </td>
+                          </tr>
+                      <?php
+                        }
+                      }
+                      ?>
+                    </tbody>
+
+                  </table>
+
+                  <p>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12 ">
+              <div class="card card-primary">
+                <div class="card-header">
+                  <h4>Open Forms - Currently being requested for verification</h4>
+                </div>
+                <div class="card-body text-justify">
+                  <table class="table table-striped table-bordered " id="TableOne">
+                    <thead>
+                      <tr>
+                        <th>WO#</th>
+                        <th>Client</th>
+                        <th>Design ID</th>
+                        <th>User</th>
+                        <th>WO Status</th>
+                        <th>Amendment #</th>
+                        <th>Amendment Status</th>
+                        <th>TimeStamp</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <?php
+                      $finalWrap = getAmendmentWrapped($pubQuery, "1,10,3,5,7,9", true);
+                      $getDrafts = mysqlSelect($finalWrap);
+
+                      if (is_array($getDrafts)) {
+                        foreach ($getDrafts as $Draft) {
+                      ?>
+                          <tr>
+                            <td><?php echo $Draft['master_wo_ref'] ?></td>
+                            <td><?php echo $Draft['client_code'] . " - " . $Draft['client_name']; ?></td>
+                            <td><?php echo $Draft['master_wo_design_id']; ?></td>
+                            <td>
+                              <?php
+                              $getBy = mysqlSelect("select * from user_main where lum_id = " . $Draft['mwo_gen_lum_id'] . " and lum_valid =1");
+                              $getFor = mysqlSelect("select * from user_main where lum_id = " . $Draft['mwo_gen_on_behalf_lum_id'] . " and lum_valid =1");
+
+                              echo getByForFromWO($getBy, $getFor);
+                              ?>
+                            </td>
+                            <td><?php echo $Draft['mwoid_desc2']; ?></td>
+                            <td>
+                              <?php
+                              $getNumberAmendment = mysqlSelect("select count(afm_id) as total 
+                              from amendment_form_main 
+                              where afm_rel_wo_ref = " . $Draft["master_wo_ref"] . " and afm_status = 10 ");
+
+                              $totPrint = 1;
+                              if (is_array($getNumberAmendment)) {
+                                $totPrint = 1 + $getNumberAmendment[0]["total"];
+                              }
+                              echo $totPrint;
+                              ?>
+                            </td>
+                            <td><?php echo $Draft['afi_text']; ?></td>
+                            <td><?php echo date(getDateTimeFormat(), $Draft['afm_gen_dnt']); ?></td>
+                            <td>
+
+                              <button onclick="openWindowAmendRaw(<?php echo $Draft['master_wo_ref'] ?>)" class="btn btn-primary mt-1">View Form</button><br>
+                              <button onclick="openWindow(<?php echo $Draft['master_wo_ref'] ?>)" class="btn btn-warning mt-1">View WO</button><br>
                               <button class="btn btn-danger mt-1">Discard</button>
 
                             </td>
@@ -322,7 +404,7 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
             <div class="col-12 ">
               <div class="card card-primary">
                 <div class="card-header">
-                  <h4>Others</h4>
+                  <h4>Current Orders - (All work orders for which amendment forms have never been requested)</h4>
                 </div>
                 <div class="card-body text-justify">
                   <table class="table table-striped table-bordered " id="TableFour">
@@ -334,14 +416,14 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
                         <th>Design ID</th>
                         <th>User</th>
                         <th>TimeStamp</th>
-                        <th>Status</th>
+                        <th>WO Status</th>
                         <th>Action</th>
                       </tr>
                     </thead>
 
                     <tbody>
                       <?php
-                      $finalWrap = getAmendmentWrapped($pubQuery, "10", false, true);
+                      $finalWrap = getAmendmentWrapped($pubQuery, "10 , 99", true, true);
                       $getDrafts = mysqlSelect($finalWrap);
 
                       if (is_array($getDrafts)) {
@@ -414,10 +496,11 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
 
 
   getPrintJS();
-  getDataTableDefiner("TableOne", 5);
-  getDataTableDefiner("TableTwo", 5);
-  getDataTableDefiner("TableThree", 5);
-  getDataTableDefiner("TableFour", 5);
+  getDataTableDefiner("TableZero", 7);
+  getDataTableDefiner("TableOne", 7);
+  getDataTableDefiner("TableTwo");
+  getDataTableDefiner("TableThree");
+  getDataTableDefiner("TableFour");
   ?>
 
 

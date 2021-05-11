@@ -9,6 +9,11 @@ if (!is_numeric($_GET['id'])) {
     die("Invalid Work Order ID Provided");
 }
 
+
+# PRE FORM CREATION CHECKS
+
+## Check if work orders exists
+
 $WorkOrderMain = mysqlSelect($UpdatedStatusQuery . "
        
         
@@ -27,7 +32,21 @@ if (is_array($WorkOrderMain)) {
     die('Invalid Work Order Supplied');
 }
 
+## If there is a current Amendment form that is being verified or has been rejected
 
+$checkNotIn = mysqlSelect("select * from (
+    select * from amendment_form_main a where a.afm_id = 
+    (SELECT c.afm_id FROM `amendment_form_main` c 
+    where c.afm_rel_wo_ref = a.afm_rel_wo_ref
+    order by c.afm_id desc 
+    limit 1) ) ap where 
+    ap.afm_status not in (10,99) and ap.afm_rel_wo_ref = " . $_GET['id']);
+
+if (is_array($checkNotIn)) {
+    die("You have already requested an amendment, please close that to proceed further");
+}
+
+# PRE FORM CREATION CHECKS END
 
 
 getHead("New Amendment Form - WO#" . $WorkOrderMain['master_wo_ref']);
@@ -88,35 +107,35 @@ getHead("New Amendment Form - WO#" . $WorkOrderMain['master_wo_ref']);
                                         </table>
                                     </div>
 
-                                    <form id="formContainer" action="AmendmentController/AmendmentFormController" method="post">
+                                    <form id="formContainer" action="AmendmentController/AmendmentSalesController" method="post">
                                         <!-- <form id="formContainer" action="PostDumper" method="post"> -->
                                         <input type="hidden" name="amend_work_order_id" value="<?php echo $_GET['id'] ?>" />
 
 
                                         <div class="form-group col-12">
                                             <label>Reason to Modify</label>
-                                            <input type="text" class="form-control" name="work_order_max_w_p_r" placeholder="Reason ...">
+                                            <input type="text" required class="form-control" name="amend_reason" placeholder="Reason ...">
                                         </div>
 
 
                                         <div class="form-group col-12">
                                             <label>Modification 1</label>
-                                            <input type="text" class="form-control" name="work_order_max_w_p_r" placeholder="Modification Details ... ">
+                                            <input type="text" required class="form-control" name="amend_mod_1" placeholder="Modification Details ... ">
                                         </div>
 
                                         <div class="form-group col-12">
                                             <label>Modification 2</label>
-                                            <input type="text" class="form-control" name="work_order_max_w_p_r" placeholder="Modification Details ... ">
+                                            <input type="text" class="form-control" name="amend_mod_2" placeholder="Modification Details ... ">
                                         </div>
 
                                         <div class="form-group col-12">
                                             <label>Modification 3</label>
-                                            <input type="text" class="form-control" name="work_order_max_w_p_r" placeholder="Modification Details ... ">
+                                            <input type="text" class="form-control" name="amend_mod_3" placeholder="Modification Details ... ">
                                         </div>
 
                                         <div class="form-group col-12">
                                             <label>Notes</label>
-                                            <textarea name="work_order_remarks_roll" class="form-control remarksEdit" placeholder="Remarks" style="height:200px"></textarea>
+                                            <textarea name="amend_notes" class="form-control remarksEdit" placeholder="Remarks" style="height:200px"></textarea>
                                         </div>
 
 

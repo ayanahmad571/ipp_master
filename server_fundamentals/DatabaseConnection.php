@@ -7,96 +7,97 @@ require("SecretKeys.php");
 $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 // Check connection
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+	die("Connection failed: " . $conn->connect_error);
 }
 
-foreach($_POST as $key=>$v){
+foreach ($_POST as $key => $v) {
 
 
-	if(!is_array($_POST[$key])){
-		if($key == 'work_order_remarks_roll' || $key == 'work_order_remarks_pouch' || $key == 'work_order_remarks_bags' || $key == 'work_order_remarks_overall')  {
-			$_POST[$key] =str_replace('<script','', trim(($conn->escape_string($v))));
-		}else{
-		 $_POST[$key] = trim(strip_tags($conn->escape_string($v)));
+	if (!is_array($_POST[$key])) {
+		if ($key == 'edit_amend_notes' || $key == 'amend_notes' || $key == 'work_order_remarks_roll' || $key == 'work_order_remarks_pouch' || $key == 'work_order_remarks_bags' || $key == 'work_order_remarks_overall') {
+			$_POST[$key] = str_replace('<script', '', trim(($conn->escape_string($v))));
+		} else {
+			$_POST[$key] = trim(strip_tags($conn->escape_string($v)));
 		}
-	}
-	else if (is_array($_POST[$key])){
-		foreach($_POST[$key] as $ke=>$vv){
-			if(!is_array($_POST[$key][$ke])){
+	} else if (is_array($_POST[$key])) {
+		foreach ($_POST[$key] as $ke => $vv) {
+			if (!is_array($_POST[$key][$ke])) {
 				$_POST[$key][$ke] = trim(strip_tags($conn->escape_string($vv)));
 			}
 		}
-	}else{
+	} else {
 		die('INCL#ERR1');
 	}
-
-
 }
 
-foreach($_GET as $key=>$v){
-	
-	if(!is_array($_GET[$key])){
-		 $_GET[$key] = trim(strip_tags($conn->escape_string($v)));
-	}
-	else if (is_array($_GET[$key])){
-		foreach($_GET[$key] as $ke=>$vv){
-			if(!is_array($_GET[$key][$ke])){
+foreach ($_GET as $key => $v) {
+
+	if (!is_array($_GET[$key])) {
+		$_GET[$key] = trim(strip_tags($conn->escape_string($v)));
+	} else if (is_array($_GET[$key])) {
+		foreach ($_GET[$key] as $ke => $vv) {
+			if (!is_array($_GET[$key][$ke])) {
 				$_GET[$key][$ke] = trim(strip_tags($conn->escape_string($vv)));
 			}
 		}
-	}else{
+	} else {
 		die('INCL#ERR1');
 	}
-
 }
 
 
-function mysqlInsertData($sql, $ret = false){
-$conn = $GLOBALS['conn'];
-if ($conn->query($sql) === TRUE) {
-	if($ret){
-		return $conn->insert_id; #inserted, gives number 1
-	}else{
-		return "#"; #inserted gives ok 
+function mysqlInsertData($sql, $ret = false)
+{
+	$conn = $GLOBALS['conn'];
+	if ($conn->query($sql) === TRUE) {
+		if ($ret) {
+			return $conn->insert_id; #inserted, gives number 1
+		} else {
+			return "#"; #inserted gives ok 
+		}
+	} else {
+		die("Error: " . $sql . "<br>" . $conn->error);
 	}
-    
-} else {
-    die( "Error: " . $sql . "<br>" . $conn->error);
 }
-
-	
-}
-function mysqlUpdateData($sql, $ret = false){
-$conn = $GLOBALS['conn'];
-if ($conn->query($sql) === TRUE) {
-	if($ret){
-		return $conn->insert_id;
-	}else{
-		return "#";
+function mysqlUpdateData($sql, $ret = false)
+{
+	$conn = $GLOBALS['conn'];
+	if ($conn->query($sql) === TRUE) {
+		if ($ret) {
+			return $conn->insert_id;
+		} else {
+			return "#";
+		}
+	} else {
+		die("Error: " . $sql . "<br>" . $conn->error);
 	}
-    
-} else {
-    die( "Error: " . $sql . "<br>" . $conn->error);
 }
 
-	
-}
-
-function mysqlSelect($sql){
+function mysqlSelect($sql)
+{
 	$conn = $GLOBALS['conn'];
 	$result = $conn->query($sql);
-	$dump =array();
-	
+	$dump = array();
+
 	if ($result->num_rows > 0) {
 		// output data of each row
-		while($row = $result->fetch_assoc()) {
+		while ($row = $result->fetch_assoc()) {
 			$dump[] = $row;
 		}
 		return $dump;
 	} else {
 		return "Error: " . $sql . "<br>" . $conn->error;
 	}
-	
+}
+
+function getLum($id)
+{
+	$lum = mysqlSelect("SELECT * FROM `user_main` where lum_valid = 1 and lum_id =" . $id);
+	if (is_array($lum)) {
+		return $lum[0];
+	} else {
+		return array("lum_name" => "User Not Found");
+	}
 }
 
 ##################################################
@@ -141,7 +142,3 @@ define("H_FILE", false);
 ##################################################
 
 define("F_SIZE", "1M");
-
-
-
-?>

@@ -75,16 +75,40 @@ function getDataTableDefiner($id, $pos = 4, $sort = "desc")
       ';
 }
 
+function getRawAmendmentQuery($id, $not = false, $all = false)
+{
+    $selector = "a.afm_rel_wo_ref";
+    $leftJoiner = "";
+    $conditional = "and a.afm_status " . ($not ? "not in " : " in ") . " (" . $id . ") ";
+
+    if ($all) {
+        $selector = "*";
+        $leftJoiner = "left join amendment_form_identity afi on a.afm_status = afi.afi_id";
+        $conditional = "";
+    }
+
+    $amendmentTable = "select " . $selector . " from amendment_form_main a 
+    " . $leftJoiner . "
+    where a.afm_id = 
+    (SELECT c.afm_id FROM `amendment_form_main` c 
+    where c.afm_rel_wo_ref = a.afm_rel_wo_ref
+    order by c.afm_id desc 
+    limit 1)
+    " . $conditional;
+
+    return $amendmentTable;
+}
+
 function getAmendmentWrapped($pubQuery, $id, $not = false, $all = false)
 {
+
+    $amendmentTableAll = getRawAmendmentQuery($id, $not, true);
+    $amendmentTableSome = getRawAmendmentQuery($id, $not);
+
     return "select * from (" . $pubQuery . ") wp 
+    left join (" . $amendmentTableAll . ") am on am.afm_rel_wo_ref = wp.master_wo_ref
     where wp.master_wo_ref " . ($all ? " not in " : "in") . "
-      (select a.afm_rel_wo_ref from amendment_form_main a where a.afm_id = 
-        (SELECT c.afm_id FROM `amendment_form_main` c 
-        where c.afm_rel_wo_ref = a.afm_rel_wo_ref
-        order by c.afm_id desc 
-        limit 1) 
-        " . ($all ? " )" : "and a.afm_status " . ($not ? "not in " : " in ") . " (" . $id . ") )");
+      (" . $amendmentTableSome . ")";
 }
 
 ?>
