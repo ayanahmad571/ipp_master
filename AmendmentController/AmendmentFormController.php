@@ -1,5 +1,6 @@
 <?php
 require_once("../server_fundamentals/SessionHandler.php");
+require_once("AmendmentHelper.php");
 
 /*
 1 	Generated Amendment Form
@@ -29,18 +30,7 @@ if (!isset($_POST['to'])) {
 # VERIFICATION CHECKS
 
 ## Check if work orders exists
-
-$WorkOrderMain = mysqlSelect($UpdatedStatusQuery . "
-       
-        
-  left join clients_main on master_wo_2_client_id = client_id
-  left join master_work_order_main_identitiy on master_wo_status = mwoid_id
-  
-      where master_wo_status not in (1,2,3,10) and master_wo_ref= " . $_POST['afm_ref'] . " 
-  " . $inColsWO . "
-  order by master_wo_id desc
-  ");
-
+$WorkOrderMain = mysqlSelect(workOrderPagesQuery("1,2,3,10", true, $_POST['afm_ref']));
 
 if (is_array($WorkOrderMain)) {
     $WorkOrderMain = $WorkOrderMain[0];
@@ -49,16 +39,12 @@ if (is_array($WorkOrderMain)) {
 }
 
 ## If this amendment is currently being verified or open
-
-$checkIn = mysqlSelect("select * from (
-    select * from amendment_form_main a where a.afm_id = 
-    (SELECT c.afm_id FROM `amendment_form_main` c 
-    where c.afm_rel_wo_ref = a.afm_rel_wo_ref
-    order by c.afm_id desc 
-    limit 1) ) ap 
-    left join amendment_form_identity ai on ap.afm_status = ai.afi_id
-    where 
-    ap.afm_status in (" . $_POST['from'] . ") and ap.afm_rel_wo_ref = " . $_POST['afm_ref']);
+$checkIn = mysqlSelect(getRawAmendmentQuery(
+    $_POST['from'],
+    false,
+    false,
+    $_POST['afm_ref']
+));
 
 if (!is_array($checkIn)) {
     die("This amendment form doesn't exist for this status");

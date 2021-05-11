@@ -1,7 +1,6 @@
 <?php
-require_once("server_fundamentals/SessionHandler.php");
 
-function getRawAmendmentQuery($id, $not = false, $all = false)
+function getRawAmendmentQuery($id, $not = false, $all = false, $ref = 0)
 {
     $selector = "a.afm_rel_wo_ref";
     $leftJoiner = "";
@@ -13,6 +12,15 @@ function getRawAmendmentQuery($id, $not = false, $all = false)
         $conditional = "";
     }
 
+    $condRef = "";
+
+    if ($ref > 0) {
+        $selector = "*";
+        $condRef = "and a.afm_rel_wo_ref = " . $ref;
+        $leftJoiner = "left join amendment_form_identity afi on a.afm_status = afi.afi_id";
+        $conditional = "and a.afm_status " . ($not ? "not in " : " in ") . " (" . $id . ") ";
+    }
+
     $amendmentTable = "select " . $selector . " from amendment_form_main a 
     " . $leftJoiner . "
     where a.afm_id = 
@@ -20,7 +28,7 @@ function getRawAmendmentQuery($id, $not = false, $all = false)
     where c.afm_rel_wo_ref = a.afm_rel_wo_ref
     order by c.afm_id desc 
     limit 1)
-    " . $conditional;
+    " . $conditional . " " . $condRef;
 
     return $amendmentTable;
 }

@@ -31,7 +31,7 @@ function getTopCard($sizes, $icon, $head, $body)
 <?php
 }
 
-function workOrderPagesQuery($sqlInCondition, $notIn = false)
+function workOrderPagesQuery($sqlInCondition, $notIn = false, $refCheck = 0)
 {
     return "select *
     from `master_work_order_reference_number` r 
@@ -45,6 +45,7 @@ function workOrderPagesQuery($sqlInCondition, $notIn = false)
     left join clients_main on master_wo_2_client_id = client_id
     left join master_work_order_main_identitiy on master_wo_status = mwoid_id
     where master_wo_status " . ($notIn ? "not in" : "in") . " (" . $sqlInCondition . ")
+    " . ($refCheck > 0 ? "and master_wo_ref = " . $refCheck : "") . "
     order by master_wo_gen_dnt desc";
 }
 

@@ -1,35 +1,25 @@
 <?php
 require_once("../server_fundamentals/SessionHandler.php");
+require_once("AmendmentHelper.php");
 
 if (isset($_POST['WorkOrderGetDetails'])) {
     if (!is_numeric($_POST['WorkOrderGetDetails'])) {
         die("<p style='color:red'>Invalid Work-Order ID</p>");
     }
 
-
-    $WorkOrderMain = mysqlSelect($UpdatedStatusQuery . "        
-    left join clients_main on master_wo_2_client_id = client_id
-    left join master_work_order_main_identitiy on master_wo_status = mwoid_id
-
-        where master_wo_status not in (1,2,3,10) and master_wo_ref= " . $_POST['WorkOrderGetDetails'] . " 
-    " . $inColsWO . "
-    order by master_wo_id desc
-    ");
-
+    $WorkOrderMain = mysqlSelect(workOrderPagesQuery("1,2,3,10", true, $_POST['WorkOrderGetDetails']));
 
     if (!is_array($WorkOrderMain)) {
         die("<p style='color:red'>Invalid Work Order ID</p>");
     }
 
-    $checkIn = mysqlSelect("select * from (
-        select * from amendment_form_main a where a.afm_id = 
-        (SELECT c.afm_id FROM `amendment_form_main` c 
-        where c.afm_rel_wo_ref = a.afm_rel_wo_ref
-        order by c.afm_id desc 
-        limit 1) ) ap 
-    left join amendment_form_identity ai on ap.afm_status = ai.afi_id
-    where 
-    ap.afm_status = 2 and ap.afm_rel_wo_ref = " . $_POST['WorkOrderGetDetails']);
+
+    $checkIn = mysqlSelect(getRawAmendmentQuery(
+        "2",
+        false,
+        false,
+        $_POST['WorkOrderGetDetails']
+    ));
 
     if (!is_array($checkIn)) {
         die("<p style='color:red'>This amendment form doesn't exist for this status</p>");
@@ -37,7 +27,7 @@ if (isset($_POST['WorkOrderGetDetails'])) {
 
 ?>
 
-    <h3 align="center">Amendment Form Verification Rejection</h3>
+    <h3 align="center">Amendment Form Verification Rejection - Sales</h3>
     <hr>
     <table class="table table-bordered">
         <tbody>

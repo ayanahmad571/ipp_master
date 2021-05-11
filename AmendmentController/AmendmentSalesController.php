@@ -1,5 +1,6 @@
 <?php
 require_once("../server_fundamentals/SessionHandler.php");
+require_once("AmendmentHelper.php");
 
 if (isset($_POST['amend_work_order_id']) || isset($_POST['amend_reason']) || isset($_POST['amend_mod_1']) || isset($_POST['amend_mod_2']) || isset($_POST['amend_mod_3']) || isset($_POST['amend_notes'])) {
 
@@ -16,15 +17,7 @@ if (isset($_POST['amend_work_order_id']) || isset($_POST['amend_reason']) || iss
 
     ## Check if work orders exists
 
-    $WorkOrderMain = mysqlSelect($UpdatedStatusQuery . "
-
-    left join clients_main on master_wo_2_client_id = client_id
-    left join master_work_order_main_identitiy on master_wo_status = mwoid_id
-    
-        where master_wo_status not in (1,2,3,10) and master_wo_ref= " . $_POST['amend_work_order_id'] . " 
-    " . $inColsWO . "
-    order by master_wo_id desc
-    ");
+    $WorkOrderMain = mysqlSelect(workOrderPagesQuery("1,2,3,10", true, $_POST['amend_work_order_id']));
 
 
     if (is_array($WorkOrderMain)) {
@@ -35,13 +28,7 @@ if (isset($_POST['amend_work_order_id']) || isset($_POST['amend_reason']) || iss
 
     ## If there is a current Amendment form that is being verified or has been rejected
 
-    $checkNotIn = mysqlSelect("select * from (
-    select * from amendment_form_main a where a.afm_id = 
-    (SELECT c.afm_id FROM `amendment_form_main` c 
-    where c.afm_rel_wo_ref = a.afm_rel_wo_ref
-    order by c.afm_id desc 
-    limit 1) ) ap where 
-    ap.afm_status not in (10,99) and ap.afm_rel_wo_ref = " . $_POST['amend_work_order_id']);
+    $checkNotIn = mysqlSelect(getRawAmendmentQuery("10,99", true, false, $_POST['amend_work_order_id']));
 
     if (is_array($checkNotIn)) {
         die("You have already requested an amendment, please close that to proceed further");
@@ -91,15 +78,11 @@ if (isset($_POST['edit_amend_work_order_id']) || isset($_POST['edit_amend_reason
 
     ## Check if work orders exists
 
-    $WorkOrderMain = mysqlSelect($UpdatedStatusQuery . "
-
-    left join clients_main on master_wo_2_client_id = client_id
-    left join master_work_order_main_identitiy on master_wo_status = mwoid_id
-    
-        where master_wo_status not in (1,2,3,10) and master_wo_ref= " . $_POST['edit_amend_work_order_id'] . " 
-    " . $inColsWO . "
-    order by master_wo_id desc
-    ");
+    $WorkOrderMain = mysqlSelect(workOrderPagesQuery(
+        "1,2,3,10",
+        true,
+        $_POST['edit_amend_work_order_id']
+    ));
 
 
     if (is_array($WorkOrderMain)) {
@@ -110,18 +93,18 @@ if (isset($_POST['edit_amend_work_order_id']) || isset($_POST['edit_amend_reason
 
     ## If there is a current Amendment form that is saved as draft
 
-    $checkIn = mysqlSelect("select * from (
-    select * from amendment_form_main a where a.afm_id = 
-    (SELECT c.afm_id FROM `amendment_form_main` c 
-    where c.afm_rel_wo_ref = a.afm_rel_wo_ref
-    order by c.afm_id desc 
-    limit 1) ) ap where 
-    ap.afm_status in (1,3,5,7,9) and ap.afm_rel_wo_ref = " . $_POST['edit_amend_work_order_id']);
+    $checkIn = mysqlSelect(getRawAmendmentQuery(
+        "1,3,5,7,9",
+        false,
+        false,
+        $_POST['edit_amend_work_order_id']
+    ));
 
     if (!is_array($checkIn)) {
         die("Amendment Form not found");
     }
 
+    
     # PRE FORM CREATION CHECKS END
 
 
