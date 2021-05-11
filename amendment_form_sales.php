@@ -1,60 +1,12 @@
 <?php
 #57,58,59,60,61,62,63,64,65,66,67
 require_once("server_fundamentals/SessionHandler.php");
+require_once("AmendmentController/AmendmentHelper.php");
 
 getHead("Amendment Form - Sales");
 
-$salesGroups = mysqlSelect("select sgp_sgm_id from sales_groups_people where sgp_lum_id = " . $USER_ARRAY['lum_id']);
 
-
-
-if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
-  #Master Admin and MD
-  $pubQuery = workOrderPagesQuery("1,2,3,10", true);
-} else if ($USER_ARRAY['lum_user_type'] == 4) {
-  #Sales Coordinator
-  if (!is_array($salesGroups)) {
-    die("User not assigned to any sales group");
-  }
-  $containerLeft = "select * from ( ";
-  $containerRight = " ) sb where (sb.mwo_gen_lum_id = " . $USER_ARRAY['lum_id'] . " or sb.mwo_gen_on_behalf_lum_id = " . $USER_ARRAY['lum_id'] . ")";
-
-  $pubQuery = $containerLeft . workOrderPagesQuery("1,2,3,10", true) . $containerRight;
-} else if ($USER_ARRAY['lum_user_type'] == 18) {
-  #Assistant Sales Manager
-  if (!is_array($salesGroups)) {
-    die("User not assigned to any sales group");
-  }
-
-
-  $containerLeft = "select * from ( ";
-  $containerRight = " ) sb where (sb.mwo_gen_lum_id = " . $USER_ARRAY['lum_id'] . " or sb.mwo_gen_on_behalf_lum_id = " . $USER_ARRAY['lum_id'] . ")";
-
-  $pubQuery = $containerLeft . workOrderPagesQuery("1,2,3,10", true) . $containerRight;
-} else if ($USER_ARRAY['lum_user_type'] == 16) {
-  #Sales Manager
-  if (!is_array($salesGroups)) {
-    die("User not assigned to any sales group");
-  }
-
-  $allLowerUsers = ("select p.sgp_lum_id from sales_groups_people p 
-  left join user_main on p.sgp_lum_id = lum_id
-  where 
-  lum_user_type in (18,4) and
-  p.sgp_sgm_id in (select s.sgp_sgm_id from sales_groups_people s where s.sgp_lum_id = " . $USER_ARRAY['lum_id'] . ")");
-
-
-  $containerLeft = "select * from ( ";
-  $containerRight = " ) sb 
-  where (sb.mwo_gen_lum_id = " . $USER_ARRAY['lum_id'] . " or sb.mwo_gen_on_behalf_lum_id = " . $USER_ARRAY['lum_id'] . " or 
-  sb.mwo_gen_lum_id in (" . $allLowerUsers . ") 
-  or sb.mwo_gen_on_behalf_lum_id in (" . $allLowerUsers . ") )";
-
-  $pubQuery = $containerLeft . workOrderPagesQuery("1,2,3,10", true) . $containerRight;
-} else {
-  die("Un-Authorized User");
-}
-
+$pubQuery = getWOSales($USER_ARRAY);
 ?>
 
 <link rel="stylesheet" type="text/css" href="assets/DataTables/datatables.min.css" />
@@ -68,24 +20,12 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
       <?php
       getTopBar();
       getNavbar($USER_ARRAY['user_type_mod_id']);
-
-
-
       ?>
 
       <!-- Main Content -->
       <div class="main-content">
         <section class="section">
           <?php getPageTitle("Amendments Form - Sales"); ?>
-          <!-- TOP CONTENT BLOCKS -->
-          <div class="row">
-            <?php
-            // getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000");
-            // getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000");
-            // getTopCard("col-lg-3 col-md-6 col-sm-6 col-12", "far fa-user", "Dummy Head", "0000");
-            ?>
-          </div>
-
           <hr id="Splitter" />
 
           <div class="row">
@@ -124,24 +64,13 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
                             <td><?php echo $Draft['master_wo_design_id']; ?></td>
                             <td>
                               <?php
-                              $getBy = mysqlSelect("select * from user_main where lum_id = " . $Draft['mwo_gen_lum_id'] . " and lum_valid =1");
-                              $getFor = mysqlSelect("select * from user_main where lum_id = " . $Draft['mwo_gen_on_behalf_lum_id'] . " and lum_valid =1");
-
-                              echo getByForFromWO($getBy, $getFor);
+                              echo getByForFromWO($Draft['mwo_gen_lum_id'], $Draft['mwo_gen_on_behalf_lum_id']);
                               ?>
                             </td>
                             <td><?php echo $Draft['mwoid_desc2']; ?></td>
                             <td>
                               <?php
-                              $getNumberAmendment = mysqlSelect("select count(afm_id) as total 
-                              from amendment_form_main 
-                              where afm_rel_wo_ref = " . $Draft["master_wo_ref"] . " and afm_status = 10 ");
-
-                              $totPrint = 1;
-                              if (is_array($getNumberAmendment)) {
-                                $totPrint = 1 + $getNumberAmendment[0]["total"];
-                              }
-                              echo $totPrint;
+                              echo 1 + getNumberAmendments($Draft["master_wo_ref"]);
                               ?>
                             </td>
                             <td><?php echo $Draft['afi_text']; ?></td>
@@ -206,24 +135,13 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
                             <td><?php echo $Draft['master_wo_design_id']; ?></td>
                             <td>
                               <?php
-                              $getBy = mysqlSelect("select * from user_main where lum_id = " . $Draft['mwo_gen_lum_id'] . " and lum_valid =1");
-                              $getFor = mysqlSelect("select * from user_main where lum_id = " . $Draft['mwo_gen_on_behalf_lum_id'] . " and lum_valid =1");
-
-                              echo getByForFromWO($getBy, $getFor);
+                              echo getByForFromWO($Draft['mwo_gen_lum_id'], $Draft['mwo_gen_on_behalf_lum_id']);
                               ?>
                             </td>
                             <td><?php echo $Draft['mwoid_desc2']; ?></td>
                             <td>
                               <?php
-                              $getNumberAmendment = mysqlSelect("select count(afm_id) as total 
-                              from amendment_form_main 
-                              where afm_rel_wo_ref = " . $Draft["master_wo_ref"] . " and afm_status = 10 ");
-
-                              $totPrint = 1;
-                              if (is_array($getNumberAmendment)) {
-                                $totPrint = 1 + $getNumberAmendment[0]["total"];
-                              }
-                              echo $totPrint;
+                              echo 1 + getNumberAmendments($Draft["master_wo_ref"]);
                               ?>
                             </td>
                             <td><?php echo $Draft['afi_text']; ?></td>
@@ -289,15 +207,7 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
                             <td><?php echo $Draft['afm_reject_text']; ?></td>
                             <td>
                               <?php
-                              $getNumberAmendment = mysqlSelect("select count(afm_id) as total 
-                              from amendment_form_main 
-                              where afm_rel_wo_ref = " . $Draft["master_wo_ref"] . " and afm_status = 1 ");
-
-                              $totPrint = 0;
-                              if (is_array($getNumberAmendment)) {
-                                $totPrint = $getNumberAmendment[0]["total"];
-                              }
-                              echo $totPrint;
+                              echo getNumberAmendments($Draft["master_wo_ref"]);
                               ?>
                             </td>
                             <td><?php echo $Draft['afi_text']; ?></td>
@@ -362,10 +272,7 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
                             <td><?php echo $Draft['master_wo_design_id']; ?></td>
                             <td>
                               <?php
-                              $getBy = mysqlSelect("select * from user_main where lum_id = " . $Draft['mwo_gen_lum_id'] . " and lum_valid =1");
-                              $getFor = mysqlSelect("select * from user_main where lum_id = " . $Draft['mwo_gen_on_behalf_lum_id'] . " and lum_valid =1");
-
-                              echo getByForFromWO($getBy, $getFor);
+                              echo getByForFromWO($Draft['mwo_gen_lum_id'], $Draft['mwo_gen_on_behalf_lum_id']);
                               ?>
                             </td>
 
@@ -373,15 +280,7 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
                             <td><?php echo $Draft['mwoid_desc2']; ?></td>
                             <td>
                               <?php
-                              $getNumberAmendment = mysqlSelect("select count(afm_id) as total 
-                              from amendment_form_main 
-                              where afm_rel_wo_ref = " . $Draft["master_wo_ref"] . " and afm_status = 10 ");
-
-                              $totPrint = 0;
-                              if (is_array($getNumberAmendment)) {
-                                $totPrint += $getNumberAmendment[0]["total"];
-                              }
-                              echo $totPrint;
+                              echo getNumberAmendments($Draft["master_wo_ref"]);
                               ?>
                             </td>
                             <td><?php echo $Draft['afi_text']; ?></td>
@@ -434,136 +333,11 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
 
   <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
 
-  <script>
-    $(document).ready(function(e) {
-      $('.sendSalesVerify').click(function(e) {
-        var dataId = ($(this).data("id"));
-
-        bootbox.confirm("Are you sure you want to Publish this Amendment Form for Work Order Number " + dataId + " ?", function(result) {
-          if (result) {
-
-
-            $.post("AmendmentController/AmendmentFormController", {
-                afm_ref: dataId,
-                from: 1,
-                to: 2
-              },
-              function(data, status) {
-                if (data.includes("This action has been successfully completed")) {
-                  bootbox.alert(data);
-                  setTimeout(function() {
-                    window.location.reload();
-                  }, 1000);
-
-                } else {
-                  bootbox.alert(data);
-                }
-              });
-
-
-          }
-        });
-      });
-    }); /*Doc Ready*/
-
-    $(document).ready(function(e) {
-
-      $('.discardDraft').click(function(e) {
-        var dataId = ($(this).data("id"));
-
-        bootbox.confirm("Are you sure you want to discard this Amendment Form for Work Order Number " + dataId + " ?", function(result) {
-          if (result) {
-
-            $.post("AmendmentController/AmendmentFormController", {
-                afm_ref: dataId,
-                from: 1,
-                to: 99
-              },
-              function(data, status) {
-                if (data.includes("This action has been successfully completed")) {
-                  bootbox.alert(data);
-                  setTimeout(function() {
-                    window.location.reload();
-                  }, 1000);
-
-                } else {
-                  bootbox.alert(data);
-                }
-
-              });
-
-          }
-        });
-      });
-    }); /*Doc Ready*/
-
-    $(document).ready(function(e) {
-
-      $('.discardRej').click(function(e) {
-        var dataId = ($(this).data("id"));
-        var datafrom = ($(this).data("from"));
-
-        bootbox.confirm("Are you sure you want to discard this Amendment Form for Work Order Number " + dataId + " ?", function(result) {
-          if (result) {
-
-            $.post("AmendmentController/AmendmentFormController", {
-                afm_ref: dataId,
-                from: datafrom,
-                to: 99
-              },
-              function(data, status) {
-                if (data.includes("This action has been successfully completed")) {
-                  bootbox.alert(data);
-                  setTimeout(function() {
-                    window.location.reload();
-                  }, 1000);
-
-                } else {
-                  bootbox.alert(data);
-                }
-
-              });
-
-          }
-        });
-      });
-    }); /*Doc Ready*/
-
-    $(document).ready(function(e) {
-      $('.sendRejSalesVerify').click(function(e) {
-        var dataId = ($(this).data("id"));
-        var datafrom = ($(this).data("from"));
-
-        bootbox.confirm("Are you sure you want to Re-Publish this Amendment Form for verification ?  -  Work Order Number " + dataId + " ?", function(result) {
-          if (result) {
-
-
-            $.post("AmendmentController/AmendmentFormController", {
-                afm_ref: dataId,
-                from: datafrom,
-                to: 2
-              },
-              function(data, status) {
-                if (data.includes("This action has been successfully completed")) {
-                  bootbox.alert(data);
-                  setTimeout(function() {
-                    window.location.reload();
-                  }, 1000);
-
-                } else {
-                  bootbox.alert(data);
-                }
-              });
-
-
-          }
-        });
-      });
-    }); /*Doc Ready*/
-  </script>
   <?php
-
-
+  getBootboxScript("sendSalesVerify", "Are you sure you want to Publish this Amendment Form", 1, 2);
+  getBootboxScript("discardDraft", "Are you sure you want to discard this Amendment Form ", 1, 99);
+  getBootboxScript("discardRej", "Are you sure you want to discard this Amendment Form ", 'datafrom', 99, true);
+  getBootboxScript("sendRejSalesVerify", "Are you sure you want to Re-Publish this Amendment Form for verification ? ", 'datafrom', 2, true);
   getPrintJS();
   getDataTableDefiner("TableZero", 7);
   getDataTableDefiner("TableOne", 7);
