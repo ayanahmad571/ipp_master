@@ -1,7 +1,8 @@
 <?php
 require_once("server_fundamentals/SessionHandler.php");
+require_once("WorkOrderControllers/WorkOrderHelper.php");
 
-getHead("WO Accounts");
+getHead("WO Mark Complete");
 ?>
 
 <link rel="stylesheet" type="text/css" href="assets/DataTables/datatables.min.css" />
@@ -113,34 +114,14 @@ getHead("WO Accounts");
 
   <?php
   getDataTableDefiner("DraftsContainerTable");
+
+  getBootboxScript(
+    "publishDraft",
+    "Are you sure you want to Mark this Work Order as COMPLETED?<br>Action Can <strong>not</strong> be undone",
+    "MarkComplete"
+  );
+  getPrintJS();
   ?>
-
-  <script>
-    $(document).ready(function(e) {
-      $('.publishDraft').click(function(e) {
-        var dataId = ($(this).data("id"));
-
-        bootbox.confirm("Are you sure you want to Mark Work Order: " + dataId + "  as Complete?<br>Action Can <strong>not</strong> be undone.", function(result) {
-          if (result) {
-
-
-            $.post("server_fundamentals/MainWorkOrderSubmit", {
-                MarkComplete: dataId,
-              },
-              function(data, status) {
-                bootbox.alert(data);
-              });
-
-
-          }
-        });
-      }); /* .pubslishDraft Click*/
-    }); /*Doc Ready*/
-  </script>
-
-  <script src="assets/modules/iZiToast.js"></script>
-
-  <?php getPrintJS(); ?>
 </body>
 
 </html>

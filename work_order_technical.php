@@ -1,5 +1,6 @@
 <?php
 require_once("server_fundamentals/SessionHandler.php");
+require_once("WorkOrderControllers/WorkOrderHelper.php");
 
 getHead("WO Technical");
 ?>
@@ -246,114 +247,28 @@ getHead("WO Technical");
   <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
 
   <?php
-  getDataTableDefiner("pendingTableCont");
+  getDataTableDefiner("pendingTableCont", 5);
   getDataTableDefiner("PublishedContainerTable");
   getDataTableDefiner("ReturnedContainerTable");
+
+  getBootboxScript(
+    "publishDraft",
+    "Are you sure you want to send this Work Order for Verification?",
+    "technicalToVerify"
+  );
+  getBootboxScript(
+    "rePublishDraft",
+    "Are you sure you want to RE-Send this Work Order for Verification?",
+    "techRePub"
+  );
+  getBootboxScript(
+    "publishDraftCond",
+    "Are you sure you want to send this conditionally released Work Order for Verification?",
+    "technicalToVerifyCond"
+  );
+  getUpdater("6,5,8");
+  getPrintJS();
   ?>
-  <script>
-    $(document).ready(function(e) {
-      $('.publishDraft').click(function(e) {
-        var dataId = ($(this).data("id"));
-
-        bootbox.confirm("Are you sure you want to send this Work Order " + dataId + "  for Verification?<br>Action Can <strong>not</strong> be undone.", function(result) {
-          if (result) {
-
-
-            $.post("server_fundamentals/MainWorkOrderSubmit", {
-                technicalToVerify: dataId,
-              },
-              function(data, status) {
-                bootbox.alert(data);
-              });
-
-
-          }
-        });
-      }); /* .pubslishDraft Click*/
-    }); /*Doc Ready*/
-
-    $(document).ready(function(e) {
-      $('.rePublishDraft').click(function(e) {
-        console.log($(this));
-        var dataId = ($(this).data("id"));
-
-        bootbox.confirm("Are you sure you want to re-send this Work Order " + dataId + "  for Verification?<br>Action Can <strong>not</strong> be undone.", function(result) {
-          if (result) {
-
-
-            $.post("server_fundamentals/MainWorkOrderSubmit", {
-                techRePub: dataId,
-              },
-              function(data, status) {
-                bootbox.alert(data);
-              });
-
-
-          }
-        });
-      }); /* .pubslishDraft Click*/
-    }); /*Doc Ready*/
-
-
-    $(document).ready(function(e) {
-      $('.publishDraftCond').click(function(e) {
-        var dataId = ($(this).data("id"));
-
-        bootbox.confirm("Are you sure you want to send this Work Order " + dataId + "  for Verification?<br>Action Can <strong>not</strong> be undone.", function(result) {
-          if (result) {
-
-
-            $.post("server_fundamentals/MainWorkOrderSubmit", {
-                technicalToVerifyCond: dataId,
-              },
-              function(data, status) {
-                bootbox.alert(data);
-              });
-
-
-          }
-        });
-      }); /* .pubslishDraft Click*/
-    }); /*Doc Ready*/
-  </script>
-
-  <?php $getDraftsH = mysqlSelect(workOrderPagesQuery("6,5,8")); ?>
-  <input type="hidden" id="rowDiff" value="<?php echo (is_array($getDraftsH) ? count($getDraftsH) : "0"); ?>" />
-
-  <script src="assets/modules/iZiToast.js"></script>
-
-  <script>
-    function fetchdata() {
-      var rowD = $("#rowDiff").val();
-      $.ajax({
-        url: 'WorkOrderControllers/AllController',
-        type: 'post',
-        data: {
-          rowDiffChecker: rowD,
-          ids: "6,5,8",
-          not_ski: "0"
-        },
-        success: function(response) {
-          // Perform operation on the return value
-          if (response != "0") {
-            iziToast.success({
-              title: 'Work Order Update!',
-              message: 'New Updates, Refresh the page to see them',
-              position: 'topRight'
-            });
-            $("#rowDiff").val(response);
-          }
-        }
-      });
-    }
-
-    $(document).ready(function() {
-      setInterval(fetchdata, 5000);
-    });
-  </script>
-
-  <?php getPrintJS(); ?>
-
 </body>
 
 </html>
