@@ -76,6 +76,8 @@ $repeat = $getWO['mwo_type'] != 1;
 
 $checkConditional = mysqlSelect("SELECT * FROM `conditional_release_wo` WHERE `crw_wo_ref` = " . $getWO['master_wo_ref'] . " order by crw_dnt limit 1");
 
+$checkAmendments = mysqlSelect("SELECT * FROM `amendment_form_main` where `afm_rel_wo_ref` = " . $getWO['master_wo_ref'] . " and afm_status = 10 order by afm_gen_dnt desc");
+
 ?>
 
 
@@ -221,6 +223,47 @@ $checkConditional = mysqlSelect("SELECT * FROM `conditional_release_wo` WHERE `c
                 </tr>
               <?php
               } ?>
+
+              <?php if (is_array($checkAmendments)) {
+                $num = count($checkAmendments);
+                foreach ($checkAmendments as $amendment) {
+              ?>
+                  <tr>
+                    <td style="background-color: orange; color:white" colspan="12">
+                      <h3 align="center" style="margin:2px;">AMENDMENT # <?php echo $num; ?></h3>
+                    </td>
+                  </tr>
+                  <tr>
+                    <?php
+                    getTableTD("Reason", $amendment["afm_reason"], 6);
+                    getTableTD("Modification 1", $amendment["afm_mod_1"], 6);
+                    ?>
+                  </tr>
+                  <tr>
+                    <?php
+                    getTableTD("Modification 2", $amendment["afm_mod_2"], 6);
+                    getTableTD("Modification 3", $amendment["afm_mod_3"], 6);
+                    ?>
+                  </tr>
+                  <tr>
+                    <?php
+                    getTableTD("Notes", $amendment["afm_notes"], 12);
+                    ?>
+                  </tr>
+                <?php
+                  $num--;
+                }
+                ?>
+
+                <tr>
+                  <td style="background-color: BLACK; color:white" colspan="12">
+                    <h3 align="center" style="margin:2px;">WORK ORDER</h3>
+                 </td>
+                </tr>
+
+              <?php
+              } ?>
+
 
 
               <tr>

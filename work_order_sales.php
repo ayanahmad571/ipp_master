@@ -1,5 +1,6 @@
 <?php
 require_once("server_fundamentals/SessionHandler.php");
+require_once("WorkOrderControllers/WorkOrderHelper.php");
 
 getHead("WO Sales");
 
@@ -130,10 +131,7 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
                             <td><?php echo $Draft['master_wo_design_id']; ?></td>
                             <td>
                               <?php
-                              $getBy = mysqlSelect("select * from user_main where lum_id = " . $Draft['mwo_gen_lum_id'] . " and lum_valid =1");
-                              $getFor = mysqlSelect("select * from user_main where lum_id = " . $Draft['mwo_gen_on_behalf_lum_id'] . " and lum_valid =1");
-
-                              echo getByForFromWO($getBy, $getFor);
+                              echo getByForFromWO($Draft['mwo_gen_lum_id'], $Draft['mwo_gen_on_behalf_lum_id']);
                               ?>
                             </td>
                             <td><?php echo date(getDateTimeFormat(), $Draft['master_wo_gen_dnt']); ?></td>
@@ -193,10 +191,7 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
                             <td><?php echo $Discard['master_wo_design_id'] ?></td>
                             <td>
                               <?php
-                              $getBy = mysqlSelect("select * from user_main where lum_id = " . $Discard['mwo_gen_lum_id'] . " and lum_valid =1");
-                              $getFor = mysqlSelect("select * from user_main where lum_id = " . $Discard['mwo_gen_on_behalf_lum_id'] . " and lum_valid =1");
-
-                              echo getByForFromWO($getBy, $getFor);
+                              echo getByForFromWO($Discard['mwo_gen_lum_id'], $Discard['mwo_gen_on_behalf_lum_id']);
                               ?>
                             </td>
                             <td><?php echo date(getDateTimeFormat(), $Discard['master_wo_gen_dnt']); ?></td>
@@ -256,10 +251,7 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
                             <td><?php echo $Discard['master_wo_design_id'] ?></td>
                             <td>
                               <?php
-                              $getBy = mysqlSelect("select * from user_main where lum_id = " . $Discard['mwo_gen_lum_id'] . " and lum_valid =1");
-                              $getFor = mysqlSelect("select * from user_main where lum_id = " . $Discard['mwo_gen_on_behalf_lum_id'] . " and lum_valid =1");
-
-                              echo getByForFromWO($getBy, $getFor);
+                              echo getByForFromWO($Discard['mwo_gen_lum_id'], $Discard['mwo_gen_on_behalf_lum_id']);
                               ?>
                             </td>
                             <td><?php echo date(getDateTimeFormat(), $Discard['master_wo_gen_dnt']); ?></td>
@@ -323,109 +315,25 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
   getDataTableDefiner("DraftsContainerTable");
   getDataTableDefiner("PublishedContainerTable");
   getDataTableDefiner("ReturnedContainerTable");
-  getPrintJS(); ?>
+  getPrintJS();
 
-  <script>
-    $(document).ready(function(e) {
-      $('.publishDraft').click(function(e) {
-        var dataId = ($(this).data("id"));
-
-        bootbox.confirm("Are you sure you want to send this Sales Order " + dataId + "  for Verification?<br>Action Can <strong>not</strong> be undone.", function(result) {
-          if (result) {
-
-
-            $.post("server_fundamentals/MainWorkOrderSubmit", {
-                draftToMain: dataId,
-              },
-              function(data, status) {
-                bootbox.alert(data);
-              });
-
-
-          }
-        });
-      }); /* .pubslishDraft Click*/
-    }); /*Doc Ready*/
-
-    $(document).ready(function(e) {
-      $('.discardDraft').click(function(e) {
-        var dataId = ($(this).data("id"));
-
-        bootbox.confirm("Are you sure you want to DISCARD Draft Number " + dataId + " ? <br> This action can not be undone", function(result) {
-          if (result) {
-
-
-            $.post("server_fundamentals/SalesWorkOrderController", {
-                draftDiscard: dataId,
-              },
-              function(data, status) {
-                bootbox.alert(data);
-              });
-
-
-          }
-        });
-      }); /* .pubslishDraft Click*/
-    }); /*Doc Ready*/
-
-    $(document).ready(function(e) {
-      $('.rePublish').click(function(e) {
-        var dataId = ($(this).data("id"));
-
-        bootbox.confirm("Are you sure you want to Re-Publish Sales Order Number " + dataId + " ?", function(result) {
-          if (result) {
-
-
-            $.post("server_fundamentals/MainWorkOrderSubmit", {
-                rePublishSales: dataId,
-              },
-              function(data, status) {
-                bootbox.alert(data);
-              });
-
-
-          }
-        });
-      }); /* .pubslishDraft Click*/
-    }); /*Doc Ready*/
-  </script>
-
-  <?php $getDraftsH = mysqlSelect(workOrderPagesQuery("1,3")); ?>
-  <input type="hidden" id="rowDiff" value="<?php echo (is_array($getDraftsH) ? count($getDraftsH) : "0"); ?>" />
-
-  <script src="assets/modules/iZiToast.js"></script>
-
-  <script>
-    function fetchdata() {
-      var rowD = $("#rowDiff").val();
-      $.ajax({
-        url: 'WorkOrderControllers/AllController',
-        type: 'post',
-        data: {
-          rowDiffChecker: rowD,
-          ids: "1,3",
-          not_ski: "0"
-        },
-        success: function(response) {
-          // Perform operation on the return value
-          if (response != "0") {
-            iziToast.success({
-              title: 'Work Order Update!',
-              message: 'New Updates, Refresh the page to see them',
-              position: 'topRight'
-            });
-            $("#rowDiff").val(response);
-          }
-        }
-      });
-    }
-
-    $(document).ready(function() {
-      setInterval(fetchdata, 5000);
-    });
-  </script>
-
-
+  getBootboxScript(
+    "publishDraft",
+    "Are you sure you want to send this Sales Order for Verification?<br>Action Can <strong>not</strong> be undone",
+    "draftToMain"
+  );
+  getBootboxScript(
+    "discardDraft",
+    "Are you sure you want to DISCARD Draft",
+    "draftDiscard"
+  );
+  getBootboxScript(
+    "rePublish",
+    "Are you sure you want to Re-Publish",
+    "rePublishSales"
+  );
+  getUpdater("1,3");
+  ?>
 
 </body>
 

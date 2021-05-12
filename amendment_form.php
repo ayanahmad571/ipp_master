@@ -1,5 +1,5 @@
 <?php
-#57,58,59
+#57,58,59,60,61,62,63,64,65,66,67
 require_once("server_fundamentals/SessionHandler.php");
 
 getHead("Amendment Form");
@@ -73,10 +73,8 @@ getHead("Amendment Form");
                             <td><?php echo $Draft['master_wo_design_id']; ?></td>
                             <td>
                               <?php
-                              $getBy = mysqlSelect("select * from user_main where lum_id = " . $Draft['mwo_gen_lum_id'] . " and lum_valid =1");
-                              $getFor = mysqlSelect("select * from user_main where lum_id = " . $Draft['mwo_gen_on_behalf_lum_id'] . " and lum_valid =1");
+                              echo getByForFromWO($Draft['mwo_gen_lum_id'], $Draft['mwo_gen_on_behalf_lum_id']);
 
-                              echo getByForFromWO($getBy, $getFor);
                               ?>
                             </td>
                             <td><?php echo date(getDateTimeFormat(), $Draft['master_wo_gen_dnt']); ?></td>

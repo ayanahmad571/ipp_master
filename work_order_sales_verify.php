@@ -1,5 +1,6 @@
 <?php
 require_once("server_fundamentals/SessionHandler.php");
+require_once("WorkOrderControllers/WorkOrderHelper.php");
 
 getHead("WO Sales Verification");
 
@@ -134,10 +135,8 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
                             <td><?php echo $Draft['master_wo_design_id']; ?></td>
                             <td>
                               <?php
-                              $getBy = mysqlSelect("select * from user_main where lum_id = " . $Draft['mwo_gen_lum_id'] . " and lum_valid =1");
-                              $getFor = mysqlSelect("select * from user_main where lum_id = " . $Draft['mwo_gen_on_behalf_lum_id'] . " and lum_valid =1");
+                              echo getByForFromWO($Draft['mwo_gen_lum_id'], $Draft['mwo_gen_on_behalf_lum_id']);
 
-                              echo getByForFromWO($getBy, $getFor);
                               ?>
                             </td>
                             <td><?php echo date(getDateTimeFormat(), $Draft['master_wo_gen_dnt']); ?></td>
@@ -207,10 +206,8 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
                             <td><?php echo $Discard['master_wo_design_id'] ?></td>
                             <td>
                               <?php
-                              $getBy = mysqlSelect("select * from user_main where lum_id = " . $Discard['mwo_gen_lum_id'] . " and lum_valid =1");
-                              $getFor = mysqlSelect("select * from user_main where lum_id = " . $Discard['mwo_gen_on_behalf_lum_id'] . " and lum_valid =1");
+                              echo getByForFromWO($Discard['mwo_gen_lum_id'], $Discard['mwo_gen_on_behalf_lum_id']);
 
-                              echo getByForFromWO($getBy, $getFor);
                               ?>
                             </td>
                             <td><?php echo date(getDateTimeFormat(), $Discard['master_wo_gen_dnt']); ?></td>
@@ -265,10 +262,8 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
                             <td><?php echo $Discard['master_wo_design_id'] ?></td>
                             <td>
                               <?php
-                              $getBy = mysqlSelect("select * from user_main where lum_id = " . $Discard['mwo_gen_lum_id'] . " and lum_valid =1");
-                              $getFor = mysqlSelect("select * from user_main where lum_id = " . $Discard['mwo_gen_on_behalf_lum_id'] . " and lum_valid =1");
 
-                              echo getByForFromWO($getBy, $getFor);
+                              echo getByForFromWO($Discard['mwo_gen_lum_id'], $Discard['mwo_gen_on_behalf_lum_id']);
                               ?>
                             </td>
                             <td><?php echo date(getDateTimeFormat(), $Discard['master_wo_gen_dnt']); ?></td>
@@ -315,107 +310,20 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
 
   <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
 
-  <div id="myModal" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-lg ">
-
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-        </div>
-        <div class="modal-body">
-          <p>Some text in the modal.</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-
   <?php
+  getModal();
   getDataTableDefiner("DraftsContainerTable");
   getDataTableDefiner("PublishedContainerTable");
   getDataTableDefiner("ReturnedContainerTable");
+  getBootboxScript(
+    "publishDraft",
+    "Are you sure you want to Publish this Sales Order?<br>Action Can <strong>not</strong> be undone",
+    "salesToAccounts"
+  );
+  getDiscardScript("discardDraft", "SalesWorkOrderController");
+  getUpdater("2");
+  getPrintJS();
   ?>
-
-  <script>
-    $(document).ready(function(e) {
-      $('.publishDraft').click(function(e) {
-        var dataId = ($(this).data("id"));
-
-        bootbox.confirm("Are you sure you want to Publish this Sales Order: " + dataId + "  to Accounts?<br>Action Can <strong>not</strong> be undone.", function(result) {
-          if (result) {
-
-
-            $.post("server_fundamentals/MainWorkOrderSubmit", {
-                salesToAccounts: dataId,
-              },
-              function(data, status) {
-                bootbox.alert(data);
-              });
-
-
-          }
-        });
-      }); /* .pubslishDraft Click*/
-    }); /*Doc Ready*/
-
-    $(document).ready(function(e) {
-      $('.discardDraft').click(function(e) {
-        var dataId = ($(this).data("id"));
-
-        $.post("server_fundamentals/SalesWorkOrderController", {
-            WorkOrderGetDetails: dataId,
-          },
-          function(data, status) {
-            $(".modal-body").html(data);
-
-            $('#myModal').modal('show');
-          });
-
-      }); /* .pubslishDraft Click*/
-    }); /*Doc Ready*/
-  </script>
-
-  <?php $getDraftsH = mysqlSelect(workOrderPagesQuery("2")); ?>
-  <input type="hidden" id="rowDiff" value="<?php echo (is_array($getDraftsH) ? count($getDraftsH) : "0"); ?>" />
-
-  <script src="assets/modules/iZiToast.js"></script>
-
-  <script>
-    function fetchdata() {
-      var rowD = $("#rowDiff").val();
-      $.ajax({
-        url: 'WorkOrderControllers/AllController',
-        type: 'post',
-        data: {
-          rowDiffChecker: rowD,
-          ids: "2",
-          not_ski: "0"
-        },
-        success: function(response) {
-          // Perform operation on the return value
-          if (response != "0") {
-            iziToast.success({
-              title: 'Work Order Update!',
-              message: 'New Updates, Refresh the page to see them',
-              position: 'topRight'
-            });
-            $("#rowDiff").val(response);
-          }
-        }
-      });
-    }
-
-    $(document).ready(function() {
-      setInterval(fetchdata, 5000);
-    });
-  </script>
-
-  <?php getPrintJS(); ?>
 </body>
 
 </html>

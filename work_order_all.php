@@ -1,7 +1,8 @@
 <?php
 require_once("server_fundamentals/SessionHandler.php");
+require_once("WorkOrderControllers/WorkOrderHelper.php");
 
-getHead("WO Technical");
+getHead("WO General View");
 ?>
 
 <link rel="stylesheet" type="text/css" href="assets/DataTables/datatables.min.css" />
@@ -100,42 +101,11 @@ getHead("WO Technical");
     });
   </script>
 
-  <?php $getDraftsH = mysqlSelect(workOrderPagesQuery("9")); ?>
-  <input type="hidden" id="rowDiff" value="<?php echo (is_array($getDraftsH) ? count($getDraftsH) : "0"); ?>" />
+  <?php
 
-  <script src="assets/modules/iZiToast.js"></script>
-
-  <script>
-    function fetchdata() {
-      var rowD = $("#rowDiff").val();
-      $.ajax({
-        url: 'WorkOrderControllers/AllController',
-        type: 'post',
-        data: {
-          rowDiffChecker: rowD,
-          ids: "9",
-          not_ski: "0"
-        },
-        success: function(response) {
-          // Perform operation on the return value
-          if (response != "0") {
-            iziToast.success({
-              title: 'Work Order Update!',
-              message: 'New Updates, Refresh the page to see them',
-              position: 'topRight'
-            });
-            $("#rowDiff").val(response);
-          }
-        }
-      });
-    }
-
-    $(document).ready(function() {
-      setInterval(fetchdata, 5000);
-    });
-  </script>
-
-  <?php getPrintJS(); ?>
+  getUpdater("9");
+  getPrintJS();
+  ?>
 
 
 </body>

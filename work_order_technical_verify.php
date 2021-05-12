@@ -1,7 +1,8 @@
 <?php
 require_once("server_fundamentals/SessionHandler.php");
+require_once("WorkOrderControllers/WorkOrderHelper.php");
 
-getHead("WO Technical");
+getHead("WO Technical Verify");
 ?>
 
 <link rel="stylesheet" type="text/css" href="assets/DataTables/datatables.min.css" />
@@ -75,7 +76,7 @@ getHead("WO Technical");
                               $getBy = mysqlSelect("select * from user_main where lum_id = " . $Draft['mwo_gen_lum_id'] . " and lum_valid =1");
                               $getFor = mysqlSelect("select * from user_main where lum_id = " . $Draft['mwo_gen_on_behalf_lum_id'] . " and lum_valid =1");
 
-                              echo getByForFromWO($getBy, $getFor);
+                              echo getByForFromWO($Draft['mwo_gen_lum_id'], $Draft['mwo_gen_on_behalf_lum_id']);
                               ?>
                             </td>
                             <td><?php echo date(getDateTimeFormat(), $Draft['master_wo_gen_dnt']); ?></td>
@@ -147,7 +148,7 @@ getHead("WO Technical");
                               $getBy = mysqlSelect("select * from user_main where lum_id = " . $Discard['mwo_gen_lum_id'] . " and lum_valid =1");
                               $getFor = mysqlSelect("select * from user_main where lum_id = " . $Discard['mwo_gen_on_behalf_lum_id'] . " and lum_valid =1");
 
-                              echo getByForFromWO($getBy, $getFor);
+                              echo getByForFromWO($Discard['mwo_gen_lum_id'], $Discard['mwo_gen_on_behalf_lum_id']);
                               ?>
                             </td>
                             <td><?php echo date(getDateTimeFormat(), $Discard['master_wo_gen_dnt']); ?></td>
@@ -202,10 +203,7 @@ getHead("WO Technical");
                             <td><?php echo $Discard['master_wo_design_id'] ?></td>
                             <td>
                               <?php
-                              $getBy = mysqlSelect("select * from user_main where lum_id = " . $Discard['mwo_gen_lum_id'] . " and lum_valid =1");
-                              $getFor = mysqlSelect("select * from user_main where lum_id = " . $Discard['mwo_gen_on_behalf_lum_id'] . " and lum_valid =1");
-
-                              echo getByForFromWO($getBy, $getFor);
+                              echo getByForFromWO($Discard['mwo_gen_lum_id'], $Discard['mwo_gen_on_behalf_lum_id']);
                               ?>
                             </td>
                             <td><?php echo date(getDateTimeFormat(), $Discard['master_wo_gen_dnt']); ?></td>
@@ -254,106 +252,19 @@ getHead("WO Technical");
 
 
   <?php
-  getDataTableDefiner("DraftsContainerTable");
+  getDataTableDefiner("DraftsContainerTable", 5);
   getDataTableDefiner("PublishedContainerTable");
   getDataTableDefiner("ReturnedContainerTable");
+  getModal();
+  getBootboxScript(
+    "publishDraft",
+    "Are you sure you want to Publish this Work Order?<br>Action Can <strong>not</strong> be undone",
+    "techVerPublish"
+  );
+  getDiscardScript("discardDraft", "SalesWorkOrderController", "WorkOrderGetDetailsTech");
+  getUpdater("7");
+  getPrintJS();
   ?>
-
-
-  <div id="myModal" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-lg ">
-
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-        </div>
-        <div class="modal-body">
-          <p>Some text in the modal.</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-  <script>
-    $(document).ready(function(e) {
-      $('.publishDraft').click(function(e) {
-        var dataId = ($(this).data("id"));
-
-        bootbox.confirm("Are you sure you want to PUBLISH this Work Order " + dataId + "  for Verification?<br>Action Can <strong>not</strong> be undone.", function(result) {
-          if (result) {
-
-
-            $.post("server_fundamentals/MainWorkOrderSubmit", {
-                techVerPublish: dataId,
-              },
-              function(data, status) {
-                bootbox.alert(data);
-              });
-
-
-          }
-        });
-      }); /* .pubslishDraft Click*/
-    }); /*Doc Ready*/
-
-    $(document).ready(function(e) {
-      $('.discardDraft').click(function(e) {
-        var dataId = ($(this).data("id"));
-
-        $.post("server_fundamentals/SalesWorkOrderController", {
-            WorkOrderGetDetailsTech: dataId,
-          },
-          function(data, status) {
-            $(".modal-body").html(data);
-
-            $('#myModal').modal('show');
-          });
-
-      }); /* .pubslishDraft Click*/
-    });
-  </script>
-
-  <?php $getDraftsH = mysqlSelect(workOrderPagesQuery("7")); ?>
-  <input type="hidden" id="rowDiff" value="<?php echo (is_array($getDraftsH) ? count($getDraftsH) : "0"); ?>" />
-
-  <script src="assets/modules/iZiToast.js"></script>
-
-  <script>
-    function fetchdata() {
-      var rowD = $("#rowDiff").val();
-      $.ajax({
-        url: 'WorkOrderControllers/AllController',
-        type: 'post',
-        data: {
-          rowDiffChecker: rowD,
-          ids: "7",
-          not_ski: "0"
-        },
-        success: function(response) {
-          // Perform operation on the return value
-          if (response != "0") {
-            iziToast.success({
-              title: 'Work Order Update!',
-              message: 'New Updates, Refresh the page to see them',
-              position: 'topRight'
-            });
-            $("#rowDiff").val(response);
-          }
-        }
-      });
-    }
-
-    $(document).ready(function() {
-      setInterval(fetchdata, 5000);
-    });
-  </script>
-
-  <?php getPrintJS(); ?>
-
 </body>
 
 </html>

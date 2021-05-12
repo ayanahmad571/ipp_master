@@ -10,17 +10,29 @@ require('mailer/src/SMTP.php');
 
 
 require_once("Settings.php");
-function checkPost($htmlname)
+function checkPost($htmlname, $notEmptyCheck = false)
 {
 	if (is_array($htmlname)) {
 		foreach ($htmlname as $name) {
 			if (!isset($_POST[$name])) {
 				die("Invalid " . $name);
+			} else {
+				if ($notEmptyCheck) {
+					if ($_POST[$name] == "") {
+						die("Blank values for " . $name . " not allowed");
+					}
+				}
 			}
 		}
 	} else {
 		if (!isset($_POST[$htmlname])) {
 			die("Invalid " . $htmlname);
+		} else {
+			if ($notEmptyCheck) {
+				if (trim($_POST[$htmlname]) == "") {
+					die("Blank values for " . $htmlname . " not allowed");
+				}
+			}
 		}
 	}
 }
@@ -464,7 +476,7 @@ function logInsert($page, $session, $user, $ip, $text, $func)
 	}
 }
 
-function getSelectBox($masterclass, $nameIn, $postIn, $sql, $id, $val, $disabled=false)
+function getSelectBox($masterclass, $nameIn, $postIn, $sql, $id, $val, $disabled = false)
 {
 ?>
 	<div class="<?php echo $masterclass; ?>">
@@ -517,8 +529,30 @@ function getPrintJS()
 {
 ?>
 	<script>
+		function windowClose() {
+
+		}
+
 		function openWindow(woID) {
 			var newWin = window.open(`work_order_view_print?id=${woID}`, `Print View ${woID}`, 'width=800,height=750');
+
+		}
+
+		function openWindowAmendRaw(woID) {
+			var newWin = window.open(`amendment_view_print?id=${woID}`, `Print View Amendment ${woID}`, 'width=800,height=750');
+		}
+
+		function openWindowAmend(woID) {
+
+			var newWin = window.open(`amendment_form_new?id=${woID}`, `New Amendment Form ${woID}`, 'width=800,height=750');
+
+			var timer = setInterval(function() {
+				if (newWin.closed) {
+					clearInterval(timer);
+					window.location.reload();
+				}
+			}, 1000);
+
 		}
 	</script>
 <?php
