@@ -36,10 +36,7 @@ if(isset($_POST['add_client_name']) && isset($_POST['add_client_code'])){
     )",true);
 
     if(is_numeric($insertQ)){   
-        var_dump($insertQ);
-        die();
         header("Location: ../master_clients.php");
         die();
     }
 }
-?>
