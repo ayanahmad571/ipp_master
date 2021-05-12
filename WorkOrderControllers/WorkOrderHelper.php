@@ -55,7 +55,15 @@ function getBootboxScript($classIn, $confirmationIn, $idName)
                                 <?php echo $idName; ?>: dataId,
                             },
                             function(data, status) {
-                                bootbox.alert(data);
+                                if (data.includes("Success- Work Order Successfully Published")) {
+                                    bootbox.alert(data);
+                                    setTimeout(function() {
+                                        window.location.reload();
+                                    }, 1000);
+
+                                } else {
+                                    bootbox.alert(data);
+                                }
                             });
 
 
