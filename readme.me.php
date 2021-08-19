@@ -25,6 +25,8 @@ TRUNCATE `remarks_wo`;
 TRUNCATE `session_tracker`;
 TRUNCATE `users_pending`;
 TRUNCATE `amendment_form_main`;
+
+
 ALTER TABLE master_work_order_reference_number AUTO_INCREMENT = 8000;
 
 
