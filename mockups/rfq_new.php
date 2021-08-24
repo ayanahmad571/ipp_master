@@ -107,16 +107,24 @@ function mockupTabs($title, $col, $options)
                                         <div class="row">
                                             <?php
                                             mockupText("Customer Name", 2);
-                                            mockupTabs(
-                                                "Customer Location",
-                                                3,
-                                                array("Local", "GCC", "Export")
-                                            );
-                                            mockupText("Port Name", 2);
+
+
                                             mockupDrop(
-                                                "INCOTERMS",
+                                                "Customer Location",
                                                 2,
-                                                array("Option 1", "Option 2", "Option 3")
+                                                array("Local", "GCC - Export ", "Non GCC - Export")
+                                            );
+                                            mockupText("Emirate", 2);
+                                            mockupText("Destination Port Name", 2);
+                                            mockupDrop(
+                                                "INCO Terms",
+                                                2,
+                                                array("CIF", "EXW", "FOB", "DDP", "DDU", "DAP")
+                                            );
+                                            mockupDrop(
+                                                "Freight Type",
+                                                2,
+                                                array("FCL", "LCL", "Local Delivery")
                                             );
 
 
@@ -127,7 +135,7 @@ function mockupTabs($title, $col, $options)
                                                 array("Baby Wipes", "Bird Seeds", "....")
                                             );
                                             mockupDrop(
-                                                "Structure",
+                                                "Product Type",
                                                 2,
                                                 array("Bag", "Pouch", "Roll")
                                             );
