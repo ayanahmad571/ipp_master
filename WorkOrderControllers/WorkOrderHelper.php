@@ -39,15 +39,15 @@ function getUpdater($ids, $not = 0)
 }
 
 
-function getBootboxScript($classIn, $confirmationIn, $idName)
+function getBootboxScript($classIn, $confirmationIn, $idName, $tableHolderName)
 {
 ?>
     <script>
-        $(document).ready(function(e) {
+        t_<?php echo $tableHolderName ?>.on('draw', function(e) {
             $('.<?php echo $classIn; ?>').click(function(e) {
                 var dataId = ($(this).data("id"));
 
-                bootbox.confirm("<?php echo $confirmationIn; ?>- Sales / Work Order Number " + dataId + " ?", function(result) {
+                bootbox.confirm("<?php echo $confirmationIn; ?>- ASales / Work Order Number " + dataId + " ?", function(result) {
                     if (result) {
 
 
@@ -70,16 +70,17 @@ function getBootboxScript($classIn, $confirmationIn, $idName)
                     }
                 });
             }); /* .pubslishDraft Click*/
-        }); /*Doc Ready*/
+        }); /*Table Draw Ready*/
+        
     </script>
 <?php
 }
 
-function getDiscardScript($classIn, $pathIn, $name = "WorkOrderGetDetails")
+function getDiscardScript($classIn, $pathIn, $tableHolderName, $name = "WorkOrderGetDetails")
 {
 ?>
     <script>
-        $(document).ready(function(e) {
+        t_<?php echo $tableHolderName ?>.on('draw', function(e) {
             $('.<?php echo $classIn; ?>').click(function(e) {
                 var dataId = ($(this).data("id"));
 
@@ -93,10 +94,20 @@ function getDiscardScript($classIn, $pathIn, $name = "WorkOrderGetDetails")
                     });
 
             });
-        }); /*Doc Ready*/
+        }); /*Table Draw Ready*/
     </script>
 <?php
 }
 
+function getDataTableDrawScript($tableHolderName){
+    ?>
+    <script>
+        $(document).ready(function(e) {
+            t_<?php echo $tableHolderName ?>.draw();
+        });
+    </script>
+    <?php
+    
+}
 
 ?>

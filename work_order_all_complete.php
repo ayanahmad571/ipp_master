@@ -118,9 +118,11 @@ getHead("WO Mark Complete");
   getBootboxScript(
     "publishDraft",
     "Are you sure you want to Mark this Work Order as COMPLETED?<br>Action Can <strong>not</strong> be undone",
-    "MarkComplete"
+    "MarkComplete",
+    "DraftsContainerTable"
   );
   getPrintJS();
+  getDataTableDrawScript("DraftsContainerTable");
   ?>
 </body>
 

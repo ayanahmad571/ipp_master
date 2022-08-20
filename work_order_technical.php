@@ -254,20 +254,26 @@ getHead("WO Technical");
   getBootboxScript(
     "publishDraft",
     "Are you sure you want to send this Work Order for Verification?",
-    "technicalToVerify"
+    "technicalToVerify",
+    "pendingTableCont"
   );
   getBootboxScript(
     "rePublishDraft",
     "Are you sure you want to RE-Send this Work Order for Verification?",
-    "techRePub"
+    "techRePub",
+    "ReturnedContainerTable"
   );
   getBootboxScript(
     "publishDraftCond",
     "Are you sure you want to send this conditionally released Work Order for Verification?",
-    "technicalToVerifyCond"
+    "technicalToVerifyCond",
+    "pendingTableCont"
   );
   getUpdater("6,5,8");
   getPrintJS();
+  getDataTableDrawScript("pendingTableCont");
+  getDataTableDrawScript("ReturnedContainerTable");
+
   ?>
 </body>
 

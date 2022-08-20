@@ -222,12 +222,14 @@ getHead("WO Accounts");
   getBootboxScript(
     "publishDraft",
     "Are you sure you want to Publish this Work Order?<br>Action Can <strong>not</strong> be undone",
-    "AccountsToTechnical"
+    "AccountsToTechnical",
+    "DraftsContainerTable"
   );
-  getDiscardScript("publishConditionalDraft", "AccountsController");
+  getDiscardScript("publishConditionalDraft", "AccountsController","DraftsContainerTable");
 
   getUpdater("4");
   getPrintJS();
+  getDataTableDrawScript("DraftsContainerTable");
   ?>
 </body>
 

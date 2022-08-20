@@ -259,11 +259,14 @@ getHead("WO Technical Verify");
   getBootboxScript(
     "publishDraft",
     "Are you sure you want to Publish this Work Order?<br>Action Can <strong>not</strong> be undone",
-    "techVerPublish"
+    "techVerPublish",
+    "DraftsContainerTable"
   );
-  getDiscardScript("discardDraft", "SalesWorkOrderController", "WorkOrderGetDetailsTech");
+  getDiscardScript("discardDraft", "SalesWorkOrderController", "DraftsContainerTable", "WorkOrderGetDetailsTech");
   getUpdater("7");
   getPrintJS();
+  getDataTableDrawScript("DraftsContainerTable");
+  
   ?>
 </body>
 

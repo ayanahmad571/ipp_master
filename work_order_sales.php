@@ -320,19 +320,26 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
   getBootboxScript(
     "publishDraft",
     "Are you sure you want to send this Sales Order for Verification?<br>Action Can <strong>not</strong> be undone",
-    "draftToMain"
+    "draftToMain",
+    "DraftsContainerTable"
   );
   getBootboxScript(
     "discardDraft",
     "Are you sure you want to DISCARD Draft",
-    "draftDiscard"
+    "draftDiscard",
+    "DraftsContainerTable"
   );
   getBootboxScript(
     "rePublish",
     "Are you sure you want to Re-Publish",
-    "rePublishSales"
+    "rePublishSales",
+    "ReturnedContainerTable"
   );
   getUpdater("1,3");
+  getDataTableDrawScript("DraftsContainerTable");
+  getDataTableDrawScript("ReturnedContainerTable");
+
+
   ?>
 
 </body>
