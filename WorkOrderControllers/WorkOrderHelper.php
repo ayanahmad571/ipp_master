@@ -71,16 +71,16 @@ function getBootboxScript($classIn, $confirmationIn, $idName, $tableHolderName)
                 });
             }); /* .pubslishDraft Click*/
         }); /*Table Draw Ready*/
-
+        
     </script>
 <?php
 }
 
-function getDiscardScript($classIn, $pathIn, $name = "WorkOrderGetDetails")
+function getDiscardScript($classIn, $pathIn, $tableHolderName, $name = "WorkOrderGetDetails")
 {
 ?>
     <script>
-        $(document).ready(function(e) {
+        t_<?php echo $tableHolderName ?>.on('draw', function(e) {
             $('.<?php echo $classIn; ?>').click(function(e) {
                 var dataId = ($(this).data("id"));
 
@@ -94,10 +94,20 @@ function getDiscardScript($classIn, $pathIn, $name = "WorkOrderGetDetails")
                     });
 
             });
-        }); /*Doc Ready*/
+        }); /*Table Draw Ready*/
     </script>
 <?php
 }
 
+function getDataTableDrawScript($tableHolderName){
+    ?>
+    <script>
+        $(document).ready(function(e) {
+            t_<?php echo $tableHolderName ?>.draw();
+        });
+    </script>
+    <?php
+    
+}
 
 ?>
