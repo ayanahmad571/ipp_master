@@ -318,12 +318,17 @@ if ($USER_ARRAY['lum_user_type'] == 1 || $USER_ARRAY['lum_user_type'] == 2) {
   getBootboxScript(
     "publishDraft",
     "Are you sure you want to Publish this Sales Order?<br>Action Can <strong>not</strong> be undone",
-    "salesToAccounts"
+    "salesToAccounts",
+    "DraftsContainerTable"
   );
-  getDiscardScript("discardDraft", "SalesWorkOrderController");
+  getDiscardScript("discardDraft", "SalesWorkOrderController", "DraftsContainerTable");
   getUpdater("2");
   getPrintJS();
+  
+  getDataTableDrawScript("DraftsContainerTable")
   ?>
+
+  
 </body>
 
 </html>
