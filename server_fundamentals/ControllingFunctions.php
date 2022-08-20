@@ -69,7 +69,7 @@ function getDataTableDefiner($id, $pos = 4, $sort = "desc")
 {
     echo '
     <script>
-        $("#' . $id . '").DataTable({
+        const t_'.$id.' = $("#' . $id . '").DataTable({
             "order": [
             [' . $pos . ', "' . $sort . '"]
             ]
