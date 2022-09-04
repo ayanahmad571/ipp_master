@@ -562,7 +562,7 @@ $checkAmendments = mysqlSelect("SELECT * FROM `amendment_form_main` where `afm_r
                   } else {
                     getTableTD(
                       "LSD Required",
-                      $getWO["master_wo_2_lsd_required"],
+                      $getWO["lsd_required_value"],
                       12
                     );
                   }
