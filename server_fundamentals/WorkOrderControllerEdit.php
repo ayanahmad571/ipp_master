@@ -130,7 +130,7 @@ foreach ($WorkOrderMaster as $a => $b) {
 
 foreach ($WorkOrderInsert as $a => $b) {
 	$QueryCols[] = '`' . $a . '`';
-	$QueryVals[] = ((is_null($b)) ? "NULL" : "'" . $b . "'");
+	$QueryVals[] = ((is_null($b)) ? "NULL" : "'" . $conn->escape_string($b) . "'");
 }
 
 //Append Data from Content Builder onto Main Query
